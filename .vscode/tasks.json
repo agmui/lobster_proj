@@ -16,7 +16,11 @@
             },
             "type": "shell",
             "args": [ //"--verbose",
-             "--main", "main.lobster", "${file}" ],
+             //"--main", "main.lobster", 
+            //  "--runtime-debugger",
+            //  "--runtime-debug",
+            //  "--full-error",
+             "${file}" ],
             "presentation": {
                 "reveal": "silent",
                 "echo": true,
