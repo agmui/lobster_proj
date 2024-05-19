@@ -19,7 +19,9 @@
              //"--main", "main.lobster", 
             //  "--runtime-debugger",
             //  "--runtime-debug",
-            //  "--full-error",
+             "--full-error",
+            //  "--runtime-debug-dump",
+            "--runtime-stack-traces",
              "${file}" ],
             "presentation": {
                 "reveal": "silent",

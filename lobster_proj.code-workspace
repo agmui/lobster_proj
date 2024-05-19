@@ -7,7 +7,4 @@
 			"path": "../lobster"
 		}
 	],
-	"settings": {
-		"ros.distro": "humble"
-	},
 }

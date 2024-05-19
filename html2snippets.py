@@ -5,6 +5,7 @@ from html.parser import HTMLParser
 
 # sample input
 # append(xs:[any], ys:[any]) -> [any]
+#TODO: did not worktype_field_count(obj) -> int
 def json_fmt(name, prefix, body, desc):
     # new_body = re.sub("\w*:\w*",f"{{${1}:{2}}}",body)
     arr = re.split("(\w*):\w*", body)

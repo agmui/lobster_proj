@@ -34,6 +34,16 @@
 		"description": "operator overloading"
 	},
 
+	"fast_print":{
+		"scope": "lobster",
+		"prefix": "p",
+		"body":[
+            "print($1,\"$1\")"
+		],
+		"description": "print variable"
+	},
+    //----
+
 
     "print": {
         "scope": "lobster",
@@ -109,7 +119,7 @@
         "scope": "lobster",
         "prefix": "vector_capacity",
         "body": ["vector_capacity(${1:xs}, ${2:len})"],
-        "description": "vector_capacity(xs:[any], len:int) -> [any] \n ensures the vector capacity (number of elements it can contain before re-allocating) is at least "len". Does not actually add (or remove) elements. This function is just for efficiency in the case the amount of "push" operations is known. returns original vector."
+        "description": "vector_capacity(xs:[any], len:int) -> [any] \n ensures the vector capacity (number of elements it can contain before re-allocating) is at least \"len\". Does not actually add (or remove) elements. This function is just for efficiency in the case the amount of \"push\" operations is known. returns original vector."
     },
     
     "length": {
@@ -1088,7 +1098,7 @@
     "type_string": {
         "scope": "lobster",
         "prefix": "type_string",
-        "body": ["type_string(ref) -> string"],
+        "body": ["type_string(${1:ref})"],
         "description": "type_string(ref) -> string \n string representing the type of the given reference (object/vector/string/resource)"
     },
     
@@ -2678,7 +2688,7 @@
         "scope": "lobster",
         "prefix": "gl.init_controller_database",
         "body": ["gl.init_controller_database(${1:filename})"],
-        "description": "gl.init_controller_database(filename:string) -> string? \n loads the controller database if you want your game to support controllers. typically the argument should be: pakfile "data/controllers/gamecontrollerdb.txt". returns error if something went wrong"
+        "description": "gl.init_controller_database(filename:string) -> string? \n loads the controller database if you want your game to support controllers. typically the argument should be: pakfile \"data/controllers/gamecontrollerdb.txt\". returns error if something went wrong"
     },
     
     "gl.open_url": {

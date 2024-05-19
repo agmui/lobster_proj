@@ -1,34 +1,24 @@
-import utils
 import std
 
-class A:
-    x: int
-    def operator-(a:A):
-        return 2
+// let x = 1
+// let y = 1
+// let z = 1
 
-class B<T>:
-    y: T
+// print(x)
+// print(x,y,z)
+// print(x, y, z)
+// print x
+// print(1)
+// print(1,2,3)
+// print 1
 
-    def hi(z):
-        this.y = z
-        return y
+let logging = fn something: print get_stack_trace()
+def test_log():
+    let x = 1
+    let y = 1
+    // test_log(x)
+    logging(y)
+    // print get_stack_trace() 
+    x+1
 
-    def operator-(a:A)->B<T>:
-        return 2
-    def operator-(a:B<T>):
-        return 2
-
-
-let a: A = A{1}
-let b = B<int>{1}
-let c = B<int>{1}
-
-let arr = []
-
-// let rez = a-a
-// print get_stack_trace()
-print(a,b)
-// let rez = b-a
-// let rez = b-c
-print b.hi(3)
-// print rez
+test_log()
