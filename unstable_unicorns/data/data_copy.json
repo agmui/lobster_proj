@@ -1,0 +1,34 @@
+[
+    {
+        "name": "Baby Unicorn (Pink)",
+        "img": "Baby_Unicorn_(Pink).png",
+        "text": "If this card would be sacrificed, destroyed, or returned to your hand, return it to the Nursery instead.",
+        "type": "Baby Unicorn",
+        "quantity": "1",
+        "deck": "Base"
+    },
+    {
+        "name": "Baby Unicorn (Red)",
+        "img": "Baby_Unicorn_(Red).png",
+        "text": "If this card would be sacrificed, destroyed, or returned to your hand, return it to the Nursery instead.",
+        "type": "Baby Unicorn",
+        "quantity": "1",
+        "deck": "Base"
+    },
+    {
+        "name": "Baby Unicorn (Orange)",
+        "img": "Baby_Unicorn_(Orange).png",
+        "text": "If this card would be sacrificed, destroyed, or returned to your hand, return it to the Nursery instead.",
+        "type": "Baby Unicorn",
+        "quantity": "1",
+        "deck": "Base"
+    },
+    {
+        "name": "Americorn",
+        "img": "Americorn.png",
+        "text": "When this card enters your Stable, you may take a card at random from any player's hand and add it to your hand.",
+        "type": "Magical Unicorn",
+        "quantity": "1",
+        "deck": "Base"
+    }
+]

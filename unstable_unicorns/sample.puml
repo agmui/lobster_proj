@@ -1,0 +1,63 @@
+namespace unsable_unicorns{
+
+class CardAction{
+    + sacrifice(game: Game)
+    + destroy(game: Game)
+    + steal(game: Game)
+}
+
+class Card{
+    - cardAction: CardAction
+    + play()
+    + activate()
+}
+class Player{
+    - name: string
+    - hand: [Card]
+    - stable: [Card]
+}
+
+class Game{
+    - players: [Player]
+    - deck: [Card]
+    - discard: [Card]
+    - nursery: [Card]
+    - parser: parser
+    - display: display
+    + Card draw()
+    + [Card] draw(amount)
+    + void bot_of_deck(Card)
+    + void shuffle_in_deck(Card)
+    + Card draw_from_nursery()
+    + choose_from_deck()
+    + choose_from_nursery()
+    + choose_from_discard()
+    + [Player] get_players()
+    + [Card] get_deck()
+    + [Card] get_nursery()
+    + [Card] get_discard()
+}
+
+interface Display
+class Cli
+class Gui
+
+interface parser
+class mock_parser 
+class json_parser
+class flatbuffer
+}
+
+CardAction *-- Card
+Game --* Player
+Game --* Card
+Game <-- CardAction
+
+Game <-- Display
+Display <.. Cli
+Display <.. Gui
+
+Card <-- parser
+parser <.. flatbuffer
+parser <.. json_parser
+parser <.. mock_parser

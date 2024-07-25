@@ -15,6 +15,15 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
+    "import":{
+        "scope": "lobster",
+        "prefix": "import",
+        "body": [
+            "import dictionary"//TODO: files in current dir
+        ],
+        "description": ""
+    },
+    //TODO: add std snipets
 	"constructor": {
 		"scope": "lobster",
 		"prefix": "constructor",
@@ -33,12 +42,20 @@
 		],
 		"description": "operator overloading"
 	},
+	"dictionary":{
+		"scope": "lobster",
+		"prefix": "dictionary",
+		"body":[
+            "dictionary<${1:key},${2:value}>($3)"
+		],
+		"description": "print variable"
+	},
 
 	"fast_print":{
 		"scope": "lobster",
 		"prefix": "p",
 		"body":[
-            "print($1,\"$1\")"
+            "print($1)"
 		],
 		"description": "print variable"
 	},
