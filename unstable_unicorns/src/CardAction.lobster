@@ -37,12 +37,12 @@ class CardAction:
         pass()
 
     // send a card in your Sable to the discard pile
-    def sacrifice(caller):
-        game.sacrifice_submenu(caller)
+    def sacrifice(caller,amount:int=1):
+        game.sacrifice_submenu(caller,amount)
 
     // send a card from another player's Stable to the discard pile
-    def destroy(caller):
-        game.destroy_submenu(caller)
+    def destroy(caller,amount:int=1):
+        game.destroy_submenu(caller,amount)
     
     // send card from your hand to the discard pile
     def discard():

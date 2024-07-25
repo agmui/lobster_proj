@@ -10,11 +10,11 @@ class Game:
         return g
 
     // send a card in your Stable to the discard pile
-    def sacrifice_submenu(caller: Player):
+    def sacrifice_submenu(caller: Player, amount:int):
         pass()
 
     // send a card from another player's Stable to the discard pile
-    def destroy_submenu(caller: Player):
+    def destroy_submenu(caller: Player, amount:int):
         pass()
     
     // send card from your hand to the discard pile
@@ -25,37 +25,62 @@ class Game:
         pass()
 
 class Cli: Game
-    def chooser<T>(arr:[T])->T:
-        var index = 0
-        while not in_range(index, length(arr), 1):
+    def chooser<T>(arr:[T], amount:int)->[T]:
+        var input_arr = []
+        //TODO: make help input format printout
+        while 1:
             let msg = concat_string(map(arr)c,i:"[{i+1}] {c.name}", "\n")
-            let input = get_line(msg+"\nselect # from 1-{arr.len}: ")
+            let input = get_line(msg+"\nselect {amount} items from 1-{arr.len}: ")
             print("")
-            index = string_to_int(input)
-            if not in_range(index, length(arr), 1):
+            let raw_input,res = parse_data(typeof [int], "["+input+"]")
+            guard raw_input != nil and res == nil:// TODO: use guard idk
                 error("\"{input}\" is not valid\n")
-        return arr[index-1]
+            input_arr = raw_input
 
+            guard input_arr.len == amount:
+                if input_arr.len < amount:
+                    error("selected too little")
+                else:
+                    print(input_arr, input_arr.len, amount)
+                    print(input_arr.len == amount)
+                    error("selected too much")
+            if  all(map(input_arr)i:in_range(i, arr.len, 1)):
+                break
+            error("\"{input}\" is not valid\n")
+        return map(input_arr)n: arr[n-1]
+
+    def choose_cards(cards: [Card], amount:int)->[Card]://):
+        print("{BLKB}- choose {amount} card -{reset}")
+        return chooser(cards,amount)
+    
     def choose_card(cards: [Card])->Card:
-        print("{BLKB}- choose a card -{reset}")
-        return chooser(cards)
+        return choose_cards(cards, 1)[0]
+
+    
+    def choose_players(players:[Player], amount:int)->[Player]://):
+        print("- choose {amount} player -")
+        return chooser(players, amount)
     
     def choose_player(players:[Player])->Player:
-        print("choose a player")
-        return chooser(players)
+        return choose_players(players, 1)[0]
+
     // send a card in your Stable to the discard pile
-    def sacrifice_submenu(caller: Player):
+    def sacrifice_submenu(caller: Player, amount:int):
         print("{MAGHB}- sacrifice: -{reset}")
+        let chosen_cards: [Card] = choose_cards(caller.stable(), amount)
+        caller.remove_stable(chosen_cards)
+        g.discard(chosen_cards)
 
     // send a card from another player's Stable to the discard pile
-    def destroy_submenu(caller: Player):
+    def destroy_submenu(caller: Player, amount:int):
         print("{REDHB}- destroy: -{reset}")
         let players: [Player] = g.get_players().copy()
         players.remove_obj(caller)
         let chosen_player: Player = choose_player(players)
-        let chosen_card: Card = choose_card(chosen_player.stable())
-        chosen_player.destroy(chosen_card)
-    
+        let chosen_cards: [Card] = choose_cards(chosen_player.stable(), amount)
+        chosen_player.remove_stable(chosen_cards)
+        g.discard(chosen_cards)
+
     // send card from your hand to the discard pile
     def discard_submenu():
         pass()

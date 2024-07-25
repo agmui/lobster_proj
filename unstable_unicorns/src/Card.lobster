@@ -3,6 +3,7 @@ import terminal_colors
 
 import CardAction
 
+
 enum CardType:
     instant
     magic
@@ -85,7 +86,7 @@ class TwoForOne: Card
 //	SACRIFICE a card, then DESTROY two cards.
     def activate(caller):
         cardAction.sacrifice(caller)
-        cardAction.destroy(caller)
+        cardAction.destroy(caller,2)
 
 class GliterBomb: Card
 // If this card is in your Stable at the beginning of your turn,

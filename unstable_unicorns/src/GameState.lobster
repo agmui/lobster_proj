@@ -34,7 +34,7 @@ class GameState:
     def deal_hands():
         // everyone gets 1 bb unicorn
         for(players)p:
-            p.draw(nursery.remove(0))
+            p.add_stable(nursery.remove(0))
 
         // everyone draws 4 cards
         for(players)p:
@@ -51,6 +51,13 @@ class GameState:
 
     def draw(player, num:int)->[Card]: //):
         player.draw(map(num): deck.remove(0))
+    
+    def discard(cards: [Card]):
+        for(cards)c:
+            discard(c)
+
+    def discard(card: Card):
+        discard.push(card)
 
     def add_player(p: Player):
         pass()

@@ -28,8 +28,12 @@ class Player:
     def activate(card: Card):
         pass()
     
-    def destroy(card: Card):
-        print("{RED}destroyed{reset} {card.name} in {username}\'s stable")
+    def remove_stable(cards: [Card]):
+        for(cards)card:
+            remove_stable(card)
+
+    def remove_stable(card: Card):
+        //TODO: check if card in stable
         stable.remove_obj(card)
 
     def id():
