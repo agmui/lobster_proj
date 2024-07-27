@@ -12,17 +12,20 @@ class Player:
 
     def add_stable(card: Card):
         stable.push(card)
+        //TODO: check for win condition
     
     def use(card_index: int)->Card:
         let c = hand.remove(card_index)
         if c.type != instant and c.type != magic:
-            stable.push(c)
+            // stable.push(c)
+            add_stable(c)
         return c
 
     def use(card: Card)->Card:
         let c = hand.remove_obj(card)
         if c.type != instant and c.type != magic:
-            stable.push(c)
+            // stable.push(c)
+            add_stable(c)
         return c
     
     def activate(card: Card):

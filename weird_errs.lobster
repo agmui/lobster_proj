@@ -2,6 +2,35 @@ import std
 
 
 //------------------------------------------------------------
+// weird nilable type guard check
+//------------------------------------------------------------
+class Int:
+    n:int
+
+class A:
+    x: Int?
+
+    def check():
+        return x != nil
+    def func():
+        if check(): // should be identical with bottom line
+        // if x != nil:
+            return x.n+1
+        return 0
+
+let a:A = A{nil}
+
+print(a.func())
+//------------------------------------------------------------
+// the _ in _caller causes an error
+//------------------------------------------------------------
+
+class A:
+    _caller = 1
+
+    def func():
+        print(_caller)
+//------------------------------------------------------------
 // function overloading
 //
 // i wana a shorter version of func

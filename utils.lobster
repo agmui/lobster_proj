@@ -11,6 +11,11 @@ let cons = fn x, arr: insert(arr, 0, x)
 
 def print(a, b, c):
     print "{a} {b} {c}"
+def print(a, b, c, d):
+    print "{a} {b} {c} {d}"
+def print(a, b, c, d, e):
+    print "{a} {b} {c} {d} {e}"
+
 def len<T>(xs:[T])->int:
     return length(xs)
 

@@ -15,7 +15,6 @@ enum phase:
     end_phase
 
 
-
 class GameState: 
     private players: [Player] = []
 
@@ -27,7 +26,7 @@ class GameState:
     private cur_player_turn: Player = Player{""}
     private num_rounds: int = 0
     private cur_phase:phase = beginning_phase
-    private end_phase_queue:[Card] = []
+    private end_phase_queue:[Resolver] = []
 
     def init_cards(parsed_nursery, parsed_deck):
         this.nursery, this.deck = parsed_nursery, parsed_deck
@@ -84,8 +83,13 @@ class GameState:
     def update_phase(phase: phase):
         cur_phase = phase
     
-    def add_to_end_phase(c:Card):
+    def add_to_end_phase(c:Resolver):
+        print("add to end")
         end_phase_queue = end_phase_queue.push(c)
+
+    def remove_from_end_phase(c:Resolver)://TODO: this is extremely jank, make better system
+        print("remove from to end")
+        end_phase_queue.remove_obj(c)
 
     def end_phase_cleanup():
         for(end_phase_queue)c:// TODO: maybe just store arr of the cards and have the cards have their own methods to "solve" end_turn
@@ -166,15 +170,18 @@ class GameState:
             str +="\n"
         return str
     
+    def deck_info()->string:
+        return "{BGRN}deck:{reset} {fmt(deck)}\n"+
+        "nursery:{reset} {fmt(nursery)}\n"+
+        "{BLK}discard:{reset} {fmt(discard)}\n"+
+        "{BCYN}current turn: {BYEL}{current_players_turn().name}{reset}\n"
+
     def fmt():
         let get_cards = fn cards: map(cards)c,i: " {i+1} {c.fmt()}  "
         let player_info =
             map(players)p:
-                cons(GRNB+p.name,get_cards(p.hand()))
+                cons(GRNB+p.name+" (hand)",get_cards(p.hand()))
                     .append_into(cons("",cons(REDB+"stable",get_cards(p.stable()))))
+        return hformat(player_info)
 
-        return "{BGRN}deck:{reset} {fmt(deck)}\n"+
-        // "nursery:{reset} {fmt(nursery)}\n"+
-        "{BLK}discard:{reset} {fmt(discard)}\n"+
-        "{BCYN}current turn: {BYEL}{current_players_turn().name}{reset}\n\n"+
-        hformat(player_info)
+

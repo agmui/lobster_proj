@@ -152,6 +152,18 @@ class mock_parser: parser
             cardAction
         }
 
+        let pup = Puppicorn{
+            "Puppicorn",
+            "Puppicorn.png",
+            """
+            At the end of your turn, move Puppicorn to the Stable of the player on your left.
+            This card cannot be sacrificed or destroyed.
+            """,
+            magical_unicorn,
+            MAG,
+            cardAction
+        }
+
 
         return [
             //== DEBUG ==
@@ -159,16 +171,16 @@ class mock_parser: parser
             //===========
             bb.copy(), bb.copy(), bb.copy(), bb2.copy(),
         ],[
-            gtb.copy(),
+            pup.copy(),
             tfo.copy(),
             swh.copy(),
+            poison.copy(),
             //-------
             gtb.copy(),
             poison.copy(),
             tfo.copy(),
             bku.copy(),
             //-------
-            poison.copy(),
             bku.copy(), 
             gtb.copy(),
             poison.copy(),

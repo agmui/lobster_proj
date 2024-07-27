@@ -18,6 +18,14 @@ class GameState//:
 
 // let a:end_of_turn_cleanup = fn(g:GameState)->int: 1
 
+// maybe have a interface called CardInterface
+// then have 5 interfaces implmenting CardInterface called Magic, 
+// upgrade, downgrade, resolver, Unicorn...
+// then have each of those classes contain a concrete class called Card data
+// Card data will have the name, img, text...
+// but the upgrade, downgrade, resolver will have the individual funcs for each
+// class specific to their type (i.e. for Resolver there is the end_phase_resolver())
+// this is so other classes wont need to have a bloated function
 // abstract class Card: // TODO: idk  something about composition over inheritance
 class Card:
     name: string 
@@ -31,6 +39,7 @@ class Card:
         return cardAction.get_game().get_game_state()
 
     //TODO: maybe merge activate and enter_stable into one func called play()
+    // maybe have magic and instant be other interfaces that contain card (i.e. composition over inheritance with the one yt vid)
     def play(caller):
         print("{GRN}({caller.name}) plays {name}{reset}\n")
         if type == magic or type == instant:
@@ -40,14 +49,11 @@ class Card:
             enter_stable(caller)
     
     def enter_stable(caller):
-        error("{name} can not enter a stable\n")
+        pass()
 
     def activate(caller):
         error("can not activate {name}\n")
     
-    def end_phase_resolver():
-        error("has no end phase")
-        return false
     
     def unicorn_type_fmt()->string:
         return switch type:
@@ -71,6 +77,17 @@ class Card:
                 " "
     def fmt():
         return "{unicorn_type_fmt()} {cli_color}{name}{reset}"
+
+abstract class Resolver: Card //TODO: better name
+    def end_phase_code():
+// point of this func is to always call remove_from_end after it
+        error("has no end phase code")
+        return false
+
+    def end_phase_resolver():
+        let res = end_phase_code()
+        game_state().remove_from_end_phase(this)
+        return res
 
 class BabyUnicorn_Pink: Card
 class BabyUnicorn_Red: Card
@@ -109,41 +126,83 @@ class GlitterBomb: Card
         let cur_player_turn = game_state().current_players_turn()
         guard caller == cur_player_turn and game_state().is_beginning_phase():
             error("Not start of turn, can\'t activate {name} at this time")
-        let cards = caller.stable().copy()
+        let cards = caller.stable().copy() //TODO: should not need to copy? the getter should already return a copy?
         cards.remove_obj(this)
         cardAction.sacrifice(caller, cards)
         cardAction.destroy(caller)
 
-class UnicornLasso: Card
+class UnicornLasso: Resolver
 //upgrade
 
 // if this card is in your Stable at the beginning of your turn,
 // you may move a Unicorn from any player's Stable to your Stable.
 // At the end of your turn, move the Unicorn to its First Stable.
     card_moved:Card?=nil
+    original_player:Player? = nil
+    caller_:Player?=nil
 
     def activate(caller):
-        card_moved = cardAction.move()
-        // guard this.card_moved != nil: 
-        //      error("TODO:")
+        this.caller_ = caller
+        //FIXME: should not be calling choose functions
+        let players = game_state().get_players.copy()
+        players.remove_obj(caller)
+        original_player = cardAction.get_game().choose_player(players)
+        card_moved = cardAction.get_game().choose_card(original_player.stable())
+        cardAction.move(original_player.stable(), caller.stable(), card_moved)
+        guard card_moved != nil:
+            error("in Unicorn Lasso card_moved is nil")
+        guard original_player != nil:
+            error("in Unicorn Lasso original_player is nil")
+        guard caller_ != nil:
+            error("in Unicorn Lasso caller_ is nil")
         game_state().add_to_end_phase(this)
+        
 
         // game_state().add_to_end_phase(UnicornLasso_help{this})
-    def end_phase_resolver():
+    def end_phase_code():
         print("Unicorn Lasso resolver")
-        //TODO: test
-        // guard not game_state().is_end_phase():
-        //     error("in Unicorn Lasso is not end phase")
-        //     return false
-        // guard card_moved != nil:
-        //     error("in Unicorn Lasso card_moved is nil")
-        //     return false
-        // print("cleaning up Unicorn Lasso, moving unicorn [{card_moved.name}] back to original stable")
-        print(card_moved)
-        return 0
+        guard game_state().is_end_phase():
+            error("in {this.name} is not end phase")
+            return false
+        guard card_moved != nil:
+            error("in {this.name} card_moved is nil")
+            return false
+        guard original_player != nil:
+            error("in Unicorn Lasso original_player is nil")
+            return false
+        guard caller_ != nil:
+            error("in Unicorn Lasso caller_ is nil")
+            return false
+        print("- cleaning up Unicorn Lasso, moving unicorn [{card_moved.name}] back to original stable")
+        cardAction.move(caller_.stable(), original_player.stable(), card_moved)
+        // game_state().remove_from_end_phase(this)
 
-class Puppicorn: Card
+        return true
+
+class Puppicorn: Resolver
 //magical unicorn
 
 // At the end of your turn, move Puppicorn to the Stable of the player on your left.
 // This card cannot be sacrificed or destroyed.
+    caller_:Player?=nil
+    def enter_stable(caller):
+        print("enter")
+        this.caller_ = caller
+        game_state().add_to_end_phase(this)
+
+    def end_phase_resolver()://this is a hack
+        print("Puppicorn resolver")
+        guard game_state().is_end_phase():
+            error("in {this.name} is not end phase")//TODO: maybe generalize?
+            return false
+        guard caller_ != nil:
+            error("in {this.name} caller_ is nil")
+            return false
+        let players = game_state().get_players
+        let i = find(players)p:p==caller_
+        let next_player_index = (i+1)%players.len()
+        cardAction.move(caller_.stable(),players[next_player_index].stable(),this)
+        caller_ = players[next_player_index]
+        return true
+
+

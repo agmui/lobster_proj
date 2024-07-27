@@ -36,8 +36,9 @@ class CardAction:
     def trade():
         pass()
     
-    def move()->Card?: //):
-        return nil
+    def move(move_from:[Card],move_to:[Card], card:Card): //):
+        move_from.remove_obj(card)
+        move_to.push(card)
 
     def sacrifice(caller:Player, amount:int=1)://util function
         sacrifice(caller, caller.stable(), amount)

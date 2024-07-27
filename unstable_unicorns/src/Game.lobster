@@ -8,6 +8,18 @@ class Game:
 
     def get_game_state():
         return g
+    
+    def choose_cards(cards: [Card], amount:int)->[Card]://):
+        return []
+
+    def choose_card(cards: [Card])->Card:
+        return choose_cards(cards, 1)[0]
+
+    def choose_players(players:[Player], amount:int)->[Player]://):
+        return []
+
+    def choose_player(players:[Player])->Player:
+        return choose_players(players, 1)[0]
 
     // send a card in your Stable to the discard pile
     def sacrifice_submenu(cards:[Card], amount:int):
@@ -33,7 +45,8 @@ class Cli: Game
         //TODO: make help input format printout
         while 1:
             let msg = concat_string(map(arr)c,i:"[{i+1}] {c.name}", "\n")
-            let input = get_line(msg+"\nselect {amount} items from 1-{arr.len}: ")
+            let init_input = get_line(msg+"\nselect {amount} items from 1-{arr.len}: ")
+            let input = if init_input == "": "1" else: init_input
             print("")
             let raw_input,res = parse_data(typeof [int], "["+input+"]")
             guard raw_input != nil and res == nil:// TODO: use guard idk
@@ -114,7 +127,6 @@ class Cli: Game
                 g.current_players_turn
                     .use(card)
                     .play(g.current_players_turn)
-                // check for win condition
 
     private def end_phase():
         g.update_phase(end_phase)
@@ -125,14 +137,17 @@ class Cli: Game
         g.init()
         while 1:
             print("\n{CYNB}==== round {g.num_rounds()} ==={reset}\n")
+            print(g.deck_info())
             print(g.fmt())
             print("{YEL}==============================  beginning phase  ============================={reset}")
             beginning_phase()
+            print(g.fmt())
             print("{YEL}==============================    draw phase    =============================={reset}")
             g.draw(g.current_players_turn)
             draw_phase()
             print("{YEL}==============================    action phase  =============================={reset}")
             action_phase()
+            print(g.fmt())
             print("{YEL}============================== end of turn phase ============================={reset}")
             end_phase()
             // check if hand is too big
