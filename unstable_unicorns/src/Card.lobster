@@ -18,7 +18,7 @@ class GameState//:
 
 // let a:end_of_turn_cleanup = fn(g:GameState)->int: 1
 
-// abstract class Card:
+// abstract class Card: // TODO: idk  something about composition over inheritance
 class Card:
     name: string 
     img: string 
@@ -45,6 +45,9 @@ class Card:
     def activate(caller):
         error("can not activate {name}\n")
     
+    def end_phase_resolver():
+        error("has no end phase")
+        return false
     
     def unicorn_type_fmt()->string:
         return switch type:
@@ -117,8 +120,27 @@ class UnicornLasso: Card
 // if this card is in your Stable at the beginning of your turn,
 // you may move a Unicorn from any player's Stable to your Stable.
 // At the end of your turn, move the Unicorn to its First Stable.
+    card_moved:Card?=nil
+
     def activate(caller):
-        pass()
+        card_moved = cardAction.move()
+        // guard this.card_moved != nil: 
+        //      error("TODO:")
+        game_state().add_to_end_phase(this)
+
+        // game_state().add_to_end_phase(UnicornLasso_help{this})
+    def end_phase_resolver():
+        print("Unicorn Lasso resolver")
+        //TODO: test
+        // guard not game_state().is_end_phase():
+        //     error("in Unicorn Lasso is not end phase")
+        //     return false
+        // guard card_moved != nil:
+        //     error("in Unicorn Lasso card_moved is nil")
+        //     return false
+        // print("cleaning up Unicorn Lasso, moving unicorn [{card_moved.name}] back to original stable")
+        print(card_moved)
+        return 0
 
 class Puppicorn: Card
 //magical unicorn

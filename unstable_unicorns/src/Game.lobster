@@ -93,7 +93,7 @@ class Cli: Game
         g.update_phase(beginning_phase)
         let option = get_line("activate a card? [y] [N]: ")
         if option == "y" or option == "Y":
-            let card = choose_card(g.current_players_turn.stable())
+            let card = choose_card(g.current_players_turn.stable())//TODO: filter out cards cant cant be activated?
             card.activate(g.current_players_turn)//TODO: repeat question if card cant be activated
 
     private def draw_phase():

@@ -15,8 +15,6 @@ enum phase:
     end_phase
 
 
-class GameState//:
-def end_of_turn_cleanup(gameState:GameState)->int //):
 
 class GameState: 
     private players: [Player] = []
@@ -29,7 +27,7 @@ class GameState:
     private cur_player_turn: Player = Player{""}
     private num_rounds: int = 0
     private cur_phase:phase = beginning_phase
-    private end_phase_queue:[end_of_turn_cleanup] = []
+    private end_phase_queue:[Card] = []
 
     def init_cards(parsed_nursery, parsed_deck):
         this.nursery, this.deck = parsed_nursery, parsed_deck
@@ -86,9 +84,14 @@ class GameState:
     def update_phase(phase: phase):
         cur_phase = phase
     
+    def add_to_end_phase(c:Card):
+        end_phase_queue = end_phase_queue.push(c)
+
     def end_phase_cleanup():
-        for(end_phase_queue)f:
-            f(this)
+        for(end_phase_queue)c:// TODO: maybe just store arr of the cards and have the cards have their own methods to "solve" end_turn
+            if c.end_phase_resolver() == false:
+                error("end of phase error")//TODO: make better
+                assert false
     
     def current_players_turn():
         return cur_player_turn

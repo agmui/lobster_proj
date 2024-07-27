@@ -15,14 +15,28 @@
                 "command": "bin/lobster"
             },
             "type": "shell",
-            "args": [ //"--verbose",
-             //"--main", "main.lobster", 
-            //  "--runtime-debugger",
-            //  "--runtime-debug",
-             "--full-error",
-            //  "--runtime-debug-dump",
-            "--runtime-stack-traces",
-             "${file}" ],
+            "args": [
+                // "--main", "game_engi/main.lobster", 
+
+                //"--verbose",
+                // "--runtime-debug",
+
+                "--full-error",
+                 "--runtime-debugger",
+
+                //  "--runtime-debug-dump",
+                
+                // "--import","utils.lobster",
+                // "--runtime-stack-traces",
+                
+                // "${file}"/*
+                "unstable_unicorns/src/main.lobster",//*/
+                // "game_engi/main.lobster",
+                // "tests/Graph_tests.lobster",
+                // "Graphs.lobster",
+                // "--main", "Graph_tests.lobster",
+
+             ],
             "presentation": {
                 "reveal": "silent",
                 "echo": true,
@@ -43,7 +57,12 @@
                     "severity": 3,
                     "message": 4
                 }
-            }
+            },
+            // "options": {
+            //     "env": {
+            //         "FORCE_COLOR": "1"
+            //     }
+            // }
         }
     ]
 }

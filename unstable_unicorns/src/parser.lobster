@@ -120,6 +120,7 @@ class mock_parser: parser
                 BLU,
                 cardAction
             }
+
         let tfo = TwoForOne{
             "Two-For-One",
             "Two-For-One.png",
@@ -138,20 +139,36 @@ class mock_parser: parser
             cardAction
         }
 
+        let ucl = UnicornLasso{
+            "Unicorn Lasso",
+            "Unicorn_Lasso.png",
+            """
+            if this card is in your Stable at the beginning of your turn,
+            you may move a Unicorn from any player's Stable to your Stable.
+            At the end of your turn, move the Unicorn to its First Stable.
+            """,
+            upgrade,
+            YEL,
+            cardAction
+        }
+
 
         return [
+            //== DEBUG ==
+            ucl.copy(),
+            //===========
             bb.copy(), bb.copy(), bb.copy(), bb2.copy(),
         ],[
             gtb.copy(),
             tfo.copy(),
             swh.copy(),
-            poison.copy(),
             //-------
             gtb.copy(),
             poison.copy(),
             tfo.copy(),
             bku.copy(),
             //-------
+            poison.copy(),
             bku.copy(), 
             gtb.copy(),
             poison.copy(),
