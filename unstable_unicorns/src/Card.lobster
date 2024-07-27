@@ -14,6 +14,10 @@ enum CardType:
     magical_unicorn
     ultimate_unicorn
 
+class GameState//:
+
+// let a:end_of_turn_cleanup = fn(g:GameState)->int: 1
+
 // abstract class Card:
 class Card:
     name: string 
@@ -23,15 +27,20 @@ class Card:
     cli_color: string
     cardAction: CardAction // = CardAction{}
 
+    def game_state():
+        return cardAction.get_game().get_game_state()
+
+    //TODO: maybe merge activate and enter_stable into one func called play()
     def play(caller):
         print("{GRN}({caller.name}) plays {name}{reset}\n")
         if type == magic or type == instant:
             activate(caller)
+            game_state().discard(this)
         else:
             enter_stable(caller)
     
     def enter_stable(caller):
-        pass()
+        error("{name} can not enter a stable\n")
 
     def activate(caller):
         error("can not activate {name}\n")
@@ -74,20 +83,45 @@ class BlackKnightUnicorn: Card
 
 
 class SharkWithAHorn: Card
-//   text: string = "When this card enters your Stable, you may DESTROY a Unicorn. If you do, SACRIFICE this card."
+// "When this card enters your Stable, you may DESTROY a Unicorn. 
+// If you do, SACRIFICE this card."
 
-    def play():
-        print("played {name}")
-
-    def activate():
-        pass()
+    def enter_stable(caller):
+        if cardAction.ask_to_activate():
+            cardAction.destroy(caller)
+            caller.remove_stable(this)
 
 class TwoForOne: Card
 //	SACRIFICE a card, then DESTROY two cards.
     def activate(caller):
         cardAction.sacrifice(caller)
-        cardAction.destroy(caller,2)
+        cardAction.destroy(caller, caller.stable(),2)//FIXME: remove the caller.stable() arg
 
-class GliterBomb: Card
+class GlitterBomb: Card
+//upgrade
+
 // If this card is in your Stable at the beginning of your turn,
 // you may SACRIFICE a card, then DESTROY a card.
+    def activate(caller):
+        let cur_player_turn = game_state().current_players_turn()
+        guard caller == cur_player_turn and game_state().is_beginning_phase():
+            error("Not start of turn, can\'t activate {name} at this time")
+        let cards = caller.stable().copy()
+        cards.remove_obj(this)
+        cardAction.sacrifice(caller, cards)
+        cardAction.destroy(caller)
+
+class UnicornLasso: Card
+//upgrade
+
+// if this card is in your Stable at the beginning of your turn,
+// you may move a Unicorn from any player's Stable to your Stable.
+// At the end of your turn, move the Unicorn to its First Stable.
+    def activate(caller):
+        pass()
+
+class Puppicorn: Card
+//magical unicorn
+
+// At the end of your turn, move Puppicorn to the Stable of the player on your left.
+// This card cannot be sacrificed or destroyed.

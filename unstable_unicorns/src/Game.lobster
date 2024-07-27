@@ -10,16 +10,19 @@ class Game:
         return g
 
     // send a card in your Stable to the discard pile
-    def sacrifice_submenu(caller: Player, amount:int):
-        pass()
+    def sacrifice_submenu(cards:[Card], amount:int):
+        return [Card{"","","",baby_unicorn,GRN,CardAction{this}}]
 
     // send a card from another player's Stable to the discard pile
-    def destroy_submenu(caller: Player, amount:int):
-        pass()
+    def destroy_submenu(cards: [Card], amount:int, players:[Player]):
+        return [Card{"","","",baby_unicorn,GRN,CardAction{this}}], g.get_players()[0]
     
     // send card from your hand to the discard pile
     def discard_submenu():
         pass()
+    
+    def ask_to_activate()->bool:
+        return false
 
     def start():
         pass()
@@ -65,32 +68,39 @@ class Cli: Game
         return choose_players(players, 1)[0]
 
     // send a card in your Stable to the discard pile
-    def sacrifice_submenu(caller: Player, amount:int):
-        print("{MAGHB}- sacrifice: -{reset}")
-        let chosen_cards: [Card] = choose_cards(caller.stable(), amount)
-        caller.remove_stable(chosen_cards)
-        g.discard(chosen_cards)
+    def sacrifice_submenu(cards:[Card], amount:int):
+        print("{MAGHB}-- sacrifice: --{reset}")
+        return choose_cards(cards, amount)
 
     // send a card from another player's Stable to the discard pile
-    def destroy_submenu(caller: Player, amount:int):
-        print("{REDHB}- destroy: -{reset}")
-        let players: [Player] = g.get_players().copy()
-        players.remove_obj(caller)
+    def destroy_submenu(cards: [Card], amount:int, players:[Player]):
+        print("{REDHB}-- destroy: --{reset}")
         let chosen_player: Player = choose_player(players)
-        let chosen_cards: [Card] = choose_cards(chosen_player.stable(), amount)
-        chosen_player.remove_stable(chosen_cards)
-        g.discard(chosen_cards)
+        return choose_cards(chosen_player.stable(), amount), chosen_player
 
     // send card from your hand to the discard pile
     def discard_submenu():
         pass()
+
+    // when something has the choice to be activated or not 
+    //EX: When this card enters your Stable, you may DESTROY a Unicorn. If you do, SACRIFICE this card.
+    def ask_to_activate()->bool:
+        let option = get_line("activate this card? [y] [n]: ")//TODO: yes if just pressed enter
+        return option == "y" or option == "Y"
+
     
     private def beginning_phase():
-        // get_line(":")
-        pass()
+        g.update_phase(beginning_phase)
+        let option = get_line("activate a card? [y] [N]: ")
+        if option == "y" or option == "Y":
+            let card = choose_card(g.current_players_turn.stable())
+            card.activate(g.current_players_turn)//TODO: repeat question if card cant be activated
+
     private def draw_phase():
-        pass()
+        g.update_phase(draw_phase)
+
     private def action_phase():
+        g.update_phase(action_phase)
         var action = ""
         while action != "d" and action != "p":
             action = get_line("draw [d], play [p]: ")
@@ -107,22 +117,23 @@ class Cli: Game
                 // check for win condition
 
     private def end_phase():
-        pass()
-
+        g.update_phase(end_phase)
+        g.end_phase_cleanup()
+        //TODO: remove hands(maybe for everyone) if too big
 
     def start():
         g.init()
         while 1:
             print("\n{CYNB}==== round {g.num_rounds()} ==={reset}\n")
             print(g.fmt())
-            print("{YEL}==============================  beginning phase  =============================={reset}")
+            print("{YEL}==============================  beginning phase  ============================={reset}")
             beginning_phase()
             print("{YEL}==============================    draw phase    =============================={reset}")
             g.draw(g.current_players_turn)
             draw_phase()
             print("{YEL}==============================    action phase  =============================={reset}")
             action_phase()
-            print("{YEL}============================== end of turn phase =============================={reset}")
+            print("{YEL}============================== end of turn phase ============================={reset}")
             end_phase()
             // check if hand is too big
 

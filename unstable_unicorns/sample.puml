@@ -1,9 +1,10 @@
 namespace unsable_unicorns{
 
 class CardAction{
-    + sacrifice(game: Game)
-    + destroy(game: Game)
-    + steal(game: Game)
+    - game: GameState
+    + sacrifice()
+    + destroy()
+    + steal()
 }
 
 class Card{
@@ -17,13 +18,12 @@ class Player{
     - stable: [Card]
 }
 
-class Game{
+class GameState{
     - players: [Player]
     - deck: [Card]
     - discard: [Card]
     - nursery: [Card]
-    - parser: parser
-    - display: display
+
     + Card draw()
     + [Card] draw(amount)
     + void bot_of_deck(Card)
@@ -32,13 +32,11 @@ class Game{
     + choose_from_deck()
     + choose_from_nursery()
     + choose_from_discard()
-    + [Player] get_players()
-    + [Card] get_deck()
-    + [Card] get_nursery()
-    + [Card] get_discard()
 }
 
-interface Display
+interface Game{
+    - gameState: GameState
+}
 class Cli
 class Gui
 
@@ -48,16 +46,19 @@ class json_parser
 class flatbuffer
 }
 
+main --> parser
+main --> Game
+
 CardAction *-- Card
-Game --* Player
-Game --* Card
-Game <-- CardAction
+GameState --* Player
+GameState --* Card
+GameState <-- CardAction
 
-Game <-- Display
-Display <.. Cli
-Display <.. Gui
+Game --* GameState
+Game <.. Cli
+Game <.. Gui
 
-Card <-- parser
+' Card <-- parser
 parser <.. flatbuffer
 parser <.. json_parser
 parser <.. mock_parser

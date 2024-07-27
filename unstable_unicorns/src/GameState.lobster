@@ -8,6 +8,16 @@ import terminal_colors
 import Card
 import Player
 
+enum phase:
+    beginning_phase
+    draw_phase
+    action_phase
+    end_phase
+
+
+class GameState//:
+def end_of_turn_cleanup(gameState:GameState)->int //):
+
 class GameState: 
     private players: [Player] = []
 
@@ -18,6 +28,8 @@ class GameState:
     private current_player_id_turn: int = 0 // TODO: make random
     private cur_player_turn: Player = Player{""}
     private num_rounds: int = 0
+    private cur_phase:phase = beginning_phase
+    private end_phase_queue:[end_of_turn_cleanup] = []
 
     def init_cards(parsed_nursery, parsed_deck):
         this.nursery, this.deck = parsed_nursery, parsed_deck
@@ -40,6 +52,9 @@ class GameState:
         for(players)p:
             for(4):
                 p.draw(deck.remove(0))
+        // == debug ==
+        players[0].add_stable(deck.remove(0))
+        // ===========
 
     def init():
         cur_player_turn = players[0]
@@ -68,6 +83,12 @@ class GameState:
         for(p_arr)p,i:
             p.set_id(i)
     
+    def update_phase(phase: phase):
+        cur_phase = phase
+    
+    def end_phase_cleanup():
+        for(end_phase_queue)f:
+            f(this)
     
     def current_players_turn():
         return cur_player_turn
@@ -78,10 +99,19 @@ class GameState:
     def fmt(stack):
         if stack.len() > 7:
             return "["+concat_string(map(stack.slice(0,7)):_.fmt(), " | ")+" ... ]"
-        return "["+concat_string(map(stack):_.fmt(), " | ")+"]"
+        return "["+concat_string(map(stack):_.fmt(), " | ")+" ]"
     
     def get_players():
         return players
+
+    def get_phase()->phase:
+        return cur_phase
+    
+    def is_beginning_phase()->bool:
+        return cur_phase == beginning_phase
+    
+    def is_end_phase()->bool:
+        return cur_phase == end_phase
 
     def hformat<T>(arr:[[T]], min_pad_size=5, colum_size=2):
         var biggest = arr[0].len()
@@ -142,5 +172,6 @@ class GameState:
 
         return "{BGRN}deck:{reset} {fmt(deck)}\n"+
         // "nursery:{reset} {fmt(nursery)}\n"+
+        "{BLK}discard:{reset} {fmt(discard)}\n"+
         "{BCYN}current turn: {BYEL}{current_players_turn().name}{reset}\n\n"+
         hformat(player_info)

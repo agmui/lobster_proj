@@ -18,6 +18,8 @@ def init_mock_players():
 
 def main():
     print("== start game ==")
+    // gl.window("Unstable Unicorns", 640, 480)
+    // im.init()
     let game: Game = Cli{}// Gui{}
     let p: parser = mock_parser{}
     let game_state = game.get_game_state()

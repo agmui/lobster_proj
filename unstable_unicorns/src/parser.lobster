@@ -77,6 +77,7 @@ class json_parser: parser
 class mock_parser: parser
     def parse_file(game: Game):
         let cardAction = CardAction{game}
+
         let bb=BabyUnicorn_Pink{
                 "Baby Unicorn (Pink)",
                 "Baby_Unicorn_(Pink).png",
@@ -85,6 +86,7 @@ class mock_parser: parser
                 BBLK,
                 cardAction
             }
+            
         let bb2=BabyUnicorn_Red{
                 "Baby Unicorn (Red)",
                 "Baby_Unicorn_(Red).png",
@@ -93,6 +95,7 @@ class mock_parser: parser
                 BGRN,
                 cardAction
             }
+
         let poison = UnicornPoison{
                 "Unicorn Poison",
                 "Unicorn_Poison.png",
@@ -125,16 +128,35 @@ class mock_parser: parser
             YEL,
             cardAction
         }
+
+        let gtb = GlitterBomb{
+            "Glitter Bomb",
+            "Glitter_Bomb.png",
+            "If this card is in your Stable at the beginning of your turn, you may SACRIFICE a card, then DESTROY a card.",
+            upgrade,
+            GRN,
+            cardAction
+        }
+
+
         return [
             bb.copy(), bb.copy(), bb.copy(), bb2.copy(),
         ],[
+            gtb.copy(),
             tfo.copy(),
-            poison.copy(), bku.copy(), 
-            bku.copy(),
+            swh.copy(),
+            poison.copy(),
+            //-------
+            gtb.copy(),
+            poison.copy(),
             tfo.copy(),
             bku.copy(),
-            poison.copy(), poison.copy(),
-            swh.copy(), swh.copy(), swh.copy(),
+            //-------
+            bku.copy(), 
+            gtb.copy(),
+            poison.copy(),
+            bku.copy(),
+             swh.copy(), swh.copy(),
             poison.copy(), poison.copy(), poison.copy(),
             bku.copy(), bku.copy(), bku.copy(),
             swh.copy(), swh.copy(), swh.copy(),
