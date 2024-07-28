@@ -4,16 +4,10 @@ import dictionary
 import utils
 import terminal_colors
 
+import const
 // import CardAction
 import Card
 import Player
-
-enum phase:
-    beginning_phase
-    draw_phase
-    action_phase
-    end_phase
-
 
 class GameState: 
     private players: [Player] = []
@@ -108,6 +102,9 @@ class GameState:
             return "["+concat_string(map(stack.slice(0,7)):_.fmt(), " | ")+" ... ]"
         return "["+concat_string(map(stack):_.fmt(), " | ")+" ]"
     
+    def get_deck():
+        return deck
+
     def get_players():
         return players
 

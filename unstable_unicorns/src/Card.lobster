@@ -1,6 +1,7 @@
 import utils
 import terminal_colors
 
+import const
 import CardAction
 
 
@@ -13,6 +14,8 @@ enum CardType:
     basic_unicorn
     magical_unicorn
     ultimate_unicorn
+
+let up_downgrade_filter = fn cards: filter(cards)c: c.type == upgrade or c.type == downgrade
 
 class GameState//:
 
@@ -49,6 +52,9 @@ class Card:
             enter_stable(caller)
     
     def enter_stable(caller):
+        pass()
+
+    def on_deletion(caller):
         pass()
 
     def activate(caller):
@@ -91,6 +97,8 @@ abstract class Resolver: Card //TODO: better name
 
 class BabyUnicorn_Pink: Card
 class BabyUnicorn_Red: Card
+// If this card would be sacrificed, destroyed, or returned to your hand,
+// TODO: return it to the Nursery instead.
 
 class UnicornPoison: Card
     // text: string = "DESTROY a Unicorn."
@@ -115,7 +123,7 @@ class TwoForOne: Card
 //	SACRIFICE a card, then DESTROY two cards.
     def activate(caller):
         cardAction.sacrifice(caller)
-        cardAction.destroy(caller, caller.stable(),2)//FIXME: remove the caller.stable() arg
+        cardAction.destroy(caller, 2)//FIXME: remove the caller.stable() arg
 
 class GlitterBomb: Card
 //upgrade
@@ -183,7 +191,7 @@ class Puppicorn: Resolver
 //magical unicorn
 
 // At the end of your turn, move Puppicorn to the Stable of the player on your left.
-// This card cannot be sacrificed or destroyed.
+// TODO: This card cannot be sacrificed or destroyed.
     caller_:Player?=nil
     def enter_stable(caller):
         print("enter")
@@ -204,5 +212,49 @@ class Puppicorn: Resolver
         cardAction.move(caller_.stable(),players[next_player_index].stable(),this)
         caller_ = players[next_player_index]
         return true
+
+class UnicornMafia: Card
+//upgrade
+
+// If this card is in your Stable at the beginning of your turn,
+// you may DISCARD 2 cards.
+// If you do, SACRIFICE or DESTROY a card.
+    def activate(caller):
+        cardAction.discard(caller,caller.hand(),2)
+        cardAction.sacrifice_or_destroy(caller)
+
+class StabbyTheUnicorn:Card
+//Magical unicorn
+
+// If this card is sacrificed or destroyed,
+// you may DESTROY a Unicorn
+    def on_deletion(caller):
+        print("{BRED}-- {name}: on deletion activation --{reset}")
+        if cardAction.ask_to_activate():
+            cardAction.destroy(caller)
+
+class ChainsawUnicorn:Card
+// Magical Unicorn	
+
+// When this card enters your Stable,
+// you may SACRIFICE or DESTROY an Upgrade or Downgrade card.
+    def enter_stable(caller):
+        if cardAction.ask_to_activate():
+            cardAction.sacrifice_or_destroy(caller,1,up_downgrade_filter)
+
+
+class Foresight: Card
+// Upgrade
+
+// If this card is in your Stable at the beginning of your turn,
+// you may look at the top 3 cards of the deck. If you do,
+// add 1 of them to your hand,
+// TODO: then shuffle the other 2 back into the deck
+// and skip your Draw phase.	
+    def activate(caller):
+        let cards = cardAction.peek_top_deck(3)
+        let chosen_card = cardAction.get_game().choose_card(cards)
+        cardAction.move(game_state().get_deck(), caller.hand(), chosen_card)
+        game_state().update_phase(action_phase)
 
 

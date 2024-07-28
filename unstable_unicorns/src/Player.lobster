@@ -12,7 +12,6 @@ class Player:
 
     def add_stable(card: Card):
         stable.push(card)
-        //TODO: check for win condition
     
     def use(card_index: int)->Card:
         let c = hand.remove(card_index)
@@ -39,6 +38,9 @@ class Player:
         //TODO: check if card in stable
         stable.remove_obj(card)
 
+    def discard(card:Card):
+        hand.remove_obj(card)
+
     def id():
         return id
     
@@ -56,3 +58,4 @@ class Player:
     
     def fmt():
         return username+" "+concat_string((map(hand):_.name),", ")
+

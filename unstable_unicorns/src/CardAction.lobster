@@ -23,6 +23,8 @@ class Card
 // Phase: adds or takes a phase
 // F: forced action
 
+def filter_format(cards:[Card])->[Card]
+let do_noting:filter_format = fn(cards:[Card])->[Card]:cards
 
 class CardAction:
     game: Game
@@ -48,21 +50,35 @@ class CardAction:
         let chosen_cards = game.sacrifice_submenu(cards, amount)
         caller.remove_stable(chosen_cards)
         game.get_game_state().discard(chosen_cards)
-
-    def destroy(caller:Player, amount:int=1)://FIXME:
-        destroy(caller, caller.stable(), amount)
+        for(chosen_cards)c:
+            c.on_deletion(caller)
 
     // send a card from another player's Stable to the discard pile
-    def destroy(caller:Player, cards:[Card], amount:int=1):
+    def destroy(caller:Player, amount:int=1, card_filter:filter_format=do_noting)->void:
         let players = game.get_game_state().get_players().copy()
         players.remove_obj(caller)
-        let chosen_cards, chosen_player = game.destroy_submenu(cards, amount, players)
+        let chosen_cards, chosen_player = game.destroy_submenu(players, amount, card_filter)
         chosen_player.remove_stable(chosen_cards)
         game.get_game_state().discard(chosen_cards)
+        for(chosen_cards)c:
+            c.on_deletion(chosen_player)
     
     // send card from your hand to the discard pile
-    def discard():
-        pass()
+    def discard(caller, cards:[Card], amount:int=1):
+        let chosen_cards = game.discard_submenu(cards, amount)[0]
+        caller.discard(chosen_cards)
+        game.get_game_state().discard(chosen_cards)
     
-    def ask_to_activate():
+    def sacrifice_or_destroy(caller:Player, amount:int=1, card_filter:filter_format=do_noting):
+        let players = game.get_game_state().get_players().copy()
+        let chosen_cards, chosen_player = game.destroy_submenu(players, amount, card_filter)
+        chosen_player.remove_stable(chosen_cards)
+        game.get_game_state().discard(chosen_cards)
+        for(chosen_cards)c:
+            c.on_deletion(caller)
+    
+    def ask_to_activate()->bool:
         return game.ask_to_activate()
+    
+    def peek_top_deck(amount:int)->[Card]:
+        return game.peek_top_deck(amount)

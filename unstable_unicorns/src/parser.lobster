@@ -164,29 +164,71 @@ class mock_parser: parser
             cardAction
         }
 
+        let ucm = UnicornMafia{
+            "Unicorn Mafia",
+            "Unicorn_Mafia.png",
+            """
+            If this card is in your Stable at the beginning of your turn,
+            you may DISCARD 2 cards.
+            If you do, SACRIFICE or DESTROY a card.
+            """,
+            upgrade,
+            BLK,
+            cardAction
+        }
+
+        let stu = StabbyTheUnicorn{
+            "Stabby The Unicorn",
+            "Stabby_The_Unicorn.png",
+            "If this card is sacrificed or destroyed, you may DESTROY a Unicorn",
+            magical_unicorn,
+            REDHB,
+            cardAction
+        }
+
+        let csu = ChainsawUnicorn{
+            "Chainsaw Unicorn",
+            "Chainsaw_Unicorn.png",
+            "When this card enters your Stable, you may SACRIFICE or DESTROY an Upgrade or Downgrade card.",
+            magical_unicorn,
+            BRED,
+            cardAction
+        }
+
+        let fst = Foresight{
+            "Foresight",
+            "Foresight.png",
+            """
+            If this card is in your Stable at the beginning of your turn,
+            you may look at the top 3 cards of the deck. If you do,
+            add 1 of them to your hand,
+            then shuffle the other 2 back into the deck
+            and skip your Draw phase.	
+            """,
+            upgrade,
+            GRNHB,
+            cardAction
+        }
 
         return [
             //== DEBUG ==
-            ucl.copy(),
+            fst.copy(),
             //===========
             bb.copy(), bb.copy(), bb.copy(), bb2.copy(),
         ],[
+            csu.copy(),
             pup.copy(),
             tfo.copy(),
             swh.copy(),
-            poison.copy(),
             //-------
             gtb.copy(),
             poison.copy(),
             tfo.copy(),
             bku.copy(),
             //-------
-            bku.copy(), 
             gtb.copy(),
             poison.copy(),
-            bku.copy(),
-             swh.copy(), swh.copy(),
-            poison.copy(), poison.copy(), poison.copy(),
-            bku.copy(), bku.copy(), bku.copy(),
-            swh.copy(), swh.copy(), swh.copy(),
+            ucm.copy(),
+            ucl.copy(), swh.copy(),
+            stu.copy(), 
         ]
