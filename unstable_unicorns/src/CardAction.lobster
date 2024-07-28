@@ -80,5 +80,12 @@ class CardAction:
     def ask_to_activate()->bool:
         return game.ask_to_activate()
     
-    def peek_top_deck(amount:int)->[Card]:
+    def choice_selection(choices:[string])->int:
+        return game.choice_selection(choices)
+    
+    def peek_top_deck(amount:int)->[Card]: //):
         return game.peek_top_deck(amount)
+    
+    def search_deck(amount:int, card_filter:filter_format)->[Card]: //):
+        return game.search_deck(amount, card_filter)
+

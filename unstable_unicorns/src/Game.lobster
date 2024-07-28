@@ -36,8 +36,14 @@ class Game:
     def peek_top_deck(amount:int)->[Card]: //):
         return []
     
+    def search_deck(amount:int, card_filter)->[Card]: //):
+        return []
+
     def ask_to_activate()->bool:
         return false
+    
+    def choice_selection(choices:[string])->int:
+        return -1
 
     def start():
         pass()
@@ -50,7 +56,10 @@ class Cli: Game
         var input_arr = []
         //TODO: make help input format printout
         while 1:
-            let display_name = fn c: if type_string(c) == "Player": c.name else: c.fmt()
+            let display_name = fn c: 
+                if c is string: c
+                elif type_string(c) == "Player": c.name 
+                else: c.fmt()
             let msg = concat_string(map(arr)c,i:"[{i+1}] {display_name(c)}", "\n")
             let init_input = get_line(msg+"\nselect {amount} items from 1-{arr.len}: ")
             let input = if init_input == "": "1" else: init_input
@@ -59,6 +68,7 @@ class Cli: Game
             guard raw_input != nil and res == nil:// TODO: use guard idk
                 error("\"{input}\" is not valid\n")
             input_arr = raw_input
+            //TODO: guard against repeated values
 
             guard input_arr.len == amount:
                 if input_arr.len < amount:
@@ -108,6 +118,12 @@ class Cli: Game
         let option = get_line("activate this card? [y] [n]: ")//TODO: yes if just pressed enter
         return option == "y" or option == "Y"
 
+    def choice_selection(choices:[string])->int:
+        print("-- choose --")
+        let choice:string = chooser(choices,1)[0]
+        return find(choices): _==choice
+
+
     def peek_top_deck(amount:int)->[Card]://):
         print("- deck peak -")
         let cards = map(amount)i:g.get_deck()[i]
@@ -116,6 +132,10 @@ class Cli: Game
                 .print()
         print("-------------\n")
         return cards
+    
+    def search_deck(amount:int, card_filter)->[Card]: //):
+        let filtered_deck = card_filter(g.get_deck())
+        return choose_cards(filtered_deck, amount)
     
     private def beginning_phase():
         let option = get_line("activate a card? [y] [N]: ")

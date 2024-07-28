@@ -210,18 +210,33 @@ class mock_parser: parser
             cardAction
         }
 
+
+        let ctc = ControlledChaos{
+            "Controlled Chaos",
+            "Controlled_Chaos.png",
+            """
+            If this card is in your Stable at the beginning of your turn,
+            you may DISCARD 2 cards. If you do,
+            DESTROY a Unicorn card OR search the deck for a Unicorn card and
+            add it to your hand. Shuffle the deck.	
+            """,
+            upgrade,
+            BYEL,
+            cardAction
+        }
+
         return [
             //== DEBUG ==
-            fst.copy(),
+            ctc.copy(),
             //===========
             bb.copy(), bb.copy(), bb.copy(), bb2.copy(),
         ],[
             csu.copy(),
             pup.copy(),
-            tfo.copy(),
             swh.copy(),
-            //-------
             gtb.copy(),
+            //-------
+            stu.copy(),
             poison.copy(),
             tfo.copy(),
             bku.copy(),
@@ -229,6 +244,9 @@ class mock_parser: parser
             gtb.copy(),
             poison.copy(),
             ucm.copy(),
-            ucl.copy(), swh.copy(),
+            csu.copy(),
+            ucl.copy(), 
+            fst.copy(),
             stu.copy(), 
+            swh.copy(),
         ]

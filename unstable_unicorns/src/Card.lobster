@@ -257,4 +257,33 @@ class Foresight: Card
         cardAction.move(game_state().get_deck(), caller.hand(), chosen_card)
         game_state().update_phase(action_phase)
 
+class ControlledChaos: Card
+// Upgrade
+
+// If this card is in your Stable at the beginning of your turn,
+// you may DISCARD 2 cards. If you do,
+// DESTROY a Unicorn card OR search the deck for a Unicorn card and
+// add it to your hand. Shuffle the deck.	
+    def activate(caller):
+        cardAction.discard(caller, caller.hand(), 2)
+        let choices = [
+            "DESTROY a Unicorn card ",
+            "search the deck for a Unicorn card and add it to your hand. Shuffle the deck."
+        ]
+        if cardAction.choice_selection(choices) == 0:
+            cardAction.destroy(caller)
+        else:
+            let card_filter = fn cards:
+                filter(cards)c:
+                    c.type == basic_unicorn or c.type == magical_unicorn or c.type == ultimate_unicorn
+            let chosen_card = cardAction.search_deck(1,card_filter)[0]
+            cardAction.move(game_state().get_deck(), caller.hand(), chosen_card)
+
+class ExtraLife:Card
+// Upgrade
+// If a Unicorn card in your Stable is sacrificed or destroyed,
+// you may SACRIFICE this card. If you do,
+// bring that card from the discard pile directly into your Stable.	
+
+
 
