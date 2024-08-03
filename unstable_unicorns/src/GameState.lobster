@@ -8,6 +8,7 @@ import const
 // import CardAction
 import Card
 import Player
+import Publisher
 
 class GameState: 
     private players: [Player] = []
@@ -21,6 +22,9 @@ class GameState:
     private num_rounds: int = 0
     private cur_phase:phase = beginning_phase
     private end_phase_queue:[Resolver] = []
+
+    sacrifice_pub = Publisher<card_event>{"sacrifice_pub"}
+    destroy_pub  = Publisher<card_event>{"destroy_pub"}
 
     def init_cards(parsed_nursery, parsed_deck):
         this.nursery, this.deck = parsed_nursery, parsed_deck
@@ -104,6 +108,9 @@ class GameState:
     
     def get_deck():
         return deck
+
+    def get_discard():
+        return discard
 
     def get_players():
         return players

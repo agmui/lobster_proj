@@ -1,0 +1,5513 @@
+[
+  {
+    "subsystem": "builtin",
+    "funcname": "print",
+    "args": [{ "name": "x", "type": "string" }],
+    "doc": "output any value to the console (with linefeed)."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "string",
+    "args": [{ "name": "x", "type": "string" }],
+    "returns": ["string"],
+    "doc": "convert any value to string"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "set_print_depth",
+    "args": [{ "name": "depth", "type": "int" }],
+    "returns": ["int"],
+    "doc": "for printing / string conversion: sets max vectors/objects recursion depth (default 10), returns old value"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "set_print_length",
+    "args": [{ "name": "len", "type": "int" }],
+    "returns": ["int"],
+    "doc": "for printing / string conversion: sets max string length (default 100000), returns old value"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "set_print_quoted",
+    "args": [{ "name": "quoted", "type": "bool" }],
+    "returns": ["int"],
+    "doc": "for printing / string conversion: if the top level value is a string, whether to convert it with escape codes and quotes (default false), returns old value"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "set_print_decimals",
+    "args": [{ "name": "decimals", "type": "int" }],
+    "returns": ["int"],
+    "doc": "for printing / string conversion: number of decimals for any floating point output (default -1, meaning all), returns old value"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "set_print_indent",
+    "args": [{ "name": "spaces", "type": "int" }],
+    "returns": ["int"],
+    "doc": "for printing / string conversion: number of spaces to indent with. default is 0: no indent / no multi-line, returns old value"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "get_line",
+    "args": [{ "name": "prefix", "type": "string" }],
+    "returns": ["string"],
+    "doc": "reads a string from the console if possible (followed by enter). Prefix will be printed before the input"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "append",
+    "args": [
+      { "name": "xs", "type": "[any]" },
+      { "name": "ys", "type": "[any]" }
+    ],
+    "returns": ["[any]"],
+    "doc": "creates a new vector by appending all elements of 2 input vectors"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "append_into",
+    "args": [
+      { "name": "dest", "type": "[any]" },
+      { "name": "src", "type": "[any]" }
+    ],
+    "returns": ["[any]"],
+    "doc": "appends all elements of the second vector into the first"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "vector_capacity",
+    "args": [
+      { "name": "xs", "type": "[any]" },
+      { "name": "len", "type": "int" }
+    ],
+    "returns": ["[any]"],
+    "doc": "ensures the vector capacity (number of elements it can contain before re-allocating) is at least \"len\". Does not actually add (or remove) elements. This function is just for efficiency in the case the amount of \"push\" operations is known. returns original vector."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "length",
+    "args": [{ "name": "x", "type": "int" }],
+    "returns": ["int"],
+    "doc": "length of int (identity function, useful in combination with string/vector version)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "length",
+    "args": [{ "name": "s", "type": "string" }],
+    "returns": ["int"],
+    "doc": "length of string"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "length",
+    "args": [{ "name": "xs", "type": "[any]" }],
+    "returns": ["int"],
+    "doc": "length of vector"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "equal",
+    "args": [
+      { "name": "a", "type": "any" },
+      { "name": "b", "type": "any" }
+    ],
+    "returns": ["int"],
+    "doc": "structural equality between any two values (recurses into vectors/objects, unlike == which is only true for vectors/objects if they are the same object)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "push",
+    "args": [
+      { "name": "xs", "type": "[any]" },
+      { "name": "x", "type": "any" }
+    ],
+    "returns": ["[any]"],
+    "doc": "appends one element to a vector, returns existing vector"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "pop",
+    "args": [{ "name": "xs", "type": "[any]" }],
+    "returns": ["any"],
+    "doc": "removes last element from vector and returns it"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "top",
+    "args": [{ "name": "xs", "type": "[any]" }],
+    "returns": ["any"],
+    "doc": "returns last element from vector"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "insert",
+    "args": [
+      { "name": "xs", "type": "[any]" },
+      { "name": "i", "type": "int" },
+      { "name": "x", "type": "any" }
+    ],
+    "returns": ["[any]"],
+    "doc": "inserts a value into a vector at index i, existing elements shift upward, returns original vector"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "remove",
+    "args": [
+      { "name": "xs", "type": "[any]" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["any"],
+    "doc": "remove element at index i, following elements shift down. returns the element removed."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "remove_range",
+    "args": [
+      { "name": "xs", "type": "[any]" },
+      { "name": "i", "type": "int" },
+      { "name": "n", "type": "int" }
+    ],
+    "doc": "remove n elements at index i, following elements shift down."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "remove_obj",
+    "args": [
+      { "name": "xs", "type": "[any]" },
+      { "name": "obj", "type": "any" }
+    ],
+    "returns": ["any"],
+    "doc": "remove all elements equal to obj (==), returns obj."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "binary_search",
+    "args": [
+      { "name": "xs", "type": "[int]" },
+      { "name": "key", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "does a binary search for key in a sorted vector, returns as first return value how many matches were found, and as second the index in the array where the matches start (so you can read them, overwrite them, or remove them), or if none found, where the key could be inserted such that the vector stays sorted. This overload is for int vectors and keys."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "binary_search",
+    "args": [
+      { "name": "xs", "type": "[float]" },
+      { "name": "key", "type": "float" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "float version."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "binary_search",
+    "args": [
+      { "name": "xs", "type": "[string]" },
+      { "name": "key", "type": "string" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "string version."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "binary_search_object",
+    "args": [
+      { "name": "xs", "type": "[any]" },
+      { "name": "key", "type": "any" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "object version. compares by reference rather than contents."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "binary_search_first_field_string",
+    "args": [
+      { "name": "xs", "type": "[any]" },
+      { "name": "key", "type": "string" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "object version where key is the first field (must be string, runtime error if it is not)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "binary_search_first_field_object",
+    "args": [
+      { "name": "xs", "type": "[any]" },
+      { "name": "key", "type": "any" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "object version where key is the first field (must be object, runtime error if it is not)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "copy",
+    "args": [{ "name": "x", "type": "any" }],
+    "returns": ["any"],
+    "doc": "makes a shallow copy of any object/vector/string."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "deepcopy",
+    "args": [
+      { "name": "x", "type": "any" },
+      { "name": "depth", "type": "int" }
+    ],
+    "returns": ["any"],
+    "doc": "makes a deep copy of any object/vector/string. DAGs become trees, and cycles will clone until it reach the given depth. depth == 1 would do the same as copy."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "slice",
+    "args": [
+      { "name": "xs", "type": "[any]" },
+      { "name": "start", "type": "int" },
+      { "name": "size", "type": "int" }
+    ],
+    "returns": ["[any]"],
+    "doc": "returns a sub-vector of size elements from index start. size can be negative to indicate the rest of the vector."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "any",
+    "args": [{ "name": "xs", "type": "[any]" }],
+    "returns": ["int"],
+    "doc": "returns whether any elements of the vector are true values"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "any",
+    "args": [{ "name": "xs", "type": "vec_i" }],
+    "returns": ["int"],
+    "doc": "returns whether any elements of the numeric struct are true values"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "all",
+    "args": [{ "name": "xs", "type": "[any]" }],
+    "returns": ["int"],
+    "doc": "returns whether all elements of the vector are true values"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "all",
+    "args": [{ "name": "xs", "type": "vec_i" }],
+    "returns": ["int"],
+    "doc": "returns whether all elements of the numeric struct are true values"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "substring",
+    "args": [
+      { "name": "s", "type": "string" },
+      { "name": "start", "type": "int" },
+      { "name": "size", "type": "int" }
+    ],
+    "returns": ["string"],
+    "doc": "returns a substring of size characters from index start. size can be negative to indicate the rest of the string."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "find_string",
+    "args": [
+      { "name": "s", "type": "string" },
+      { "name": "substr", "type": "string" },
+      { "name": "offset", "type": "int", "default": "0" }
+    ],
+    "returns": ["int"],
+    "doc": "finds the index at which substr first appears, or -1 if none. optionally start at a position other than 0"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "find_string_reverse",
+    "args": [
+      { "name": "s", "type": "string" },
+      { "name": "substr", "type": "string" },
+      { "name": "offset", "type": "int", "default": "0" }
+    ],
+    "returns": ["int"],
+    "doc": "finds the index at which substr first appears when searching from the end, or -1 if none. optionally start at a position other than the end of the string"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "replace_string",
+    "args": [
+      { "name": "s", "type": "string" },
+      { "name": "a", "type": "string" },
+      { "name": "b", "type": "string" },
+      { "name": "count", "type": "int", "default": "0" }
+    ],
+    "returns": ["string"],
+    "doc": "returns a copy of s where all occurrences of a have been replaced with b. if a is empty, no replacements are made. if count is specified, makes at most that many replacements"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "string_to_int",
+    "args": [
+      { "name": "s", "type": "string" },
+      { "name": "base", "type": "int", "default": "0" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "converts a string to an int given the base (2..36, e.g. 16 for hex, default is 10).returns 0 if no numeric data could be parsed; second return value is true if allcharacters of the string were parsed."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "string_to_float",
+    "args": [{ "name": "s", "type": "string" }],
+    "returns": ["float", "int"],
+    "doc": "converts a string to a float. returns 0.0 if no numeric data could be parsed;second return value is true if all characters of the string were parsed."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "tokenize",
+    "args": [
+      { "name": "s", "type": "string" },
+      { "name": "delimiters", "type": "string" },
+      { "name": "whitespace", "type": "string" },
+      { "name": "dividing", "type": "int", "default": "0" }
+    ],
+    "returns": ["[string]"],
+    "doc": "splits a string into a vector of strings, by splitting into segments upon each dividing or terminating delimiter. Segments are stripped of leading and trailing whitespace. Example: \"; A ; B C;; \" becomes [ \"\", \"A\", \"B C\", \"\" ] with \";\" as delimiter and \" \" as whitespace. If dividing was true, there would be a 5th empty string element."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "unicode_to_string",
+    "args": [{ "name": "us", "type": "[int]" }],
+    "returns": ["string"],
+    "doc": "converts a vector of ints representing unicode values to a UTF-8 string."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "string_to_unicode",
+    "args": [{ "name": "s", "type": "string" }],
+    "returns": ["[int]", "int"],
+    "doc": "converts a UTF-8 string into a vector of unicode values. second return value is false if there was a decoding error, and the vector will only contain the characters up to the error"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "number_to_string",
+    "args": [
+      { "name": "number", "type": "int" },
+      { "name": "base", "type": "int" },
+      { "name": "minchars", "type": "int" }
+    ],
+    "returns": ["string"],
+    "doc": "converts the (unsigned version) of the input integer number to a string given the base (2..36, e.g. 16 for hex) and outputting a minimum of characters (padding with 0)."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "lowercase",
+    "args": [{ "name": "s", "type": "string" }],
+    "returns": ["string"],
+    "doc": "converts a UTF-8 string from any case to lower case, affecting only A-Z"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "uppercase",
+    "args": [{ "name": "s", "type": "string" }],
+    "returns": ["string"],
+    "doc": "converts a UTF-8 string from any case to upper case, affecting only a-z"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "escape_string",
+    "args": [
+      { "name": "s", "type": "string" },
+      { "name": "set", "type": "string" },
+      { "name": "prefix", "type": "string" },
+      { "name": "postfix", "type": "string" }
+    ],
+    "returns": ["string"],
+    "doc": "prefixes & postfixes any occurrences or characters in set in string s"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "concat_string",
+    "args": [
+      { "name": "v", "type": "[string]" },
+      { "name": "sep", "type": "string" }
+    ],
+    "returns": ["string"],
+    "doc": "concatenates all elements of the string vector, separated with sep."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "repeat_string",
+    "args": [
+      { "name": "s", "type": "string" },
+      { "name": "n", "type": "int" }
+    ],
+    "returns": ["string"],
+    "doc": "returns a string consisting of n copies of the input string."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "pow",
+    "args": [
+      { "name": "a", "type": "int" },
+      { "name": "b", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "a raised to the power of b, for integers, using exponentiation by squaring"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "pow",
+    "args": [
+      { "name": "a", "type": "float" },
+      { "name": "b", "type": "float" }
+    ],
+    "returns": ["float"],
+    "doc": "a raised to the power of b"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "pow",
+    "args": [
+      { "name": "a", "type": "vec_f" },
+      { "name": "b", "type": "float" }
+    ],
+    "returns": ["vec_f"],
+    "doc": "vector elements raised to the power of b"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "log",
+    "args": [{ "name": "a", "type": "float" }],
+    "returns": ["float"],
+    "doc": "natural logaritm of a"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "log2",
+    "args": [{ "name": "a", "type": "float" }],
+    "returns": ["float"],
+    "doc": "base 2 logaritm of a"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "sqrt",
+    "args": [{ "name": "f", "type": "float" }],
+    "returns": ["float"],
+    "doc": "square root"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "ceiling",
+    "args": [{ "name": "f", "type": "float" }],
+    "returns": ["int"],
+    "doc": "the nearest int >= f"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "ceiling",
+    "args": [{ "name": "v", "type": "vec_f" }],
+    "returns": ["vec_i"],
+    "doc": "the nearest ints >= each component of v"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "floor",
+    "args": [{ "name": "f", "type": "float" }],
+    "returns": ["int"],
+    "doc": "the nearest int <= f"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "floor",
+    "args": [{ "name": "v", "type": "vec_f" }],
+    "returns": ["vec_i"],
+    "doc": "the nearest ints <= each component of v"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "int",
+    "args": [{ "name": "f", "type": "float" }],
+    "returns": ["int"],
+    "doc": "converts a float to an int by dropping the fraction"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "int",
+    "args": [{ "name": "v", "type": "vec_f" }],
+    "returns": ["vec_i"],
+    "doc": "converts a vector of floats to ints by dropping the fraction"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "round",
+    "args": [{ "name": "f", "type": "float" }],
+    "returns": ["int"],
+    "doc": "converts a float to the closest int"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "round",
+    "args": [{ "name": "v", "type": "vec_f" }],
+    "returns": ["vec_i"],
+    "doc": "converts a vector of floats to the closest ints"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "fraction",
+    "args": [{ "name": "f", "type": "float" }],
+    "returns": ["float"],
+    "doc": "returns the fractional part of a float: short for f - floor(f)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "fraction",
+    "args": [{ "name": "v", "type": "vec_f" }],
+    "returns": ["vec_f"],
+    "doc": "returns the fractional part of a vector of floats"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "float",
+    "args": [{ "name": "i", "type": "int" }],
+    "returns": ["float"],
+    "doc": "converts an int to float"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "float",
+    "args": [{ "name": "v", "type": "vec_i" }],
+    "returns": ["vec_f"],
+    "doc": "converts a vector of ints to floats"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "sin",
+    "args": [{ "name": "angle", "type": "float" }],
+    "returns": ["float"],
+    "doc": "the y coordinate of the normalized vector indicated by angle (in degrees)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "sin",
+    "args": [{ "name": "angle", "type": "vec_f" }],
+    "returns": ["vec_f"],
+    "doc": "the y coordinates of the normalized vector indicated by the angles (in degrees)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "cos",
+    "args": [{ "name": "angle", "type": "float" }],
+    "returns": ["float"],
+    "doc": "the x coordinate of the normalized vector indicated by angle (in degrees)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "cos",
+    "args": [{ "name": "angle", "type": "vec_f" }],
+    "returns": ["vec_f"],
+    "doc": "the x coordinates of the normalized vector indicated by the angles (in degrees)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "tan",
+    "args": [{ "name": "angle", "type": "float" }],
+    "returns": ["float"],
+    "doc": "the tangent of an angle (in degrees)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "tan",
+    "args": [{ "name": "angle", "type": "vec_f" }],
+    "returns": ["vec_f"],
+    "doc": "the tangents of the angles (in degrees)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "sincos",
+    "args": [{ "name": "angle", "type": "float" }],
+    "returns": ["float2"],
+    "doc": "the normalized vector indicated by angle (in degrees), same as xy { cos(angle), sin(angle) }"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "asin",
+    "args": [{ "name": "y", "type": "float" }],
+    "returns": ["float"],
+    "doc": "the angle (in degrees) indicated by the y coordinate projected to the unit circle"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "acos",
+    "args": [{ "name": "x", "type": "float" }],
+    "returns": ["float"],
+    "doc": "the angle (in degrees) indicated by the x coordinate projected to the unit circle"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "atan",
+    "args": [{ "name": "x", "type": "float" }],
+    "returns": ["float"],
+    "doc": "the angle (in degrees) indicated by the y coordinate of the tangent projected to the unit circle"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "radians",
+    "args": [{ "name": "angle", "type": "float" }],
+    "returns": ["float"],
+    "doc": "converts an angle in degrees to radians"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "degrees",
+    "args": [{ "name": "angle", "type": "float" }],
+    "returns": ["float"],
+    "doc": "converts an angle in radians to degrees"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "atan2",
+    "args": [{ "name": "vec", "type": "float2" }],
+    "returns": ["float"],
+    "doc": "the angle (in degrees) corresponding to a normalized 2D vector"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "radians",
+    "args": [{ "name": "angle", "type": "float" }],
+    "returns": ["float"],
+    "doc": "converts an angle in degrees to radians"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "degrees",
+    "args": [{ "name": "angle", "type": "float" }],
+    "returns": ["float"],
+    "doc": "converts an angle in radians to degrees"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "normalize",
+    "args": [{ "name": "vec", "type": "vec_f" }],
+    "returns": ["vec_f"],
+    "doc": "returns a vector of unit length"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "dot",
+    "args": [
+      { "name": "a", "type": "vec_f" },
+      { "name": "b", "type": "vec_f" }
+    ],
+    "returns": ["float"],
+    "doc": "the length of vector a when projected onto b (or vice versa)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "magnitude",
+    "args": [{ "name": "v", "type": "vec_f" }],
+    "returns": ["float"],
+    "doc": "the geometric length of a vector"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "magnitude_squared",
+    "args": [{ "name": "v", "type": "vec_f" }],
+    "returns": ["float"],
+    "doc": "the geometric length of a vector squared"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "magnitude_squared",
+    "args": [{ "name": "v", "type": "vec_i" }],
+    "returns": ["int"],
+    "doc": "the geometric length of a vector squared"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "manhattan",
+    "args": [{ "name": "v", "type": "vec_i" }],
+    "returns": ["int"],
+    "doc": "the manhattan distance of a vector"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "cross",
+    "args": [
+      { "name": "a", "type": "float3" },
+      { "name": "b", "type": "float3" }
+    ],
+    "returns": ["float3"],
+    "doc": "a perpendicular vector to the 2D plane defined by a and b (swap a and b for its inverse)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "volume",
+    "args": [{ "name": "v", "type": "vec_f" }],
+    "returns": ["float"],
+    "doc": "the volume of the area spanned by the vector"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "volume",
+    "args": [{ "name": "v", "type": "vec_i" }],
+    "returns": ["int"],
+    "doc": "the volume of the area spanned by the vector"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "rnd",
+    "args": [{ "name": "max", "type": "int" }],
+    "returns": ["int"],
+    "doc": "a random value [0..max)."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "rnd",
+    "args": [{ "name": "max", "type": "vec_i" }],
+    "returns": ["vec_i"],
+    "doc": "a random vector within the range of an input vector."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "rnd_float",
+    "args": [],
+    "returns": ["float"],
+    "doc": "a random float [0..1)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "rnd_gaussian",
+    "args": [],
+    "returns": ["float"],
+    "doc": "a random float in a gaussian distribution with mean 0 and stddev 1"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "rnd_seed",
+    "args": [{ "name": "seed", "type": "int" }],
+    "doc": "explicitly set a random seed for reproducable randomness"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "rndm",
+    "args": [{ "name": "max", "type": "int" }],
+    "returns": ["int"],
+    "doc": "deprecated: old mersenne twister version of the above for backwards compat."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "rndm_seed",
+    "args": [{ "name": "seed", "type": "int" }],
+    "doc": "deprecated: old mersenne twister version of the above for backwards compat."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "div",
+    "args": [
+      { "name": "a", "type": "int" },
+      { "name": "b", "type": "int" }
+    ],
+    "returns": ["float"],
+    "doc": "forces two ints to be divided as floats"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "clamp",
+    "args": [
+      { "name": "x", "type": "int" },
+      { "name": "min", "type": "int" },
+      { "name": "max", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "forces an integer to be in the range between min and max (inclusive)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "clamp",
+    "args": [
+      { "name": "x", "type": "float" },
+      { "name": "min", "type": "float" },
+      { "name": "max", "type": "float" }
+    ],
+    "returns": ["float"],
+    "doc": "forces a float to be in the range between min and max (inclusive)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "clamp",
+    "args": [
+      { "name": "x", "type": "vec_i" },
+      { "name": "min", "type": "vec_i" },
+      { "name": "max", "type": "vec_i" }
+    ],
+    "returns": ["vec_i"],
+    "doc": "forces an integer vector to be in the range between min and max (inclusive)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "clamp",
+    "args": [
+      { "name": "x", "type": "vec_f" },
+      { "name": "min", "type": "vec_f" },
+      { "name": "max", "type": "vec_f" }
+    ],
+    "returns": ["vec_f"],
+    "doc": "forces a float vector to be in the range between min and max (inclusive)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "in_range",
+    "args": [
+      { "name": "x", "type": "int" },
+      { "name": "range", "type": "int" },
+      { "name": "bias", "type": "int", "default": "0" }
+    ],
+    "returns": ["int"],
+    "doc": "checks if an integer is >= bias and < bias + range. Bias defaults to 0."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "in_range",
+    "args": [
+      { "name": "x", "type": "float" },
+      { "name": "range", "type": "float" },
+      { "name": "bias", "type": "float", "default": "0.000000" }
+    ],
+    "returns": ["int"],
+    "doc": "checks if a float is >= bias and < bias + range. Bias defaults to 0."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "in_range",
+    "args": [
+      { "name": "x", "type": "int2" },
+      { "name": "range", "type": "int2" },
+      { "name": "bias", "type": "int2", "default": "nil" }
+    ],
+    "returns": ["int"],
+    "doc": "checks if a 2d integer vector is >= bias and < bias + range. Bias defaults to 0."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "in_range",
+    "args": [
+      { "name": "x", "type": "int3" },
+      { "name": "range", "type": "int3" },
+      { "name": "bias", "type": "int3", "default": "nil" }
+    ],
+    "returns": ["int"],
+    "doc": "checks if a 3d integer vector is >= bias and < bias + range. Bias defaults to 0."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "in_range",
+    "args": [
+      { "name": "x", "type": "float2" },
+      { "name": "range", "type": "float2" },
+      { "name": "bias", "type": "float2", "default": "nil" }
+    ],
+    "returns": ["int"],
+    "doc": "checks if a 2d float vector is >= bias and < bias + range. Bias defaults to 0."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "in_range",
+    "args": [
+      { "name": "x", "type": "float3" },
+      { "name": "range", "type": "float3" },
+      { "name": "bias", "type": "float3", "default": "nil" }
+    ],
+    "returns": ["int"],
+    "doc": "checks if a 2d float vector is >= bias and < bias + range. Bias defaults to 0."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "abs",
+    "args": [{ "name": "x", "type": "int" }],
+    "returns": ["int"],
+    "doc": "absolute value of an integer"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "abs",
+    "args": [{ "name": "x", "type": "float" }],
+    "returns": ["float"],
+    "doc": "absolute value of a float"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "abs",
+    "args": [{ "name": "x", "type": "vec_i" }],
+    "returns": ["vec_i"],
+    "doc": "absolute value of an int vector"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "abs",
+    "args": [{ "name": "x", "type": "vec_f" }],
+    "returns": ["vec_f"],
+    "doc": "absolute value of a float vector"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "sign",
+    "args": [{ "name": "x", "type": "int" }],
+    "returns": ["int"],
+    "doc": "sign (-1, 0, 1) of an integer"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "sign",
+    "args": [{ "name": "x", "type": "float" }],
+    "returns": ["int"],
+    "doc": "sign (-1, 0, 1) of a float"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "sign",
+    "args": [{ "name": "x", "type": "vec_i" }],
+    "returns": ["vec_i"],
+    "doc": "signs of an int vector"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "sign",
+    "args": [{ "name": "x", "type": "vec_f" }],
+    "returns": ["vec_i"],
+    "doc": "signs of a float vector"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "min",
+    "args": [
+      { "name": "x", "type": "int" },
+      { "name": "y", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "smallest of 2 integers."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "min",
+    "args": [
+      { "name": "x", "type": "float" },
+      { "name": "y", "type": "float" }
+    ],
+    "returns": ["float"],
+    "doc": "smallest of 2 floats."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "min",
+    "args": [
+      { "name": "x", "type": "vec_i" },
+      { "name": "y", "type": "vec_i" }
+    ],
+    "returns": ["vec_i"],
+    "doc": "smallest components of 2 int vectors"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "min",
+    "args": [
+      { "name": "x", "type": "vec_f" },
+      { "name": "y", "type": "vec_f" }
+    ],
+    "returns": ["vec_f"],
+    "doc": "smallest components of 2 float vectors"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "min",
+    "args": [{ "name": "v", "type": "vec_i" }],
+    "returns": ["int"],
+    "doc": "smallest component of a int vector."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "min",
+    "args": [{ "name": "v", "type": "vec_f" }],
+    "returns": ["float"],
+    "doc": "smallest component of a float vector."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "min",
+    "args": [{ "name": "v", "type": "[int]" }],
+    "returns": ["int"],
+    "doc": "smallest component of a int vector, or INT_MAX if length 0."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "min",
+    "args": [{ "name": "v", "type": "[float]" }],
+    "returns": ["float"],
+    "doc": "smallest component of a float vector, or FLT_MAX if length 0."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "max",
+    "args": [
+      { "name": "x", "type": "int" },
+      { "name": "y", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "largest of 2 integers."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "max",
+    "args": [
+      { "name": "x", "type": "float" },
+      { "name": "y", "type": "float" }
+    ],
+    "returns": ["float"],
+    "doc": "largest of 2 floats."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "max",
+    "args": [
+      { "name": "x", "type": "vec_i" },
+      { "name": "y", "type": "vec_i" }
+    ],
+    "returns": ["vec_i"],
+    "doc": "largest components of 2 int vectors"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "max",
+    "args": [
+      { "name": "x", "type": "vec_f" },
+      { "name": "y", "type": "vec_f" }
+    ],
+    "returns": ["vec_f"],
+    "doc": "largest components of 2 float vectors"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "max",
+    "args": [{ "name": "v", "type": "vec_i" }],
+    "returns": ["int"],
+    "doc": "largest component of a int vector."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "max",
+    "args": [{ "name": "v", "type": "vec_f" }],
+    "returns": ["float"],
+    "doc": "largest component of a float vector."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "max",
+    "args": [{ "name": "v", "type": "[int]" }],
+    "returns": ["int"],
+    "doc": "largest component of a int vector, or INT_MIN if length 0."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "max",
+    "args": [{ "name": "v", "type": "[float]" }],
+    "returns": ["float"],
+    "doc": "largest component of a float vector, or FLT_MIN if length 0."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "popcount",
+    "args": [{ "name": "x", "type": "int" }],
+    "returns": ["int"],
+    "doc": "number of bits set in an integer"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "lerp",
+    "args": [
+      { "name": "x", "type": "float" },
+      { "name": "y", "type": "float" },
+      { "name": "f", "type": "float" }
+    ],
+    "returns": ["float"],
+    "doc": "linearly interpolates between x and y with factor f [0..1]"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "lerp",
+    "args": [
+      { "name": "a", "type": "vec_f" },
+      { "name": "b", "type": "vec_f" },
+      { "name": "f", "type": "float" }
+    ],
+    "returns": ["vec_f"],
+    "doc": "linearly interpolates between a and b vectors with factor f [0..1]"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "spherical_lerp",
+    "args": [
+      { "name": "a", "type": "float4" },
+      { "name": "b", "type": "float4" },
+      { "name": "f", "type": "float" }
+    ],
+    "returns": ["float4"],
+    "doc": "spherically interpolates between a and b quaternions with factor f [0..1]"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "smoothmin",
+    "args": [
+      { "name": "x", "type": "float" },
+      { "name": "y", "type": "float" },
+      { "name": "k", "type": "float" }
+    ],
+    "returns": ["float"],
+    "doc": "k is the influence range"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "smoothstep",
+    "args": [{ "name": "x", "type": "float" }],
+    "returns": ["float"],
+    "doc": "input must be in range 0..1, https://en.wikipedia.org/wiki/Smoothstep"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "smoothstep",
+    "args": [
+      { "name": "a", "type": "float" },
+      { "name": "b", "type": "float" },
+      { "name": "f", "type": "float" }
+    ],
+    "returns": ["float"],
+    "doc": "hermite interpolation between a and b by f [0..1], https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "smootherstep",
+    "args": [{ "name": "x", "type": "float" }],
+    "returns": ["float"],
+    "doc": "input must be in range 0..1, https://en.wikipedia.org/wiki/Smoothstep"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "cardinal_spline",
+    "args": [
+      { "name": "z", "type": "vec_f" },
+      { "name": "a", "type": "vec_f" },
+      { "name": "b", "type": "vec_f" },
+      { "name": "c", "type": "vec_f" },
+      { "name": "f", "type": "float" },
+      { "name": "tension", "type": "float" }
+    ],
+    "returns": ["vec_f"],
+    "doc": "computes the position between a and b with factor f [0..1], using z (before a) and c (after b) to form a cardinal spline (tension at 0.5 is a good default)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "line_intersect",
+    "args": [
+      { "name": "line1a", "type": "float2" },
+      { "name": "line1b", "type": "float2" },
+      { "name": "line2a", "type": "float2" },
+      { "name": "line2b", "type": "float2" }
+    ],
+    "returns": ["int", "float2"],
+    "doc": "computes if there is an intersection point between 2 line segments, with the point as second return value"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "circles_within_range",
+    "args": [
+      { "name": "dist", "type": "float" },
+      { "name": "positions", "type": "[float2]" },
+      { "name": "radiuses", "type": "[float]" },
+      { "name": "positions2", "type": "[float2]" },
+      { "name": "radiuses2", "type": "[float]" },
+      { "name": "gridsize", "type": "int2" }
+    ],
+    "returns": ["[[int]]"],
+    "doc": "Given a vector of 2D positions (and same size vectors of radiuses), returns a vector of vectors of indices (to the second set of positions and radiuses) of the circles that are within dist of eachothers radius. If the second set are [], the first set is used for both (and the self element is excluded). gridsize optionally specifies the size of the grid to use for accellerated lookup of nearby points. This is essential for the algorithm to be fast, too big or too small can cause slowdown. Omit it, and a heuristic will be chosen for you, which is currently sqrt(num_circles) * 2 along each dimension, e.g. 100 elements would use a 20x20 grid. Efficiency wise this algorithm is fastest if there is not too much variance in the radiuses of the second set and/or the second set has smaller radiuses than the first."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "wave_function_collapse",
+    "args": [
+      { "name": "tilemap", "type": "[string]" },
+      { "name": "size", "type": "int2" }
+    ],
+    "returns": ["[string]", "int"],
+    "doc": "returns a tilemap of given size modelled after the possible shapes in the input tilemap. Tilemap should consist of chars in the 0..127 range. Second return value the number of failed neighbor matches, this should ideally be 0, but can be non-0 for larger maps. Simply call this function repeatedly until it is 0"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "hash",
+    "args": [{ "name": "x", "type": "int" }],
+    "returns": ["int"],
+    "doc": "hashes an int value into a positive int; may be the identity function"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "hash",
+    "args": [{ "name": "x", "type": "any" }],
+    "returns": ["int"],
+    "doc": "hashes any ref value into a positive int"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "hash",
+    "args": [{ "name": "x", "type": "function" }],
+    "returns": ["int"],
+    "doc": "hashes a function value into a positive int"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "hash",
+    "args": [{ "name": "x", "type": "float" }],
+    "returns": ["int"],
+    "doc": "hashes a float value into a positive int"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "hash",
+    "args": [{ "name": "v", "type": "vec_i" }],
+    "returns": ["int"],
+    "doc": "hashes a int vector into a positive int"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "hash",
+    "args": [{ "name": "v", "type": "vec_f" }],
+    "returns": ["int"],
+    "doc": "hashes a float vector into a positive int"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "call_function_value",
+    "args": [{ "name": "x", "type": "function" }],
+    "doc": "calls a void / no args function value.. you shouldn't need to use this, it is a demonstration of how native code can call back into Lobster"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "type_id",
+    "args": [{ "name": "ref", "type": "any" }],
+    "returns": ["int"],
+    "doc": "int uniquely representing the type of the given reference (object/vector/string/resource). this is the same as typeof, except dynamic (accounts for subtypes of the static type). useful to compare the types of objects quickly. specializations of a generic type will result in different ids."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "type_string",
+    "args": [{ "name": "ref", "type": "any" }],
+    "returns": ["string"],
+    "doc": "string representing the type of the given reference (object/vector/string/resource)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "type_element_string",
+    "args": [{ "name": "v", "type": "[any]" }],
+    "returns": ["string"],
+    "doc": "string representing the type of the elements of a vector"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "type_field_count",
+    "args": [{ "name": "obj", "type": "any" }],
+    "returns": ["int"],
+    "doc": "number of fields in an object, or 0 for other reference types"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "type_field_string",
+    "args": [
+      { "name": "obj", "type": "any" },
+      { "name": "idx", "type": "int" }
+    ],
+    "returns": ["string"],
+    "doc": "string representing the type of a field in an object, or empty for other reference types"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "type_field_name",
+    "args": [
+      { "name": "obj", "type": "any" },
+      { "name": "idx", "type": "int" }
+    ],
+    "returns": ["string"],
+    "doc": "name of a field in an object, or empty for other reference types"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "type_field_value",
+    "args": [
+      { "name": "obj", "type": "any" },
+      { "name": "idx", "type": "int" }
+    ],
+    "returns": ["string"],
+    "doc": "string representing the value of a field in an object, or empty for other reference types"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "program_name",
+    "args": [],
+    "returns": ["string"],
+    "doc": "returns the name of the main program (e.g. \"foo.lobster\"), \"\" if running from lpak."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "vm_compiled_mode",
+    "args": [],
+    "returns": ["int"],
+    "doc": "returns if the VM is running in compiled mode (Lobster -> C++), or false for JIT."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "seconds_elapsed",
+    "args": [],
+    "returns": ["float"],
+    "doc": "seconds since program start as a float, unlike gl.time() it is calculated every time it is called"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "date_time",
+    "args": [{ "name": "utc", "type": "bool", "default": "false" }],
+    "returns": ["[int]"],
+    "doc": "a vector of integers representing date & time information (index with date_time.lobster). By default returns local time, pass true for UTC instead."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "date_time_string",
+    "args": [{ "name": "utc", "type": "bool", "default": "false" }],
+    "returns": ["string"],
+    "doc": "a string representing date & time information in the format: 'Www Mmm dd hh:mm:ss yyyy'. By default returns local time, pass true for UTC instead."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "date_time_string_format",
+    "args": [
+      { "name": "format", "type": "string" },
+      { "name": "utc", "type": "bool", "default": "false" }
+    ],
+    "returns": ["string"],
+    "doc": "a string representing date & time information using a formatting string according to https://en.cppreference.com/w/cpp/chrono/c/strftime, for example \"%Y_%m_%d_%H_%M_%S\". By default returns local time, pass true for UTC instead."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "date_time_build_info",
+    "args": [],
+    "returns": ["string"],
+    "doc": "a string representing information from when this program was compiled."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "assert",
+    "args": [{ "name": "condition", "type": "any" }],
+    "returns": ["any"],
+    "doc": "halts the program with an assertion failure if passed false. returns its input. runtime errors like this will contain a stack trace if --runtime-stack-trace is on."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "get_stack_trace",
+    "args": [],
+    "returns": ["string"],
+    "doc": "gets a stack trace of the current location of the program (needs --runtime-stack-trace) without actually stopping the program."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "get_memory_usage",
+    "args": [{ "name": "n", "type": "int" }],
+    "returns": ["string"],
+    "doc": "gets a text showing the top n object types that are using the most memory."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "pass",
+    "args": [],
+    "doc": "does nothing. useful for empty bodies of control structures."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "trace_bytecode",
+    "args": [{ "name": "mode", "type": "int" }],
+    "doc": "tracing shows each bytecode instruction as it is being executed, not very useful unless you are trying to isolate a compiler bug. Mode is off(0), on(1) or tail only (2)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "reference_count",
+    "args": [{ "name": "val", "type": "any" }],
+    "returns": ["int"],
+    "doc": "get the reference count of any value. for compiler debugging, mostly"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "set_console",
+    "args": [{ "name": "on", "type": "bool" }],
+    "doc": "lets you turn on/off the console window (on Windows)"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "set_output_level",
+    "args": [{ "name": "level", "type": "int" }],
+    "doc": "0 = debug, 1 = verbose, 2 = warn (default), 3 = error, 4 = program"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "set_exit_code",
+    "args": [{ "name": "code", "type": "int" }],
+    "doc": "this will be returned when run as a console application"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "command_line_arguments",
+    "args": [],
+    "returns": ["[string]"],
+    "doc": ""
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "thread_information",
+    "args": [],
+    "returns": ["int", "int"],
+    "doc": "returns the number of hardware threads, and the number of cores"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "is_worker_thread",
+    "args": [],
+    "returns": ["int"],
+    "doc": "whether the current thread is a worker thread"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "start_worker_threads",
+    "args": [{ "name": "numthreads", "type": "int" }],
+    "doc": "launch worker threads"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "stop_worker_threads",
+    "args": [],
+    "doc": "only needs to be called if you want to stop the worker threads before the end of the program, or if you want to call start_worker_threads again. workers_alive will become false inside the workers, which should then exit."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "workers_alive",
+    "args": [],
+    "returns": ["int"],
+    "doc": "whether workers should continue doing work. returns false after stop_worker_threads() has been called."
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "thread_write",
+    "args": [{ "name": "struct", "type": "any" }],
+    "doc": "put this struct in the thread queue"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "thread_read",
+    "args": [{ "name": "type", "type": "typeid(any)" }],
+    "returns": ["any?"],
+    "doc": "get a struct from the thread queue. pass the typeof struct. blocks if no suchstructs available. returns struct, or nil if stop_worker_threads() was called"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "thread_check",
+    "args": [{ "name": "type", "type": "typeid(any)" }],
+    "returns": ["any?"],
+    "doc": "tests if a struct is available on the thread queue. pass the typeof struct. returns struct, or nil if none available, or if stop_worker_threads() was called"
+  },
+  {
+    "subsystem": "builtin",
+    "funcname": "crash_test_cpp_nullptr_exception",
+    "args": [],
+    "doc": "only for testing crash dump functionality, don't use! :)"
+  },
+  {
+    "subsystem": "compiler",
+    "funcname": "compile_run_code",
+    "args": [
+      { "name": "code", "type": "string" },
+      { "name": "args", "type": "[string]" }
+    ],
+    "returns": ["string", "string?"],
+    "doc": "compiles and runs lobster source, sandboxed from the current program (in its own VM). the argument is a string of code. returns the return value of the program as a string, with an error string as second return value, or nil if none. using parse_data(), two program can communicate more complex data structures even if they don't have the same version of struct definitions."
+  },
+  {
+    "subsystem": "compiler",
+    "funcname": "compile_run_file",
+    "args": [
+      { "name": "filename", "type": "string" },
+      { "name": "args", "type": "[string]" }
+    ],
+    "returns": ["string", "string?"],
+    "doc": "same as compile_run_code(), only now you pass a filename."
+  },
+  {
+    "subsystem": "file",
+    "funcname": "scan_folder",
+    "args": [
+      { "name": "folder", "type": "string" },
+      { "name": "rel", "type": "bool", "default": "false" }
+    ],
+    "returns": ["[string]?", "[int]?"],
+    "doc": "returns two vectors representing all elements in a folder, the first vector containing all names, the second vector containing sizes in bytes (or -1 if a directory). set rel use a relative path, default is absolute. Returns nil if folder couldn't be scanned."
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_file",
+    "args": [
+      { "name": "file", "type": "string" },
+      { "name": "textmode", "type": "int", "default": "0" }
+    ],
+    "returns": ["string?"],
+    "doc": "returns the contents of a file as a string, or nil if the file can't be found. you may use either \\ or / as path separators"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "write_file",
+    "args": [
+      { "name": "file", "type": "string" },
+      { "name": "contents", "type": "string" },
+      { "name": "textmode", "type": "int", "default": "0" },
+      { "name": "absolute_path", "type": "int", "default": "0" }
+    ],
+    "returns": ["int"],
+    "doc": "creates a file with the contents of a string, returns false if writing wasn't possible"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "rename_file",
+    "args": [
+      { "name": "old_file", "type": "string" },
+      { "name": "new_file", "type": "string" }
+    ],
+    "returns": ["int"],
+    "doc": "renames a file, returns false if it wasn't possible"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "delete_file",
+    "args": [{ "name": "file", "type": "string" }],
+    "returns": ["int"],
+    "doc": "deletes a file, returns false if it wasn't possible. Will search in all import dirs."
+  },
+  {
+    "subsystem": "file",
+    "funcname": "exists_file",
+    "args": [{ "name": "file", "type": "string" }],
+    "returns": ["int"],
+    "doc": "checks wether a file exists."
+  },
+  {
+    "subsystem": "file",
+    "funcname": "launch_subprocess",
+    "args": [
+      { "name": "commandline", "type": "[string]" },
+      { "name": "stdin", "type": "string", "default": "nil" }
+    ],
+    "returns": ["int", "string"],
+    "doc": "launches a sub process, with optionally a stdin for the process, and returns its return code (or -1 if it couldn't launch at all), and any output"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "vector_to_buffer",
+    "args": [
+      { "name": "vec", "type": "[any]" },
+      { "name": "width", "type": "int", "default": "4" }
+    ],
+    "returns": ["string"],
+    "doc": "converts a vector of ints/floats (or structs of them) to a buffer, where each scalar is written with \"width\" bytes (1/2/4/8, default 4). Returns nil if the type couldn't be converted. Uses native endianness."
+  },
+  {
+    "subsystem": "file",
+    "funcname": "ensure_size",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "size", "type": "int" },
+      { "name": "char", "type": "int" },
+      { "name": "extra", "type": "int", "default": "0" }
+    ],
+    "returns": ["string"],
+    "doc": "ensures a string is at least size characters. if it is, just returns the existing string, otherwise returns a new string of that size (with optionally extra bytes added), with any new characters set to char. You can specify a negative size to mean relative to the end, i.e. new characters will be added at the start. "
+  },
+  {
+    "subsystem": "file",
+    "funcname": "write_int64_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" },
+      { "name": "val", "type": "int" }
+    ],
+    "returns": ["string", "int"],
+    "doc": "writes a value as little endian to a string at location i. Uses ensure_size to make the string twice as long (with extra 0 bytes) if no space. Returns new string if resized, and the index of the location right after where the value was written. The _back version writes relative to the end (and writes before the index)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "write_int32_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" },
+      { "name": "val", "type": "int" }
+    ],
+    "returns": ["string", "int"],
+    "doc": "(see write_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "write_int16_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" },
+      { "name": "val", "type": "int" }
+    ],
+    "returns": ["string", "int"],
+    "doc": "(see write_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "write_int8_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" },
+      { "name": "val", "type": "int" }
+    ],
+    "returns": ["string", "int"],
+    "doc": "(see write_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "write_float64_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" },
+      { "name": "val", "type": "float" }
+    ],
+    "returns": ["string", "int"],
+    "doc": "(see write_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "write_float32_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" },
+      { "name": "val", "type": "float" }
+    ],
+    "returns": ["string", "int"],
+    "doc": "(see write_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "write_int64_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" },
+      { "name": "val", "type": "int" }
+    ],
+    "returns": ["string", "int"],
+    "doc": "(see write_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "write_int32_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" },
+      { "name": "val", "type": "int" }
+    ],
+    "returns": ["string", "int"],
+    "doc": "(see write_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "write_int16_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" },
+      { "name": "val", "type": "int" }
+    ],
+    "returns": ["string", "int"],
+    "doc": "(see write_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "write_int8_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" },
+      { "name": "val", "type": "int" }
+    ],
+    "returns": ["string", "int"],
+    "doc": "(see write_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "write_float64_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" },
+      { "name": "val", "type": "float" }
+    ],
+    "returns": ["string", "int"],
+    "doc": "(see write_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "write_float32_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" },
+      { "name": "val", "type": "float" }
+    ],
+    "returns": ["string", "int"],
+    "doc": "(see write_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "write_substring",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" },
+      { "name": "substr", "type": "string" },
+      { "name": "nullterm", "type": "int" }
+    ],
+    "returns": ["string", "int"],
+    "doc": "writes a substring into another string at i (see also write_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "write_substring_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" },
+      { "name": "substr", "type": "string" },
+      { "name": "nullterm", "type": "int" }
+    ],
+    "returns": ["string", "int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "file",
+    "funcname": "compare_substring",
+    "args": [
+      { "name": "string_a", "type": "string" },
+      { "name": "i_a", "type": "int" },
+      { "name": "string_b", "type": "string" },
+      { "name": "i_b", "type": "int" },
+      { "name": "len", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "returns if the two substrings are equal (0), or a < b (-1) or a > b (1)."
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_int64_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "reads a value as little endian from a string at location i. The value must be within bounds of the string. Returns the value, and the index of the location right after where the value was read. The _back version reads relative to the end (and reads before the index)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_int32_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_int16_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_int8_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_uint64_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "reads a value as little endian from a string at location i. The value must be within bounds of the string. Returns the value, and the index of the location right after where the value was read. The _back version reads relative to the end (and reads before the index)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_uint32_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_uint16_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_uint8_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_float64_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["float", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_float32_le",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["float", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_int64_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_int32_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_int16_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_int8_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_uint64_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_uint32_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_uint16_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_uint8_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_float64_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["float", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "file",
+    "funcname": "read_float32_le_back",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["float", "int"],
+    "doc": "(see read_int64_le)"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_int64",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" },
+      { "name": "def", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "reads a flatbuffers field from a string at table location tablei, field vtable offset vo, and default value def. The value must be within bounds of the string. Returns the value (or default if the field was not present)"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_int32",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" },
+      { "name": "def", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "(see flatbuffers.field_int64)"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_int16",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" },
+      { "name": "def", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "(see flatbuffers.field_int64)"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_int8",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" },
+      { "name": "def", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "(see flatbuffers.field_int64)"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_uint64",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" },
+      { "name": "def", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "reads a flatbuffers field from a string at table location tablei, field vtable offset vo, and default value def. The value must be within bounds of the string. Returns the value (or default if the field was not present)"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_uint32",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" },
+      { "name": "def", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "(see flatbuffers.field_int64)"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_uint16",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" },
+      { "name": "def", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "(see flatbuffers.field_int64)"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_uint8",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" },
+      { "name": "def", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "(see flatbuffers.field_int64)"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_float64",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" },
+      { "name": "def", "type": "float" }
+    ],
+    "returns": ["float"],
+    "doc": "(see flatbuffers.field_int64)"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_float32",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" },
+      { "name": "def", "type": "float" }
+    ],
+    "returns": ["float"],
+    "doc": "(see flatbuffers.field_int64)"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_string",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" }
+    ],
+    "returns": ["string"],
+    "doc": "reads a flatbuffer string field, returns \"\" if not present"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_vector_len",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "reads a flatbuffer vector field length, or 0 if not present"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_vector",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "returns a flatbuffer vector field element start, or 0 if not present"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_table",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "returns a flatbuffer table field start, or 0 if not present"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_struct",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "returns a flatbuffer struct field start, or 0 if not present"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.field_present",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "tablei", "type": "int" },
+      { "name": "vo", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "returns if a flatbuffer field is present (unequal to default)"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.indirect",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "index", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "returns a flatbuffer offset at index relative to itself"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.string",
+    "args": [
+      { "name": "string", "type": "string" },
+      { "name": "index", "type": "int" }
+    ],
+    "returns": ["string"],
+    "doc": "returns a flatbuffer string whose offset is at given index"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.binary_to_json",
+    "args": [
+      { "name": "schemas", "type": "string" },
+      { "name": "binary", "type": "string" },
+      { "name": "includedirs", "type": "[string]" }
+    ],
+    "returns": ["string", "string?"],
+    "doc": "returns a JSON string generated from the given binary and corresponding schema.if there was an error parsing the schema, the error will be in the second returnvalue, or nil for no error"
+  },
+  {
+    "subsystem": "flatbuffers",
+    "funcname": "flatbuffers.json_to_binary",
+    "args": [
+      { "name": "schema", "type": "string" },
+      { "name": "json", "type": "string" },
+      { "name": "includedirs", "type": "[string]" }
+    ],
+    "returns": ["string", "string?"],
+    "doc": "returns a binary flatbuffer generated from the given json and corresponding schema.if there was an error parsing the schema, the error will be in the second returnvalue, or nil for no error"
+  },
+  {
+    "subsystem": "parsedata",
+    "funcname": "parse_data",
+    "args": [
+      { "name": "typeid", "type": "typeid(any)" },
+      { "name": "stringdata", "type": "string" }
+    ],
+    "returns": ["any?", "string?"],
+    "doc": "parses a string containing a data structure in lobster syntax (what you get if you convert an arbitrary data structure to a string) back into a data structure. supports int/float/string/vector and classes. classes will be forced to be compatible with their  current definitions, i.e. too many elements will be truncated, missing elements will be set to 0/nil if possible. useful for simple file formats. returns the value and an error string as second return value (or nil if no error)"
+  },
+  {
+    "subsystem": "parsedata",
+    "funcname": "flexbuffers_value_to_binary",
+    "args": [
+      { "name": "val", "type": "any" },
+      { "name": "max_nesting", "type": "int", "default": "0" },
+      { "name": "cycle_detection", "type": "bool", "default": "false" }
+    ],
+    "returns": ["string"],
+    "doc": "turns any reference value into a flexbuffer. max_nesting defaults to 100. cycle_detection is by default off (expensive)"
+  },
+  {
+    "subsystem": "parsedata",
+    "funcname": "flexbuffers_binary_to_value",
+    "args": [
+      { "name": "typeid", "type": "typeid(any)" },
+      { "name": "flex", "type": "string" }
+    ],
+    "returns": ["any?", "string?"],
+    "doc": "turns a flexbuffer into a value"
+  },
+  {
+    "subsystem": "parsedata",
+    "funcname": "flexbuffers_binary_to_json",
+    "args": [
+      { "name": "flex", "type": "string" },
+      { "name": "field_quotes", "type": "bool" },
+      { "name": "indent_string", "type": "string" }
+    ],
+    "returns": ["string?", "string?"],
+    "doc": "turns a flexbuffer into a JSON string. If indent_string is empty, will be a single line string"
+  },
+  {
+    "subsystem": "parsedata",
+    "funcname": "flexbuffers_json_to_binary",
+    "args": [
+      { "name": "json", "type": "string" },
+      { "name": "filename_for_errors", "type": "string", "default": "nil" }
+    ],
+    "returns": ["string", "string?"],
+    "doc": "turns a JSON string into a flexbuffer, second value is error, if any"
+  },
+  {
+    "subsystem": "parsedata",
+    "funcname": "lobster_value_to_binary",
+    "args": [{ "name": "val", "type": "any" }],
+    "returns": ["string"],
+    "doc": "turns any reference value into a binary using a fast & compact Lobster native serialization format. this is intended for threads/networking, not for storage (since it is not readable by other languages). data structures participating must have been marked by attribute serializable. does not provide protection against cycles, use flexbuffers if that is a concern. "
+  },
+  {
+    "subsystem": "parsedata",
+    "funcname": "lobster_binary_to_value",
+    "args": [
+      { "name": "typeid", "type": "typeid(any)" },
+      { "name": "bin", "type": "string" }
+    ],
+    "returns": ["any?", "string?"],
+    "doc": "turns binary created by lobster_value_to_binary back into a value"
+  },
+  {
+    "subsystem": "matrix",
+    "funcname": "matrix.multiply",
+    "args": [
+      { "name": "a", "type": "[float]" },
+      { "name": "b", "type": "[float]" }
+    ],
+    "returns": ["[float]"],
+    "doc": "input matrices must be 4x4 elements"
+  },
+  {
+    "subsystem": "matrix",
+    "funcname": "matrix.rotate_x",
+    "args": [{ "name": "angle", "type": "float2" }],
+    "returns": ["[float]"],
+    "doc": ""
+  },
+  {
+    "subsystem": "matrix",
+    "funcname": "matrix.rotate_y",
+    "args": [{ "name": "angle", "type": "float2" }],
+    "returns": ["[float]"],
+    "doc": ""
+  },
+  {
+    "subsystem": "matrix",
+    "funcname": "matrix.rotate_z",
+    "args": [{ "name": "angle", "type": "float2" }],
+    "returns": ["[float]"],
+    "doc": ""
+  },
+  {
+    "subsystem": "matrix",
+    "funcname": "matrix.translation",
+    "args": [{ "name": "trans", "type": "float3" }],
+    "returns": ["[float]"],
+    "doc": ""
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.window",
+    "args": [
+      { "name": "title", "type": "string" },
+      { "name": "xs", "type": "int" },
+      { "name": "ys", "type": "int" },
+      { "name": "flags", "type": "int", "default": "0" },
+      { "name": "samples", "type": "int", "default": "1" }
+    ],
+    "returns": ["string?"],
+    "doc": "opens a window for OpenGL rendering. returns error string if any problems, nil otherwise. For flags, see modules/gl.lobster"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.require_version",
+    "args": [
+      { "name": "major", "type": "int" },
+      { "name": "minor", "type": "int" }
+    ],
+    "doc": "Call this before gl.window to request a certain version of OpenGL context. Currently only works on win/nix, minimum is 3.2."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.load_materials",
+    "args": [
+      { "name": "materialdefs", "type": "string" },
+      { "name": "inline", "type": "int", "default": "0" },
+      { "name": "prefix", "type": "string", "default": "nil" }
+    ],
+    "returns": ["string?"],
+    "doc": "loads an additional materials file (data/shaders/default.materials is already loaded by default by gl.window()). if inline is true, materialdefs is not a filename, but the actual materials. prefix will be added to all shader names allowing you to compile the same shaders multiple times. returns error string if any problems, nil otherwise."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.scissor",
+    "args": [
+      { "name": "top_left", "type": "int2" },
+      { "name": "size", "type": "int2" }
+    ],
+    "returns": ["int2", "int2"],
+    "doc": "Sets the scissor testing, so only the pixels in the given rectangle canbe written.  Returns the previous value of the scissor rectangle."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.frame",
+    "args": [],
+    "returns": ["int"],
+    "doc": "advances rendering by one frame, swaps buffers, and collects new input events. returns false if the closebutton on the window was pressed"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.shutdown",
+    "args": [],
+    "doc": "shuts down the OpenGL window. you only need to call this function if you wish to close it before the end of the program"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.window_title",
+    "args": [{ "name": "title", "type": "string" }],
+    "returns": ["string"],
+    "doc": "changes the window title."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.window_min_max",
+    "args": [{ "name": "dir", "type": "int" }],
+    "doc": ">0 to maximize, <0 to minimize or 0 to restore."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.fullscreen",
+    "args": [{ "name": "mode", "type": "int" }],
+    "doc": "use window_init enum flags from gl module"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.visible",
+    "args": [],
+    "returns": ["int"],
+    "doc": "checks if the window is currently visible (not minimized, or on mobile devices, in the foreground). If false, you should not render anything, nor run the frame's code."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.cursor",
+    "args": [{ "name": "on", "type": "bool" }],
+    "returns": ["int"],
+    "doc": "default the cursor is visible, turn off for implementing FPS like control schemes. return whether it was on before this call."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.grab",
+    "args": [{ "name": "on", "type": "bool" }],
+    "returns": ["int"],
+    "doc": "grabs the mouse when the window is active. return whether it's on."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.button",
+    "args": [{ "name": "name", "type": "string" }],
+    "returns": ["int", "int"],
+    "doc": "returns the number of frames a key/mousebutton/finger has been down. went down this frame: == 1, is already down: >= 1, not down: == 0. the second return value is the same, but for the up direction: went up this frame: == 1, is already up: >= 1, not up: == 0. it is possible both happen inside one frame, i.e. down==1 and up==1!  for name, pass a string like mouse1/mouse2/mouse3/escape/space/up/down/a/b/f1/joy1 etc. mouse11 and on are additional fingers"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.key_repeat",
+    "args": [{ "name": "name", "type": "string" }],
+    "returns": ["int"],
+    "doc": "returns if a key was a key repeat (went down, or is down with a key repeat)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.start_text_input",
+    "args": [
+      { "name": "pos", "type": "int2" },
+      { "name": "size", "type": "int2" }
+    ],
+    "doc": "starts text input. unlike gl.button which gets you keyboard keys, this is for input of strings, that can deal with unicode IME etc. pos & size are a hint where the string being edited is being displayed, such that an IME can popup a box next to it, if needed."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.text_input_state",
+    "args": [],
+    "returns": ["string", "string", "int", "int"],
+    "doc": "returns the string that has been input since text input started, followed by any candinate text (partial characters in case of IME editing), and the cursor & selection size for it"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.set_text_input",
+    "args": [{ "name": "text", "type": "string" }],
+    "doc": "overwrites the current text string being accumulated"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.end_text_input",
+    "args": [],
+    "doc": "stops accumulating text input"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.touchscreen",
+    "args": [],
+    "returns": ["int"],
+    "doc": "whether a you're getting input from a touch screen (as opposed to mouse & keyboard)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.dpi",
+    "args": [{ "name": "screen", "type": "int" }],
+    "returns": ["int"],
+    "doc": "the DPI of the screen. always returns a value for screen 0, any other screens may return 0 to indicate the screen doesn't exist"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.window_size",
+    "args": [],
+    "returns": ["int2"],
+    "doc": "a vector representing the size (in pixels) of the window, changes when the user resizes"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.mouse_pos",
+    "args": [{ "name": "i", "type": "int" }],
+    "returns": ["int2"],
+    "doc": "the current mouse/finger position in pixels, pass a value other than 0 to read additional fingers (for touch screens only if the corresponding gl.isdown is true)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.mouse_delta",
+    "args": [{ "name": "i", "type": "int" }],
+    "returns": ["int2"],
+    "doc": "number of pixels the mouse/finger has moved since the last frame. use this instead of substracting positions to correctly deal with lifted fingers and FPS mode (gl.cursor(0))"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.local_mouse_pos",
+    "args": [{ "name": "i", "type": "int" }],
+    "returns": ["float2"],
+    "doc": "the current mouse/finger position local to the current transform (gl.translate etc) (for touch screens only if the corresponding gl.isdown is true)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.last_pos",
+    "args": [
+      { "name": "name", "type": "string" },
+      { "name": "down", "type": "int" }
+    ],
+    "returns": ["int2"],
+    "doc": "position (in pixels) key/mousebutton/finger last went down (true) or up (false)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.local_last_pos",
+    "args": [
+      { "name": "name", "type": "string" },
+      { "name": "down", "type": "int" }
+    ],
+    "returns": ["float2"],
+    "doc": "position (local to the current transform) key/mousebutton/finger last went down (true) or up (false)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.mousewheel_delta",
+    "args": [],
+    "returns": ["int"],
+    "doc": "amount the mousewheel scrolled this frame, in number of notches"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.joy_axis",
+    "args": [{ "name": "i", "type": "int" }],
+    "returns": ["float"],
+    "doc": "the current joystick orientation for axis i, as -1 to 1 value. this gives you raw joystick values, prefer to use controller_axis()"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.controller_axis",
+    "args": [{ "name": "i", "type": "int" }],
+    "returns": ["float"],
+    "doc": "the current controller orientation for axis i, as -1 to 1 value. the axes are (from 0): leftx, lefty, rightx, righty, triggerleft, triggerright. down/right have positive values. make sure to call gl.init_controller_database()"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.delta_time",
+    "args": [],
+    "returns": ["float"],
+    "doc": "seconds since the last frame, updated only once per frame"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.delta_time_rolling",
+    "args": [{ "name": "n", "type": "int" }],
+    "returns": ["float"],
+    "doc": "seconds since the last frame, updated only once per frame, as a rolling average over the last N frames (max 64)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.time",
+    "args": [],
+    "returns": ["float"],
+    "doc": "seconds since the start of the OpenGL subsystem, updated only once per frame (use seconds_elapsed() for continuous timing)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.last_time",
+    "args": [
+      { "name": "name", "type": "string" },
+      { "name": "down", "type": "int" }
+    ],
+    "returns": ["float"],
+    "doc": "time key/mousebutton/finger last went down (true) or up (false)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.clear",
+    "args": [{ "name": "col", "type": "float4" }],
+    "doc": "clears the framebuffer (and depth buffer) to the given color"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.color",
+    "args": [{ "name": "col", "type": "float4" }],
+    "returns": ["float4"],
+    "doc": "sets the current color, returns previous one"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.polygon",
+    "args": [{ "name": "vertlist", "type": "[vec_f]" }],
+    "doc": "renders a polygon using the list of points given. warning: gl.polygon creates a new mesh every time, gl.new_poly/gl.render_mesh is faster."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.rounded_rectangle",
+    "args": [
+      { "name": "size", "type": "float2" },
+      { "name": "segments", "type": "int" },
+      { "name": "corner_ratio", "type": "float" }
+    ],
+    "doc": "renders a rounded rectangle, try segments 50, corner_ratio 0.2"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.circle",
+    "args": [
+      { "name": "radius", "type": "float" },
+      { "name": "segments", "type": "int" }
+    ],
+    "doc": "renders a circle"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.open_circle",
+    "args": [
+      { "name": "radius", "type": "float" },
+      { "name": "segments", "type": "int" },
+      { "name": "thickness", "type": "float" }
+    ],
+    "doc": "renders a circle that is open on the inside. thickness is the fraction of the radius that is filled, try e.g. 0.2"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.unit_cube",
+    "args": [{ "name": "insideout", "type": "int", "default": "0" }],
+    "doc": "renders a unit cube (0,0,0) - (1,1,1). optionally pass true to have it rendered inside out"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.rotate_x",
+    "args": [{ "name": "vec", "type": "float2" }],
+    "doc": "rotates the yz plane around the x axis, using a 2D vector normalized vector as angle"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.rotate_y",
+    "args": [{ "name": "angle", "type": "float2" }],
+    "doc": "rotates the xz plane around the y axis, using a 2D vector normalized vector as angle"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.rotate_z",
+    "args": [{ "name": "angle", "type": "float2" }],
+    "doc": "rotates the xy plane around the z axis (used in 2D), using a 2D vector normalized vector as angle"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.translate",
+    "args": [{ "name": "vec", "type": "vec_f" }],
+    "doc": "translates the current coordinate system along a vector"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.translate",
+    "args": [{ "name": "vec", "type": "vec_i" }],
+    "doc": "translates the current coordinate system along a vector"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.scale",
+    "args": [{ "name": "factor", "type": "float" }],
+    "doc": "scales the current coordinate system using a numerical factor"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.scale",
+    "args": [{ "name": "factor", "type": "vec_f" }],
+    "doc": "scales the current coordinate system using a vector"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.origin",
+    "args": [],
+    "returns": ["float2"],
+    "doc": "returns a vector representing the current transform origin in pixels. only makes sense in 2D mode (no gl.perspective called)."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.scaling",
+    "args": [],
+    "returns": ["float2"],
+    "doc": "returns a vector representing the current transform scale in pixels. only makes sense in 2D mode (no gl.perspective called)."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.model_view_projection",
+    "args": [],
+    "returns": ["[float]"],
+    "doc": "returns a vector representing the current model view projection matrix (16 elements)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.model_view",
+    "args": [],
+    "returns": ["[float]"],
+    "doc": "returns a vector representing the current model view matrix (16 elements)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.projection",
+    "args": [],
+    "returns": ["[float]"],
+    "doc": "returns a vector representing the current projection matrix (16 elements)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.push_model_view",
+    "args": [],
+    "doc": "save the current state of the model view matrix (gl.translate, gl.rotate etc)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.pop_model_view",
+    "args": [],
+    "returns": ["int"],
+    "doc": "restore a previous state of the model view matrix. returns false if none"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.point_scale",
+    "args": [{ "name": "factor", "type": "float" }],
+    "doc": "sets the current scaling factor for point sprites. this can be what the current gl.scale is, or different, depending on the desired visuals. the ideal size may also be FOV dependent."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.line_mode",
+    "args": [{ "name": "on", "type": "int" }],
+    "returns": ["int"],
+    "doc": "set line mode (true == on), returns previous mode"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.cull_front",
+    "args": [{ "name": "on", "type": "bool" }],
+    "returns": ["int"],
+    "doc": "set culling front (true) or back (false), returns previous value."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.hit",
+    "args": [
+      { "name": "vec", "type": "vec_f" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "whether the mouse/finger is inside of the rectangle specified in terms of the current transform (for touch screens only if the corresponding gl.isdown is true). Only true if the last rectangle for which gl.hit was true last frame is of the same size as this one (allows you to safely test in most cases of overlapping rendering)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.rect",
+    "args": [
+      { "name": "size", "type": "float2" },
+      { "name": "centered", "type": "int", "default": "0" }
+    ],
+    "doc": "renders a rectangle (0,0)..(1,1) (or (-1,-1)..(1,1) when centered), scaled by the given size."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.rect_tc_col",
+    "args": [
+      { "name": "size", "type": "float2" },
+      { "name": "tc", "type": "float2" },
+      { "name": "tcsize", "type": "float2" },
+      { "name": "cols", "type": "[float4]" }
+    ],
+    "doc": "Like gl.rect renders a sized quad, but allows you to specify texture coordinates and optionally colors (empty list for all white). Slow."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.unit_square",
+    "args": [{ "name": "centered", "type": "int", "default": "0" }],
+    "doc": "renders a square (0,0)..(1,1) (or (-1,-1)..(1,1) when centered)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.line",
+    "args": [
+      { "name": "start", "type": "vec_f" },
+      { "name": "end", "type": "vec_f" },
+      { "name": "thickness", "type": "float" }
+    ],
+    "doc": "renders a line with the given thickness"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.perspective",
+    "args": [
+      { "name": "fovy", "type": "float" },
+      { "name": "znear", "type": "float" },
+      { "name": "zfar", "type": "float" },
+      { "name": "frame_buffer_size", "type": "int2", "default": "nil" },
+      { "name": "frame_buffer_offset", "type": "int2", "default": "nil" },
+      { "name": "nodepth", "type": "int", "default": "0" }
+    ],
+    "doc": "changes from 2D mode (default) to 3D right handed perspective mode with vertical fov (try 60), far plane (furthest you want to be able to render, try 1000) and near plane (try 1). Optionally specify a framebuffer size to override the current gl.framebuffer_size"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.ortho",
+    "args": [
+      { "name": "rh", "type": "int", "default": "0" },
+      { "name": "depth", "type": "int", "default": "0" }
+    ],
+    "doc": "changes back to 2D mode rendering with a coordinate system from (0,0) top-left to the screen size in pixels bottom right. this is the default at the start of a frame, use this call to get back to that after gl.perspective. Pass true to rh have (0,0) bottom-left instead. Pass true to depth to have depth testing/writing on."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.ortho3d",
+    "args": [
+      { "name": "center", "type": "float3" },
+      { "name": "extends", "type": "float3" }
+    ],
+    "doc": "sets a custom ortho projection as 3D projection."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.new_poly",
+    "args": [{ "name": "positions", "type": "[vec_f]" }],
+    "returns": ["resource<mesh>"],
+    "doc": "creates a mesh out of a loop of points, much like gl.polygon. gl.line_mode determines how this gets drawn (fan or loop). automatically generates texcoords and normals. returns mesh id"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.new_mesh",
+    "args": [
+      { "name": "format", "type": "string" },
+      { "name": "positions", "type": "[float3]" },
+      { "name": "colors", "type": "[float4]" },
+      { "name": "normals", "type": "[float3]" },
+      { "name": "texcoords1", "type": "[float2]" },
+      { "name": "texcoords2", "type": "[float2]" },
+      { "name": "indices", "type": "[int]", "default": "nil" }
+    ],
+    "returns": ["resource<mesh>"],
+    "doc": "creates a new vertex buffer and returns an integer id (1..) for it. format must be made up of characters P (position), C (color), T (texcoord), N (normal). indices may be []. positions is obligatory. you may specify [] for any of the other attributes if not required by format, or to get defaults for colors (white) / texcoords (position x & y) / normals (generated from adjacent triangles)."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.new_mesh_iqm",
+    "args": [{ "name": "filename", "type": "string" }],
+    "returns": ["resource<mesh>?"],
+    "doc": "load a .iqm file into a mesh, returns mesh or nil on failure to load."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.mesh_parts",
+    "args": [{ "name": "m", "type": "resource<mesh>" }],
+    "returns": ["[string]"],
+    "doc": "returns an array of names of all parts of mesh m (names may be empty)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.mesh_size",
+    "args": [{ "name": "m", "type": "resource<mesh>" }],
+    "returns": ["int"],
+    "doc": "returns the number of verts in this mesh"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.mesh_animations",
+    "args": [{ "name": "m", "type": "resource<mesh>" }],
+    "returns": ["[string]"],
+    "doc": "return names of animations"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.mesh_animation_frames",
+    "args": [
+      { "name": "m", "type": "resource<mesh>" },
+      { "name": "name", "type": "string" }
+    ],
+    "returns": ["int", "int", "float"],
+    "doc": "given name, return animation's first frame, number of frames and framerate, or '-1, -1, 0.0' if name is invalid"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.animate_mesh",
+    "args": [
+      { "name": "m", "type": "resource<mesh>" },
+      { "name": "frame", "type": "float" }
+    ],
+    "doc": "set the frame for animated mesh m"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.animate_mesh_blend",
+    "args": [
+      { "name": "m", "type": "resource<mesh>" },
+      { "name": "frame1", "type": "float" },
+      { "name": "frame2", "type": "float" },
+      { "name": "blending", "type": "float" }
+    ],
+    "doc": "set the blending frames for animated mesh m"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.render_mesh",
+    "args": [{ "name": "m", "type": "resource<mesh>" }],
+    "doc": "renders the specified mesh"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.save_mesh",
+    "args": [
+      { "name": "m", "type": "resource<mesh>" },
+      { "name": "name", "type": "string" },
+      { "name": "format", "type": "int", "default": "0" }
+    ],
+    "returns": ["string?"],
+    "doc": "saves the mesh to a file in the specified format (ply by default). for other supported formats, see modules/gl.lobster. warning: when using iqm format, make sure vertex format is 'PNC', which is being used by meshgen and cubegen. returns error string if any problems, nil otherwise."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.mesh_pointsize",
+    "args": [
+      { "name": "m", "type": "resource<mesh>" },
+      { "name": "pointsize", "type": "float" }
+    ],
+    "doc": "sets the pointsize for this mesh. the mesh must have been created with indices = nil for point rendering to be used. you also want to use a shader that works with points, such as color_attr_particle."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.set_shader",
+    "args": [{ "name": "shader", "type": "string" }],
+    "doc": "changes the current shader. shaders must reside in the shaders folder, builtin ones are: color / textured / phong"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.set_shader",
+    "args": [{ "name": "shader", "type": "resource<shader>" }],
+    "doc": "changes the current shader from a value received from gl.get_shader"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.get_shader",
+    "args": [{ "name": "shader", "type": "string" }],
+    "returns": ["resource<shader>"],
+    "doc": "gets a shader by name, for use with gl.set_shader"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.set_uniform",
+    "args": [
+      { "name": "name", "type": "string" },
+      { "name": "value", "type": "vec_f" }
+    ],
+    "returns": ["int"],
+    "doc": "set a uniform on the current shader. size of float vector must match size of uniform in the shader. returns false on error."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.set_uniform",
+    "args": [
+      { "name": "name", "type": "string" },
+      { "name": "value", "type": "float" }
+    ],
+    "returns": ["int"],
+    "doc": "set a uniform on the current shader. uniform in the shader must be a single float. returns false on error."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.set_uniform",
+    "args": [
+      { "name": "name", "type": "string" },
+      { "name": "value", "type": "vec_i" }
+    ],
+    "returns": ["int"],
+    "doc": "set a uniform on the current shader. size of int vector must match size of uniform in the shader. returns false on error."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.set_uniform",
+    "args": [
+      { "name": "name", "type": "string" },
+      { "name": "value", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "set a uniform on the current shader. uniform in the shader must be a single int. returns false on error."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.set_uniform_array",
+    "args": [
+      { "name": "name", "type": "string" },
+      { "name": "value", "type": "[float4]" }
+    ],
+    "returns": ["int"],
+    "doc": "set a uniform on the current shader. uniform in the shader must be an array of vec4. returns false on error."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.set_uniform_matrix",
+    "args": [
+      { "name": "name", "type": "string" },
+      { "name": "value", "type": "[float]" },
+      { "name": "morerows", "type": "bool", "default": "false" }
+    ],
+    "returns": ["int"],
+    "doc": "set a uniform on the current shader. pass a vector of 4/6/9/12/16 floats to set a mat2/mat3x2/mat3/mat4x3/mat4 respectively. pass true for morerows to get mat2x3/mat3x4. returns false on error."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.update_buffer_object",
+    "args": [
+      { "name": "value", "type": "string" },
+      { "name": "ssbo", "type": "int" },
+      { "name": "offset", "type": "int" },
+      { "name": "existing", "type": "resource<bufferobject>" },
+      { "name": "dyn", "type": "bool" }
+    ],
+    "returns": ["resource<bufferobject>?"],
+    "doc": "creates a uniform buffer object ssbo indicates if you want a shader storage block instead. returns buffer resource or nil on error."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.bind_buffer_object",
+    "args": [
+      { "name": "name", "type": "string" },
+      { "name": "bo", "type": "resource<bufferobject>" }
+    ],
+    "returns": ["int"],
+    "doc": "attaches an existing bo to the current shader at the given uniform block name. uniforms in the shader can be any type, as long as it matches the data layout in the string buffer. returns false for error."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.copy_buffer_object",
+    "args": [
+      { "name": "source", "type": "resource<bufferobject>" },
+      { "name": "destination", "type": "resource<bufferobject>" },
+      { "name": "srcoffset", "type": "int" },
+      { "name": "dstoffset", "type": "int" },
+      { "name": "length", "type": "int" }
+    ],
+    "doc": "copies the source buffer object into the destination buffer object"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.bind_mesh_to_compute",
+    "args": [
+      { "name": "mesh", "type": "resource<mesh>" },
+      { "name": "name", "type": "string" }
+    ],
+    "doc": "Bind the vertex data of a mesh to a SSBO binding of a compute shader. Pass a nil mesh to unbind."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.dispatch_compute",
+    "args": [{ "name": "groups", "type": "int3" }],
+    "doc": "dispatches the currently set compute shader in groups of sizes of the specified x/y/z values."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.dump_shader",
+    "args": [
+      { "name": "filename", "type": "string" },
+      { "name": "stripnonascii", "type": "bool" }
+    ],
+    "returns": ["int"],
+    "doc": "Dumps the compiled (binary) version of the current shader to a file. Contents are driver dependent. On Nvidia hardware it contains the assembly version of the shader as text, pass true for stripnonascii if you're only interested in that part."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.blend",
+    "args": [{ "name": "on", "type": "int" }],
+    "returns": ["int"],
+    "doc": "changes the blending mode (use blending constants from color.lobster), returns old mode"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.load_texture",
+    "args": [
+      { "name": "name", "type": "string" },
+      { "name": "textureformat", "type": "int", "default": "0" }
+    ],
+    "returns": ["resource<texture>?"],
+    "doc": "returns texture if succesfully loaded from file name, otherwise nil. see texture.lobster for texture format. If textureformat includes cubemap, will load 6 images with \"_ft\" etc inserted before the \".\" in the filename. Uses stb_image internally (see http://nothings.org/), loads JPEG Baseline, subsets of PNG, TGA, BMP, PSD, GIF, HDR, PIC."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.save_texture",
+    "args": [
+      { "name": "tex", "type": "resource<texture>" },
+      { "name": "filename", "type": "string" },
+      { "name": "flip", "type": "bool", "default": "false" }
+    ],
+    "returns": ["int"],
+    "doc": "saves the texture in .png format, returns true if succesful"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.set_primitive_texture",
+    "args": [
+      { "name": "i", "type": "int" },
+      { "name": "tex", "type": "resource<texture>" }
+    ],
+    "doc": "sets texture unit i to texture (for use with rect/circle/polygon/line)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.set_mesh_texture",
+    "args": [
+      { "name": "mesh", "type": "resource<mesh>" },
+      { "name": "part", "type": "int" },
+      { "name": "i", "type": "int" },
+      { "name": "texture", "type": "resource<texture>" }
+    ],
+    "doc": "sets texture unit i to texture for a mesh and part (0 if not a multi-part mesh)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.set_image_texture",
+    "args": [
+      { "name": "i", "type": "int" },
+      { "name": "tex", "type": "resource<texture>" },
+      { "name": "level", "type": "int" },
+      { "name": "accessflags", "type": "int", "default": "0" }
+    ],
+    "doc": "sets image unit i to texture (for use with compute). optionally specify writeonly/readwrite flags."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.unbind_all_textures",
+    "args": [],
+    "doc": "unbinds all textures set thru any set texture calls. typically not needed to call this manually, but may sometimes be needed when reusing textures across draw/compute calls"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.create_texture",
+    "args": [
+      { "name": "matrix", "type": "[[float4]]" },
+      { "name": "textureformat", "type": "int", "default": "0" }
+    ],
+    "returns": ["resource<texture>"],
+    "doc": "creates a texture from a 2d array of color vectors. see texture.lobster for texture format. for a cubemap, pass an array that is 6x as big on x than y"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.create_texture_single_channel",
+    "args": [
+      { "name": "matrix", "type": "[[float]]" },
+      { "name": "textureformat", "type": "int", "default": "0" }
+    ],
+    "returns": ["resource<texture>"],
+    "doc": "creates a texture from a 2d array of float vectors. see texture.lobster for texture format. for a cubemap, pass an array that is 6x as big on x than y"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.create_blank_texture",
+    "args": [
+      { "name": "size", "type": "int3" },
+      { "name": "textureformat", "type": "int", "default": "0" }
+    ],
+    "returns": ["resource<texture>"],
+    "doc": "creates a blank texture (for use as frame buffer or with compute shaders). see texture.lobster for texture format"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.create_colored_texture",
+    "args": [
+      { "name": "size", "type": "int3" },
+      { "name": "color", "type": "float4" },
+      { "name": "textureformat", "type": "int", "default": "0" }
+    ],
+    "returns": ["resource<texture>"],
+    "doc": "creates a colored texture (for use as frame buffer or with compute shaders). see texture.lobster for texture format"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.texture_size",
+    "args": [{ "name": "tex", "type": "resource<texture>" }],
+    "returns": ["int2"],
+    "doc": "returns the size of a texture"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.read_texture",
+    "args": [{ "name": "tex", "type": "resource<texture>" }],
+    "returns": ["string?"],
+    "doc": "read back RGBA texture data into a string or nil on failure"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.generate_texture_mipmap",
+    "args": [{ "name": "tex", "type": "resource<texture>", "default": "nil" }],
+    "doc": "generate mipmaps for the specified texture"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.set_texture_flags",
+    "args": [
+      { "name": "tex", "type": "resource<texture>" },
+      { "name": "tf", "type": "int" }
+    ],
+    "doc": "change texture filter/wrap/clamp flags on an existing texture"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.switch_to_framebuffer",
+    "args": [
+      { "name": "tex", "type": "resource<texture>", "default": "nil" },
+      { "name": "hasdepth", "type": "int", "default": "0" },
+      { "name": "multisampleformat", "type": "int", "default": "0" },
+      { "name": "resolvetex", "type": "resource<texture>", "default": "nil" },
+      { "name": "depthtex", "type": "resource<texture>", "default": "nil" }
+    ],
+    "returns": ["int"],
+    "doc": "switches to a new framebuffer, that renders into the given texture. also allocates a depth buffer for it if depth is true. pass the multisample flags that was used for this texture. pass a resolve texture if the base texture is multisample. pass your own depth texture if desired. pass a nil texture to switch back to the original framebuffer. performance note: do not recreate texture passed in unless necessary."
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.framebuffer_size",
+    "args": [],
+    "returns": ["int2"],
+    "doc": "a vector representing the size (in pixels) of the framebuffer, according to the last call to gl.switch_to_framebuffer, or same as gl.window_size otherwise"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.light",
+    "args": [
+      { "name": "pos", "type": "float3" },
+      { "name": "params", "type": "float2" }
+    ],
+    "doc": "sets up a light at the given position for this frame. make sure to call this after your camera transforms but before any object transforms (i.e. defined in \"worldspace\"). params contains specular exponent in x (try 32/64/128 for different material looks) and the specular scale in y (try 1 for full intensity)"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.render_tiles",
+    "args": [
+      { "name": "positions", "type": "[float2]" },
+      { "name": "tilecoords", "type": "[int2]" },
+      { "name": "mapsize", "type": "int2" }
+    ],
+    "doc": "Renders a list of tiles from a tilemap. Each tile rendered is 1x1 in size. Positions may be anywhere. tilecoords are indices into the map (0..mapsize-1), mapsize is the amount of tiles in the texture. Tiles may overlap, they are drawn in order. Before calling this, make sure to have the texture set and a textured shader"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.debug_grid",
+    "args": [
+      { "name": "num", "type": "int3" },
+      { "name": "dist", "type": "float3" },
+      { "name": "thickness", "type": "float" }
+    ],
+    "doc": "renders a grid in space for debugging purposes. num is the number of lines in all 3 directions, and dist their spacing. thickness of the lines in the same units"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.screenshot",
+    "args": [{ "name": "filename", "type": "string" }],
+    "returns": ["int"],
+    "doc": "saves a screenshot in .png format, returns true if succesful"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.dropped_file",
+    "args": [],
+    "returns": ["string"],
+    "doc": "if a file was dropped on the window this frame, the filename, otherwise empty"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.create_time_query",
+    "args": [],
+    "returns": ["resource<timequery>"],
+    "doc": "creates a time query object used for profiling GPU events"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.start_time_query",
+    "args": [{ "name": "tq", "type": "resource<timequery>", "default": "nil" }],
+    "doc": "starts the time query"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.stop_time_query",
+    "args": [{ "name": "tq", "type": "resource<timequery>", "default": "nil" }],
+    "returns": ["float"],
+    "doc": "stops the time query and returns the result"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.init_controller_database",
+    "args": [{ "name": "filename", "type": "string" }],
+    "returns": ["string?"],
+    "doc": "loads the controller database if you want your game to support controllers. typically the argument should be: pakfile \"data/controllers/gamecontrollerdb.txt\". returns error if something went wrong"
+  },
+  {
+    "subsystem": "graphics",
+    "funcname": "gl.open_url",
+    "args": [{ "name": "url", "type": "string" }],
+    "returns": ["int"],
+    "doc": "Opens a URL in the system browser, returns true if successful"
+  },
+  {
+    "subsystem": "font",
+    "funcname": "gl.set_font_name",
+    "args": [{ "name": "filename", "type": "string" }],
+    "returns": ["int"],
+    "doc": "sets a freetype/OTF/TTF font as current (and loads it from disk the first time). returns true if success."
+  },
+  {
+    "subsystem": "font",
+    "funcname": "gl.set_font_size",
+    "args": [
+      { "name": "size", "type": "int" },
+      { "name": "outlinesize", "type": "float", "default": "0.000000" }
+    ],
+    "returns": ["int"],
+    "doc": "sets the font for rendering into this fontsize (in pixels). caches into a texture first time this size is used, flushes from cache if this size is not used an entire frame. font rendering will look best if using 1:1 pixels (careful with gl.scale/gl.translate). an optional outlinesize will give the font a black outline. make sure to call this every frame. returns true if success"
+  },
+  {
+    "subsystem": "font",
+    "funcname": "gl.set_max_font_size",
+    "args": [{ "name": "size", "type": "int" }],
+    "doc": "sets the max font size to render to bitmaps. any sizes specified over that by setfontsize will still work but cause scaled rendering. default 256"
+  },
+  {
+    "subsystem": "font",
+    "funcname": "gl.get_font_size",
+    "args": [],
+    "returns": ["int"],
+    "doc": "the current font size"
+  },
+  {
+    "subsystem": "font",
+    "funcname": "gl.get_outline_size",
+    "args": [],
+    "returns": ["float"],
+    "doc": "the current font size"
+  },
+  {
+    "subsystem": "font",
+    "funcname": "gl.text",
+    "args": [{ "name": "text", "type": "string" }],
+    "returns": ["string"],
+    "doc": "renders a text with the current font (at the current coordinate origin)"
+  },
+  {
+    "subsystem": "font",
+    "funcname": "gl.text_size",
+    "args": [{ "name": "text", "type": "string" }],
+    "returns": ["int2"],
+    "doc": "the x/y size in pixels the given text would need"
+  },
+  {
+    "subsystem": "font",
+    "funcname": "gl.get_glyph_name",
+    "args": [{ "name": "i", "type": "int" }],
+    "returns": ["string"],
+    "doc": "the name of a glyph index, or empty string if the font doesn't have names"
+  },
+  {
+    "subsystem": "font",
+    "funcname": "gl.get_char_code",
+    "args": [{ "name": "name", "type": "string" }],
+    "returns": ["int"],
+    "doc": "the char code of a glyph by specifying its name, or 0 if it can not be found (or if the font doesn't have names)"
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "play_wav",
+    "args": [
+      { "name": "filename", "type": "string" },
+      { "name": "loops", "type": "int", "default": "0" },
+      { "name": "prio", "type": "int", "default": "0" }
+    ],
+    "returns": ["int"],
+    "doc": "plays a sound defined by a wav file (RAW or MS-ADPCM, any bitrate other than 22050hz 16bit will automatically be converted on first load). the default volume is the max volume (1.0) loops is the number of repeats to play (-1 repeats endlessly, omit for no repeats). prio is the priority of the sound which determines whether it can be deleted or not in case of too many play function calls (defaults to 0) returns the assigned channel number (1..8) or 0 on error"
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "load_wav",
+    "args": [{ "name": "filename", "type": "string" }],
+    "returns": ["int"],
+    "doc": "loads a sound the same way play_sound does, but ahead of playback, to avoid any delays later. returns false on error"
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "play_sfxr",
+    "args": [
+      { "name": "filename", "type": "string" },
+      { "name": "loops", "type": "int", "default": "0" },
+      { "name": "prio", "type": "int", "default": "0" }
+    ],
+    "returns": ["int"],
+    "doc": "plays a synth sound defined by a .sfs file (use http://www.drpetter.se/project_sfxr.html to generate these). the default volume is the max volume (1.0) loops is the number of repeats to play (-1 repeats endlessly, omit for no repeats). prio is the priority of the sound which determines whether it can be deleted or not in case of too many play function calls (defaults to 0) returns the assigned channel number (1..8) or 0 on error"
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "load_sfxr",
+    "args": [{ "name": "filename", "type": "string" }],
+    "returns": ["int"],
+    "doc": "loads a sound the same way play_sfxr does, but ahead of playback, to avoid any delays later. returns false on error"
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "play_ogg",
+    "args": [
+      { "name": "filename", "type": "string" },
+      { "name": "loops", "type": "int", "default": "0" },
+      { "name": "prio", "type": "int", "default": "0" }
+    ],
+    "returns": ["int"],
+    "doc": "plays an ogg file. the default volume is the max volume (1.0) loops is the number of repeats to play (-1 repeats endlessly, omit for no repeats). prio is the priority of the sound which determines whether it can be deleted or not in case of too many play function calls (defaults to 0) returns the assigned channel number (1..8) or 0 on error"
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "load_ogg",
+    "args": [{ "name": "filename", "type": "string" }],
+    "returns": ["int"],
+    "doc": "loads a sound the same way play_ogg does, but ahead of playback, to avoid any delays later. returns false on error"
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "sound_status",
+    "args": [{ "name": "channel", "type": "int" }],
+    "returns": ["int"],
+    "doc": "provides the status of the specified sound channel. returns -1 on error or if the channel does not exist, 0 if the channel is free, 1 if it is playing, and 2 if the channel is active but paused."
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "sound_halt",
+    "args": [{ "name": "channel", "type": "int" }],
+    "doc": "terminates a specific sound channel."
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "sound_pause",
+    "args": [{ "name": "channel", "type": "int" }],
+    "doc": "pauses the specified sound channel."
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "sound_resume",
+    "args": [{ "name": "channel", "type": "int" }],
+    "doc": "resumes a sound that was paused."
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "sound_volume",
+    "args": [
+      { "name": "channel", "type": "int" },
+      { "name": "volume", "type": "float" }
+    ],
+    "doc": "sets the channel volume in the range 0..1."
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "sound_position",
+    "args": [
+      { "name": "channel", "type": "int" },
+      { "name": "vecfromlistener", "type": "float3" },
+      { "name": "listenerfwd", "type": "float3" },
+      { "name": "attnscale", "type": "float" }
+    ],
+    "doc": "sets the channel volume and panning according to sound in a game world relative to the listener."
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "sound_time_length",
+    "args": [{ "name": "channel", "type": "int" }],
+    "returns": ["float"],
+    "doc": "returns the length in seconds of the sound playing on this channel"
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "text_to_speech",
+    "args": [{ "name": "text", "type": "string" }],
+    "doc": "Queues up text for async text to speech output. Currently on: win32"
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "text_to_speech_stop",
+    "args": [],
+    "doc": "Stops current text to speech output and clears queue"
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "play_music",
+    "args": [
+      { "name": "filename", "type": "string" },
+      { "name": "loops", "type": "int", "default": "0" }
+    ],
+    "returns": ["int"],
+    "doc": "plays music in many common formats (WAV, MP3, OGG, etc.). the default volume is the max volume (1.0) loops is the number of repeats to play (-1 repeats endlessly, omit for no repeats). returns the music id or 0 on error"
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "play_music_fade_in",
+    "args": [
+      { "name": "filename", "type": "string" },
+      { "name": "ms", "type": "int" },
+      { "name": "loops", "type": "int", "default": "0" }
+    ],
+    "returns": ["int"],
+    "doc": "plays music while fading in over ms milliseconds. See play_music for more info."
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "play_music_cross_fade",
+    "args": [
+      { "name": "old_mus_id", "type": "int" },
+      { "name": "new_filename", "type": "string" },
+      { "name": "ms", "type": "int" },
+      { "name": "loops", "type": "int", "default": "0" }
+    ],
+    "returns": ["int"],
+    "doc": "cross-fades new music with existing music over ms milliseconds. See play_music for more info."
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "music_fade_out",
+    "args": [
+      { "name": "mus_id", "type": "int" },
+      { "name": "ms", "type": "int" }
+    ],
+    "doc": "fade out music over ms milliseconds."
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "music_halt",
+    "args": [{ "name": "mus_id", "type": "int" }],
+    "doc": "stop music with the given id."
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "music_pause",
+    "args": [{ "name": "mus_id", "type": "int" }],
+    "doc": "pause music with the given id."
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "music_resume",
+    "args": [{ "name": "mus_id", "type": "int" }],
+    "doc": "resume music with the given id."
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "music_volume",
+    "args": [
+      { "name": "mus_id", "type": "int" },
+      { "name": "vol", "type": "float" }
+    ],
+    "doc": "set the music volume in the range 0..1."
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "music_is_playing",
+    "args": [{ "name": "mus_id", "type": "int" }],
+    "returns": ["int"],
+    "doc": "returns whether the music with the given id has not yet finished. Paused music is still considered to be playing"
+  },
+  {
+    "subsystem": "sound",
+    "funcname": "music_set_general_volume",
+    "args": [{ "name": "vol", "type": "float" }],
+    "doc": "set the general music volume in the range 0..1."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.initialize",
+    "args": [{ "name": "gravityvector", "type": "float2" }],
+    "doc": "initializes or resets the physical world, gravity typically [0, -10]."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.create_box",
+    "args": [
+      { "name": "position", "type": "float2" },
+      { "name": "size", "type": "float2" },
+      { "name": "offset", "type": "float2", "default": "nil" },
+      { "name": "rotation", "type": "float", "default": "0.000000" },
+      { "name": "attachto", "type": "resource<fixture>", "default": "nil" }
+    ],
+    "returns": ["resource<fixture>"],
+    "doc": "creates a physical box shape in the world at position, with size the half-extends around the center, offset from the center if needed, at a particular rotation (in degrees). attachto is a previous physical object to attach this one to, to become a combined physical body."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.create_circle",
+    "args": [
+      { "name": "position", "type": "float2" },
+      { "name": "radius", "type": "float" },
+      { "name": "offset", "type": "float2", "default": "nil" },
+      { "name": "attachto", "type": "resource<fixture>", "default": "nil" }
+    ],
+    "returns": ["resource<fixture>"],
+    "doc": "creates a physical circle shape in the world at position, with the given radius, offset from the center if needed. attachto is a previous physical object to attach this one to, to become a combined physical body."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.create_polygon",
+    "args": [
+      { "name": "position", "type": "float2" },
+      { "name": "vertices", "type": "[float2]" },
+      { "name": "attachto", "type": "resource<fixture>", "default": "nil" }
+    ],
+    "returns": ["resource<fixture>"],
+    "doc": "creates a polygon circle shape in the world at position, with the given list of vertices. attachto is a previous physical object to attach this one to, to become a combined physical body."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.dynamic",
+    "args": [
+      { "name": "shape", "type": "resource<fixture>" },
+      { "name": "on", "type": "bool" }
+    ],
+    "doc": "makes a shape dynamic (on = true) or not."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.set_linear_velocity",
+    "args": [
+      { "name": "id", "type": "resource<fixture>" },
+      { "name": "velocity", "type": "float2" }
+    ],
+    "doc": "sets the linear velocity of a shape's center of mass."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.apply_linear_impulse_to_center",
+    "args": [
+      { "name": "id", "type": "resource<fixture>" },
+      { "name": "impulse", "type": "float2" }
+    ],
+    "doc": "applies a linear impulse to a shape at its center of mass."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.set_color",
+    "args": [
+      { "name": "id", "type": "resource<fixture>" },
+      { "name": "color", "type": "float4" }
+    ],
+    "doc": "sets a shape (or nil for particles) to be rendered with a particular color."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.set_shader",
+    "args": [
+      { "name": "id", "type": "resource<fixture>" },
+      { "name": "shadername", "type": "string" }
+    ],
+    "doc": "sets a shape (or nil for particles) to be rendered with a particular shader."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.set_texture",
+    "args": [
+      { "name": "id", "type": "resource<fixture>" },
+      { "name": "tex", "type": "resource<texture>" },
+      { "name": "texunit", "type": "int", "default": "0" }
+    ],
+    "doc": "sets a shape (or nil for particles) to be rendered with a particular texture (assigned to a texture unit, default 0)."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.get_position",
+    "args": [{ "name": "id", "type": "resource<fixture>" }],
+    "returns": ["float2"],
+    "doc": "gets a shape's position."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.get_mass",
+    "args": [{ "name": "id", "type": "resource<fixture>" }],
+    "returns": ["float"],
+    "doc": "gets a shape's mass."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.create_particle",
+    "args": [
+      { "name": "position", "type": "float2" },
+      { "name": "velocity", "type": "float2" },
+      { "name": "color", "type": "float4" },
+      { "name": "flags", "type": "int", "default": "0" }
+    ],
+    "returns": ["int"],
+    "doc": "creates an individual particle. For flags, see include/physics.lobster"
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.create_particle_circle",
+    "args": [
+      { "name": "position", "type": "float2" },
+      { "name": "radius", "type": "float" },
+      { "name": "color", "type": "float4" },
+      { "name": "flags", "type": "int", "default": "0" }
+    ],
+    "doc": "creates a circle filled with particles. For flags, see include/physics.lobster"
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.initialize_particles",
+    "args": [{ "name": "radius", "type": "float" }],
+    "doc": "initializes the particle system with a given particle radius."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.step",
+    "args": [
+      { "name": "seconds", "type": "float" },
+      { "name": "viter", "type": "int" },
+      { "name": "piter", "type": "int" }
+    ],
+    "doc": "simulates the physical world for the given period (try: gl.delta_time()). You can specify the amount of velocity/position iterations per step, more means more accurate but also more expensive computationally (try 8 and 3)."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.particle_contacts",
+    "args": [{ "name": "id", "type": "resource<fixture>" }],
+    "returns": ["[int]"],
+    "doc": "gets the particle indices that are currently contacting a giving physics object. Call after step(). Indices may be invalid after next step()."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.raycast",
+    "args": [
+      { "name": "p1", "type": "float2" },
+      { "name": "p2", "type": "float2" },
+      { "name": "n", "type": "int" }
+    ],
+    "returns": ["[int]"],
+    "doc": "returns a vector of the first n particle ids that intersect a ray from p1 to p2, not including particles that overlap p1."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.delete_particle",
+    "args": [{ "name": "i", "type": "int" }],
+    "doc": "deletes given particle. Deleting particles causes indices to be invalidated at next step()."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.getparticle_position",
+    "args": [{ "name": "i", "type": "int" }],
+    "returns": ["float2"],
+    "doc": "gets a particle's position."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.render",
+    "args": [],
+    "doc": "renders all rigid body objects."
+  },
+  {
+    "subsystem": "physics",
+    "funcname": "ph.render_particles",
+    "args": [{ "name": "scale", "type": "float" }],
+    "doc": "render all particles, with the given scale."
+  },
+  {
+    "subsystem": "noise",
+    "funcname": "simplex",
+    "args": [
+      { "name": "pos", "type": "vec_f" },
+      { "name": "octaves", "type": "int" },
+      { "name": "scale", "type": "float" },
+      { "name": "persistence", "type": "float" }
+    ],
+    "returns": ["float"],
+    "doc": "returns a simplex noise value [-1..1] given a 2D/3D or 4D location, the number of octaves (try 8), a scale (try 1), and persistence from one octave to the next (try 0.5)"
+  },
+  {
+    "subsystem": "noise",
+    "funcname": "simplex_raw",
+    "args": [{ "name": "pos", "type": "vec_f" }],
+    "returns": ["float"],
+    "doc": "returns a simplex noise value [-1..1] given a 2D/3D or 4D location"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.sphere",
+    "args": [{ "name": "radius", "type": "float" }],
+    "doc": "a sphere"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.cube",
+    "args": [{ "name": "extents", "type": "float3" }],
+    "doc": "a cube (extents are size from center)"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.cylinder",
+    "args": [
+      { "name": "radius", "type": "float" },
+      { "name": "height", "type": "float" }
+    ],
+    "doc": "a unit cylinder (height is from center)"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.tapered_cylinder",
+    "args": [
+      { "name": "bot", "type": "float" },
+      { "name": "top", "type": "float" },
+      { "name": "height", "type": "float" }
+    ],
+    "doc": "a cyclinder where you specify the top and bottom radius (height is from center)"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.superquadric",
+    "args": [
+      { "name": "exponents", "type": "float3" },
+      { "name": "scale", "type": "float3" }
+    ],
+    "doc": "a super quadric. specify an exponent of 2 for spherical, higher values for rounded squares"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.superquadric_non_uniform",
+    "args": [
+      { "name": "posexponents", "type": "float3" },
+      { "name": "negexponents", "type": "float3" },
+      { "name": "posscale", "type": "float3" },
+      { "name": "negscale", "type": "float3" }
+    ],
+    "doc": "a superquadric that allows you to specify exponents and sizes in all 6 directions independently for maximum modelling possibilities"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.supertoroid",
+    "args": [
+      { "name": "R", "type": "float" },
+      { "name": "exponents", "type": "float3" }
+    ],
+    "doc": "a super toroid. R is the distance from the origin to the center of the ring."
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.landscape",
+    "args": [
+      { "name": "zscale", "type": "float" },
+      { "name": "xyscale", "type": "float" }
+    ],
+    "doc": "a simplex landscape of unit size"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.set_polygon_reduction",
+    "args": [
+      { "name": "polyreductionpasses", "type": "int" },
+      { "name": "epsilon", "type": "float" },
+      { "name": "maxtricornerdot", "type": "float" }
+    ],
+    "doc": "controls the polygon reduction algorithm. set polyreductionpasses to 0 for off, 100 for max compression, or low values for generation speed or to keep the mesh uniform. epsilon determines how flat adjacent triangles must be to be reduced, use 0.98 as a good tradeoff, lower to get more compression. maxtricornerdot avoid very thin triangles, use 0.95 as a good tradeoff, up to 0.99 to get more compression"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.set_color_noise",
+    "args": [
+      { "name": "noiseintensity", "type": "float" },
+      { "name": "noisestretch", "type": "float" }
+    ],
+    "doc": "applies simplex noise to the colors of the model. try 0.3 for intensity. stretch scales the pattern over the model"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.set_vertex_randomize",
+    "args": [{ "name": "factor", "type": "float" }],
+    "doc": "randomizes all verts produced to give a more organic look and to hide the inherent messy polygons produced by the algorithm. try 0.15. note that any setting other than 0 will likely counteract the polygon reduction algorithm"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.set_point_mode",
+    "args": [{ "name": "on", "type": "bool" }],
+    "doc": "generates a point mesh instead of polygons"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.polygonize",
+    "args": [{ "name": "subdiv", "type": "int" }],
+    "returns": ["resource<mesh>"],
+    "doc": "returns a generated mesh from past mg commands. subdiv determines detail and number of polygons (relative to the largest dimension of the model), try 30.. 300 depending on the subject. values much higher than that will likely make you run out of memory (or take very long)."
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.convert_to_cubes",
+    "args": [
+      { "name": "subdiv", "type": "int" },
+      { "name": "zoffset", "type": "int" }
+    ],
+    "returns": ["resource<voxels>"],
+    "doc": "returns a cubegen block (see cg_ functions) from past mg commands. subdiv determines detail and number of cubes (relative to the largest dimension of the model)."
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.translate",
+    "args": [{ "name": "vec", "type": "float3" }],
+    "doc": "translates the current coordinate system along a vector"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.scale",
+    "args": [{ "name": "f", "type": "float" }],
+    "doc": "scales the current coordinate system by the given factor"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.scale_vec",
+    "args": [{ "name": "vec", "type": "float3" }],
+    "doc": "non-unimformly scales the current coordinate system using individual factors per axis"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.rotate",
+    "args": [
+      { "name": "axis", "type": "float3" },
+      { "name": "angle", "type": "float" }
+    ],
+    "doc": "rotates using axis/angle"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.color",
+    "args": [{ "name": "color", "type": "float4" }],
+    "doc": "sets the color, where an alpha of 1 means to add shapes to the scene (union), and 0 substracts them (carves)"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.smooth",
+    "args": [{ "name": "smooth", "type": "float" }],
+    "doc": "sets the smoothness in terms of the range of distance from the shape smoothing happens, defaults to 1.0"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.push_transform",
+    "args": [],
+    "doc": "save the current state of the transform"
+  },
+  {
+    "subsystem": "meshgen",
+    "funcname": "mg.pop_transform",
+    "args": [],
+    "doc": "restore a previous state of the transform"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.init",
+    "args": [{ "name": "size", "type": "int3" }],
+    "returns": ["resource<voxels>"],
+    "doc": "initializes a new, empty 3D cube block. 1 byte per cell, careful with big sizes :) returns the block"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.size",
+    "args": [{ "name": "block", "type": "resource<voxels>" }],
+    "returns": ["int3"],
+    "doc": "returns the current block size"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.name",
+    "args": [{ "name": "block", "type": "resource<voxels>" }],
+    "returns": ["string"],
+    "doc": "returns the current block name"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.offset",
+    "args": [{ "name": "block", "type": "resource<voxels>" }],
+    "returns": ["int3"],
+    "doc": "returns the current block offset"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.set",
+    "args": [
+      { "name": "block", "type": "resource<voxels>" },
+      { "name": "pos", "type": "int3" },
+      { "name": "size", "type": "int3" },
+      { "name": "paletteindex", "type": "int" }
+    ],
+    "doc": "sets a range of cubes to palette index. index 0 is considered empty space.Coordinates automatically clipped to the size of the grid"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.get",
+    "args": [
+      { "name": "block", "type": "resource<voxels>" },
+      { "name": "pos", "type": "int3" }
+    ],
+    "returns": ["int"],
+    "doc": "sets a range of cubes to palette index. index 0 is considered empty space.Coordinates automatically clipped to the size of the grid"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.copy",
+    "args": [
+      { "name": "block", "type": "resource<voxels>" },
+      { "name": "pos", "type": "int3" },
+      { "name": "size", "type": "int3" },
+      { "name": "dest", "type": "int3" },
+      { "name": "flip", "type": "int3" }
+    ],
+    "doc": "copy a range of cubes from pos to dest. flip can be 1 (regular copy), or -1 (mirror)for each component, indicating the step from dest. Coordinates automatically clipped to the size of the grid"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.clone",
+    "args": [
+      { "name": "block", "type": "resource<voxels>" },
+      { "name": "pos", "type": "int3" },
+      { "name": "size", "type": "int3" }
+    ],
+    "returns": ["resource<voxels>"],
+    "doc": "clone a range of cubes from pos to a new block. Coordinates automatically clipped to the size of the grid"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.color_to_palette",
+    "args": [
+      { "name": "block", "type": "resource<voxels>" },
+      { "name": "color", "type": "float4" }
+    ],
+    "returns": ["int"],
+    "doc": "converts a color to a palette index. alpha < 0.5 is considered empty space. note: this is fast for the default palette, slow otherwise."
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.palette_to_color",
+    "args": [
+      { "name": "block", "type": "resource<voxels>" },
+      { "name": "paletteindex", "type": "int" }
+    ],
+    "returns": ["float4"],
+    "doc": "converts a palette index to a color. empty space (index 0) will have 0 alpha"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.get_palette",
+    "args": [{ "name": "world", "type": "resource<voxels>" }],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.set_palette",
+    "args": [
+      { "name": "world", "type": "resource<voxels>" },
+      { "name": "palette_idx", "type": "int" }
+    ],
+    "doc": ""
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.load_palette",
+    "args": [{ "name": "act_palette_file", "type": "string" }],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.sample_down",
+    "args": [
+      { "name": "scale", "type": "int" },
+      { "name": "world", "type": "resource<voxels>" }
+    ],
+    "doc": ""
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.scale_up",
+    "args": [
+      { "name": "scale", "type": "int" },
+      { "name": "world", "type": "resource<voxels>" }
+    ],
+    "returns": ["resource<voxels>"],
+    "doc": ""
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.stretch",
+    "args": [
+      { "name": "newsize", "type": "int3" },
+      { "name": "world", "type": "resource<voxels>" }
+    ],
+    "returns": ["resource<voxels>"],
+    "doc": ""
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.create_mesh",
+    "args": [{ "name": "block", "type": "resource<voxels>" }],
+    "returns": ["resource<mesh>"],
+    "doc": "converts block to a mesh"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.create_3d_texture",
+    "args": [
+      { "name": "block", "type": "resource<voxels>" },
+      { "name": "textureformat", "type": "int" },
+      { "name": "monochrome", "type": "int", "default": "0" }
+    ],
+    "returns": ["resource<texture>"],
+    "doc": "returns the new texture, for format, pass flags you want in addition to 3d|single_channel|has_mips"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.load_vox",
+    "args": [
+      { "name": "name", "type": "string" },
+      { "name": "material_palette", "type": "bool", "default": "false" },
+      { "name": "file_contents", "type": "string", "default": "nil" }
+    ],
+    "returns": ["[resource<voxels>]", "string?"],
+    "doc": "loads a .vox file (supports both MagicaVoxel or VoxLap formats). if material_palette is true the alpha channel will contain material flags. if file_contents is non-nil, it contains the file already loaded. returns vector of blocks or empty if file failed to load, and error string if any"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.load_vox_names",
+    "args": [{ "name": "name", "type": "string" }],
+    "returns": ["[string]", "string?"],
+    "doc": "loads a MagicaVoxel .vox file, and returns its contained sub model names."
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.save_vox",
+    "args": [
+      { "name": "block", "type": "resource<voxels>" },
+      { "name": "name", "type": "string" }
+    ],
+    "returns": ["int"],
+    "doc": "saves a file in the .vox format (MagicaVoxel). returns false if file failed to save. this format can only save blocks <= 256^3, will fail if bigger"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.chunks_skipped",
+    "args": [{ "name": "block", "type": "resource<voxels>" }],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.get_buf",
+    "args": [{ "name": "block", "type": "resource<voxels>" }],
+    "returns": ["string"],
+    "doc": "returns the data as a string of all palette indices, in z-major order"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.average_surface_color",
+    "args": [{ "name": "world", "type": "resource<voxels>" }],
+    "returns": ["float3", "int", "int", "int3", "int3"],
+    "doc": ""
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.average_face_colors",
+    "args": [{ "name": "world", "type": "resource<voxels>" }],
+    "returns": ["[float]"],
+    "doc": "returns a vector of 8 elements with 4 floats per face: color and alpha.last element contains the total average color and the average + max alpha in the last channel"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.num_solid",
+    "args": [{ "name": "world", "type": "resource<voxels>" }],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.rotate",
+    "args": [
+      { "name": "block", "type": "resource<voxels>" },
+      { "name": "n", "type": "int" }
+    ],
+    "returns": ["resource<voxels>"],
+    "doc": "returns a new block rotated by n 90 degree steps from the input"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.simplex",
+    "args": [
+      { "name": "block", "type": "resource<voxels>" },
+      { "name": "pos", "type": "int3" },
+      { "name": "size", "type": "int3" },
+      { "name": "spos", "type": "float3" },
+      { "name": "ssize", "type": "float3" },
+      { "name": "octaves", "type": "int" },
+      { "name": "scale", "type": "float" },
+      { "name": "persistence", "type": "float" },
+      { "name": "solidcol", "type": "int" },
+      { "name": "zscale", "type": "float" },
+      { "name": "zbias", "type": "float" }
+    ],
+    "doc": ""
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.bounding_box",
+    "args": [
+      { "name": "world", "type": "resource<voxels>" },
+      { "name": "minsolids", "type": "float" }
+    ],
+    "returns": ["int3", "int3"],
+    "doc": ""
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.randomize",
+    "args": [
+      { "name": "world", "type": "resource<voxels>" },
+      { "name": "rnd_range", "type": "int" },
+      { "name": "cutoff", "type": "int" },
+      { "name": "paletteindex", "type": "int" },
+      { "name": "filter", "type": "int" }
+    ],
+    "doc": ""
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.erode",
+    "args": [
+      { "name": "world", "type": "resource<voxels>" },
+      { "name": "minsolid", "type": "int" },
+      { "name": "maxsolid", "type": "int" }
+    ],
+    "returns": ["resource<voxels>"],
+    "doc": ""
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.normal_indices",
+    "args": [
+      { "name": "block", "type": "resource<voxels>" },
+      { "name": "radius", "type": "int" }
+    ],
+    "returns": ["resource<voxels>"],
+    "doc": "creates a new block with normal indices based on voxel surface shape.the indices refer to the associated pallette.empty voxels will have a 0 length normal.2 is a good radius that balances speed/quality, use 1 for speed, 3 for max quality"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.load_image",
+    "args": [
+      { "name": "name", "type": "string" },
+      { "name": "depth", "type": "int" },
+      { "name": "edge", "type": "int" },
+      { "name": "numtiles", "type": "int2" }
+    ],
+    "returns": ["[resource<voxels>]"],
+    "doc": "loads an image file (same formats as gl.load_texture) and turns it into blocks. returns blocks or [] if file failed to load"
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.palette_storage_index",
+    "args": [{ "name": "block", "type": "resource<voxels>" }],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.get_palette_storage_len",
+    "args": [],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "cubegen",
+    "funcname": "cg.get_palette_storage_buf",
+    "args": [],
+    "returns": ["string"],
+    "doc": ""
+  },
+  {
+    "subsystem": "vr",
+    "funcname": "vr.init",
+    "args": [],
+    "returns": ["int"],
+    "doc": "initializes VR mode. returns true if a hmd was found and initialized"
+  },
+  {
+    "subsystem": "vr",
+    "funcname": "vr.start_eye",
+    "args": [
+      { "name": "isright", "type": "int" },
+      { "name": "znear", "type": "float" },
+      { "name": "zfar", "type": "float" }
+    ],
+    "doc": "starts rendering for an eye. call for each eye, followed by drawing the world as normal. replaces gl.perspective"
+  },
+  {
+    "subsystem": "vr",
+    "funcname": "vr.start",
+    "args": [],
+    "doc": "starts VR by updating hmd & controller poses"
+  },
+  {
+    "subsystem": "vr",
+    "funcname": "vr.finish",
+    "args": [],
+    "doc": "finishes vr rendering by compositing (and distorting) both eye renders to the screen"
+  },
+  {
+    "subsystem": "vr",
+    "funcname": "vr.set_eye_texture",
+    "args": [
+      { "name": "unit", "type": "int" },
+      { "name": "isright", "type": "int" }
+    ],
+    "doc": "sets the texture for an eye (like gl.set_primitive_texture). call after vr.finish. can be used to render the non-VR display"
+  },
+  {
+    "subsystem": "vr",
+    "funcname": "vr.num_motion_controllers",
+    "args": [],
+    "returns": ["int"],
+    "doc": "returns the number of motion controllers in the system"
+  },
+  {
+    "subsystem": "vr",
+    "funcname": "vr.motioncontrollerstracking",
+    "args": [{ "name": "n", "type": "int" }],
+    "returns": ["int"],
+    "doc": "returns if motion controller n is tracking"
+  },
+  {
+    "subsystem": "vr",
+    "funcname": "vr.motion_controller",
+    "args": [{ "name": "n", "type": "int" }],
+    "doc": "sets up the transform ready to render controller n. if there is no controller n (or it is currently not tracking) the identity transform is used"
+  },
+  {
+    "subsystem": "vr",
+    "funcname": "vr.create_motion_controller_mesh",
+    "args": [{ "name": "n", "type": "int" }],
+    "returns": ["resource<mesh>?"],
+    "doc": "returns the mesh for motion controller n, or nil if not available"
+  },
+  {
+    "subsystem": "vr",
+    "funcname": "vr.motion_controller_button",
+    "args": [
+      { "name": "n", "type": "int" },
+      { "name": "button", "type": "string" }
+    ],
+    "returns": ["int"],
+    "doc": "returns the button state for motion controller n. isdown: >= 1, wentdown: == 1, wentup: == 0, isup: <= 0. buttons are: system, menu, grip, trigger, touchpad"
+  },
+  {
+    "subsystem": "vr",
+    "funcname": "vr.motion_controller_vec",
+    "args": [
+      { "name": "n", "type": "int" },
+      { "name": "i", "type": "int" }
+    ],
+    "returns": ["float3"],
+    "doc": "returns one of the vectors for motion controller n. 0 = left, 1 = up, 2 = fwd, 4 = pos. These are in Y up space."
+  },
+  {
+    "subsystem": "vr",
+    "funcname": "vr.hmd_vec",
+    "args": [{ "name": "i", "type": "int" }],
+    "returns": ["float3"],
+    "doc": "returns one of the vectors for hmd pose. 0 = left, 1 = up, 2 = fwd, 4 = pos. These are in Y up space."
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.init",
+    "args": [
+      { "name": "appid", "type": "int" },
+      { "name": "allowscreenshots", "type": "bool" },
+      { "name": "initrelay", "type": "bool" }
+    ],
+    "returns": ["int"],
+    "doc": "initializes SteamWorks. returns 1 if succesful, 0 on failure. Specify a non-0 appid if you want to restart from steam if this wasn't started from steam (the return value in this case will be -1 to indicate you should terminate this instance). If you don't specify an appid here or in steam_appid.txt, init will likely fail. The other functions can still be called even if steam isn't active. allowscreenshots automatically uploads screenshots to steam (triggered by steam). initrelay initializes the relay network for p2p early, to save time when it is first used."
+  },
+  { "subsystem": "steam", "funcname": "steam.shutdown", "args": [], "doc": "" },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.overlay",
+    "args": [],
+    "returns": ["int"],
+    "doc": "returns true if the steam overlay is currently on (you may want to auto-pause if so)"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.username",
+    "args": [],
+    "returns": ["string"],
+    "doc": "returns the name of the steam user, or empty string if not available."
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.unlock_achievement",
+    "args": [{ "name": "achievementname", "type": "string" }],
+    "returns": ["int"],
+    "doc": "Unlocks an achievement and shows the achievement overlay if not already achieved before. Will also Q-up saving achievement to Steam. Returns true if succesful."
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.write_file",
+    "args": [
+      { "name": "file", "type": "string" },
+      { "name": "contents", "type": "string" }
+    ],
+    "returns": ["int"],
+    "doc": "writes a file with the contents of a string to the steam cloud, or local storage if that fails, returns false if writing wasn't possible at all"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.read_file",
+    "args": [{ "name": "file", "type": "string" }],
+    "returns": ["string?"],
+    "doc": "returns the contents of a file as a string from the steam cloud if available, or otherwise from local storage, or nil if the file can't be found at all."
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.update",
+    "args": [],
+    "doc": "you must call this function in your game loop when using most steam APIs"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.get_steam_id",
+    "args": [],
+    "returns": ["int"],
+    "doc": "get the steam id of the current user"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.friend_get_username",
+    "args": [{ "name": "steam_id", "type": "int" }],
+    "returns": ["string"],
+    "doc": "returns the name for the given steam id; this only works for friends, or users in the same lobby, chat room, game server, etc."
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.net_identity",
+    "args": [],
+    "returns": ["string"],
+    "doc": "returns the steam identity for this user. This same ID will be used for connecting to peers, sending messages, etc."
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.net_identity_from_steam_id",
+    "args": [{ "name": "steam_id", "type": "int" }],
+    "returns": ["string"],
+    "doc": "returns a network identity for the given steam id"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.p2p_set_send_buffer_size",
+    "args": [{ "name": "size", "type": "int" }],
+    "returns": ["int"],
+    "doc": "set the upper limit of pending bytes to be sent"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.p2p_set_recv_buffer_size",
+    "args": [{ "name": "size", "type": "int" }],
+    "doc": "upper limit on total size in bytes of received messages that will be buffered waiting to be processed by the application"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.p2p_get_connection_status",
+    "args": [{ "name": "ident", "type": "string" }],
+    "returns": [
+      "int",
+      "float",
+      "float",
+      "float",
+      "float",
+      "float",
+      "float",
+      "int",
+      "int",
+      "int",
+      "int",
+      "int"
+    ],
+    "doc": "receive realtime connection status info. Returned values are: ping, local quality, remote quality, out packets/sec, out bytes/sec, in packets/sec, in bytes/sec, send rate bytes/sec, pending unreliable packets, pending reliable packets, sent unACKed reliable packets, and queue time in usec. See ISteamNetworkingSockets::GetConnectionRealTimeStatus() for more info."
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.p2p_listen",
+    "args": [],
+    "returns": ["int"],
+    "doc": "open a listen socket to receive new connections"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.p2p_close_listen",
+    "args": [],
+    "returns": ["int"],
+    "doc": "close the listen socket and stop accepting new connections"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.p2p_connect",
+    "args": [{ "name": "ident", "type": "string" }],
+    "returns": ["int"],
+    "doc": "connect to a user with a given steam identity that has opened a listen socket"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.p2p_close_connection",
+    "args": [
+      { "name": "ident", "type": "string" },
+      { "name": "linger", "type": "bool" }
+    ],
+    "returns": ["int"],
+    "doc": "close a connection opened with p2p_connect(); if linger is true then the connection will remain open for a short time to finish pending messages"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.p2p_get_connections",
+    "args": [],
+    "returns": ["[string]"],
+    "doc": "get a list of the steam identites that are currently connected"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.p2p_send_message",
+    "args": [
+      { "name": "ident", "type": "string" },
+      { "name": "data", "type": "string" },
+      { "name": "reliable", "type": "bool" }
+    ],
+    "returns": ["int"],
+    "doc": "send a reliable message to a given steam identity"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.p2p_broadcast_message",
+    "args": [
+      { "name": "data", "type": "string" },
+      { "name": "reliable", "type": "bool" }
+    ],
+    "returns": ["int"],
+    "doc": "send a reliable message to all connected peers"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.p2p_receive_messages",
+    "args": [],
+    "returns": ["[string]", "[string]"],
+    "doc": "receive messages from all connected peers. The first return value is an array of messages, the second return value is an array of the steam identities that sent each message"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_create",
+    "args": [{ "name": "max_members", "type": "int" }],
+    "returns": ["int"],
+    "doc": "create a new lobby that allows at most a given number of members; this lobby will be automatically joined. use lobby_get_created() to get the newly created lobby's steam id"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_get_created",
+    "args": [],
+    "returns": ["int"],
+    "doc": "get the steam id of the most recently created lobby"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_join",
+    "args": [{ "name": "steam_id", "type": "int" }],
+    "returns": ["int"],
+    "doc": "join a lobby with the given steam id"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_leave",
+    "args": [{ "name": "steam_id", "type": "int" }],
+    "returns": ["int"],
+    "doc": "leave a lobby with the given steam id"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_set_joinable",
+    "args": [
+      { "name": "steam_id", "type": "int" },
+      { "name": "joinable", "type": "bool" }
+    ],
+    "returns": ["int"],
+    "doc": "mark a lobby as joinable; only works if you are the owner"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_get_joined",
+    "args": [],
+    "returns": ["int"],
+    "doc": "get a list of the most recent lobby joined with lobby_create() or lobby_join()"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_get_all_joined",
+    "args": [],
+    "returns": ["[int]"],
+    "doc": "get a list of all of the lobbies that have been joined with lobby_create() or lobby_join()"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_request_data",
+    "args": [{ "name": "steam_id", "type": "int" }],
+    "returns": ["int"],
+    "doc": "refresh data for a given lobby; it is not necessary to call this for any lobby that you have joined"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_get_data",
+    "args": [
+      { "name": "steam_id", "type": "int" },
+      { "name": "key", "type": "string" }
+    ],
+    "returns": ["string"],
+    "doc": "get the matching value for a given key stored on this lobby; if the key has not been set then the result is an empty string"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_get_all_data",
+    "args": [{ "name": "steam_id", "type": "int" }],
+    "returns": ["[string]", "[string]"],
+    "doc": "get all key-value pairs stored on this lobby"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_set_data",
+    "args": [
+      { "name": "steam_id", "type": "int" },
+      { "name": "key", "type": "string" },
+      { "name": "value", "type": "string" }
+    ],
+    "returns": ["int"],
+    "doc": "set a key-value pair for this lobby; only works if you are the owner"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_delete_data",
+    "args": [
+      { "name": "steam_id", "type": "int" },
+      { "name": "key", "type": "string" }
+    ],
+    "returns": ["int"],
+    "doc": "delete a key-value pair for this lobby; only works if you are the owner"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_get_num_members",
+    "args": [{ "name": "steam_id", "type": "int" }],
+    "returns": ["int"],
+    "doc": "get the number of members in this lobby"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_get_members",
+    "args": [{ "name": "steam_id", "type": "int" }],
+    "returns": ["[int]"],
+    "doc": "get the steam ids of all members in this lobby; only works if you have joined the lobby"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_request_add_numerical_filter",
+    "args": [
+      { "name": "key", "type": "string" },
+      { "name": "value", "type": "int" },
+      { "name": "cmp", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "add a numerical filter for the next lobby request"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_request_add_string_filter",
+    "args": [
+      { "name": "key", "type": "string" },
+      { "name": "value", "type": "string" },
+      { "name": "cmp", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "add a string filter for the next lobby request"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_request_add_result_count_filter",
+    "args": [{ "name": "count", "type": "int" }],
+    "returns": ["int"],
+    "doc": "add a result count limit for the next lobby request"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_request_list",
+    "args": [],
+    "returns": ["int"],
+    "doc": "request a list of lobbies that match the current set of filters; this function completes asynchronously, call lobby_request_is_ready() to determine when it is ready and lobby_request_get_lobbies() to get the results"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_request_list_reset",
+    "args": [],
+    "doc": "clear the list of matched lobbies, so lobby_request_is_ready() returns false"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_request_is_ready",
+    "args": [],
+    "returns": ["int"],
+    "doc": "returns true when a call to lobby_request_list() has finished"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_request_get_lobbies",
+    "args": [],
+    "returns": ["[int]"],
+    "doc": "returns the list of matched lobbies when lobby_request_list() has finished"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_get_game_server",
+    "args": [{ "name": "lobby_id", "type": "int" }],
+    "returns": ["int"],
+    "doc": "get the game server associated with this lobby"
+  },
+  {
+    "subsystem": "steam",
+    "funcname": "steam.lobby_set_game_server",
+    "args": [
+      { "name": "lobby_id", "type": "int" },
+      { "name": "server_id", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "set the game server associated with this lobby; only works if you are the owner"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.init",
+    "args": [
+      { "name": "dark_style", "type": "bool", "default": "false" },
+      { "name": "flags", "type": "int", "default": "0" },
+      { "name": "rounding", "type": "float", "default": "0.000000" },
+      { "name": "border", "type": "float", "default": "0.000000" }
+    ],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.add_font",
+    "args": [
+      { "name": "font_path", "type": "string" },
+      { "name": "size", "type": "float" }
+    ],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.set_style_color",
+    "args": [
+      { "name": "i", "type": "int" },
+      { "name": "color", "type": "float4" }
+    ],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.set_style_spacing",
+    "args": [{ "name": "spacing", "type": "float2" }],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.set_style_inner_spacing",
+    "args": [{ "name": "spacing", "type": "float2" }],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.set_style_window_padding",
+    "args": [{ "name": "spacing", "type": "float2" }],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.set_style_frame_padding",
+    "args": [{ "name": "spacing", "type": "float2" }],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.frame_start",
+    "args": [],
+    "doc": "(use im.frame instead)"
+  },
+  { "subsystem": "imgui", "funcname": "im.frame_end", "args": [], "doc": "" },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.dockspace_over_viewport",
+    "args": [],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.window_demo",
+    "args": [],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.window_start",
+    "args": [
+      { "name": "title", "type": "string" },
+      { "name": "flags", "type": "int" },
+      { "name": "dock", "type": "int" }
+    ],
+    "doc": "(use im.window instead)"
+  },
+  { "subsystem": "imgui", "funcname": "im.window_end", "args": [], "doc": "" },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.next_window_size",
+    "args": [
+      { "name": "size", "type": "float2" },
+      { "name": "cond", "type": "int" }
+    ],
+    "doc": "size in pixels"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.next_window_pos",
+    "args": [
+      { "name": "pos", "type": "float2" },
+      { "name": "pivot", "type": "float2" },
+      { "name": "cond", "type": "int" }
+    ],
+    "doc": "pos in pixels, pivot values 0..1 relative to pos"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.button",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "size", "type": "float2", "default": "nil" }
+    ],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.selectable",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "selected", "type": "bool", "default": "false" }
+    ],
+    "returns": ["int"],
+    "doc": ""
+  },
+  { "subsystem": "imgui", "funcname": "im.same_line", "args": [], "doc": "" },
+  { "subsystem": "imgui", "funcname": "im.new_line", "args": [], "doc": "" },
+  { "subsystem": "imgui", "funcname": "im.separator", "args": [], "doc": "" },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.is_item_deactivated_after_edit",
+    "args": [],
+    "returns": ["int"],
+    "doc": "returns true if the last item was made inactive and made a value change when it was active"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.get_layout_pos",
+    "args": [],
+    "returns": ["float2"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.set_layout_pos",
+    "args": [{ "name": "pos", "type": "float2" }],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.get_content_region_avail",
+    "args": [],
+    "returns": ["float2"],
+    "doc": "returns the amount of space left in the current region from the cursor pos"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.calc_text_size",
+    "args": [{ "name": "text", "type": "string" }],
+    "returns": ["float2"],
+    "doc": "returns the amount of space used by the given text in the current font"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.mouse_clicked",
+    "args": [{ "name": "button", "type": "int" }],
+    "returns": ["int"],
+    "doc": "returns whether the given mouse button was clicked anywhere"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.text",
+    "args": [{ "name": "label", "type": "string" }],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.text_wrapped",
+    "args": [{ "name": "label", "type": "string" }],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.font_start",
+    "args": [{ "name": "font_idx", "type": "int" }],
+    "doc": "(use im.font instead)"
+  },
+  { "subsystem": "imgui", "funcname": "im.font_end", "args": [], "doc": "" },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.color_start",
+    "args": [{ "name": "color", "type": "float4" }],
+    "doc": "(use im.tooltip_multi instead)"
+  },
+  { "subsystem": "imgui", "funcname": "im.color_end", "args": [], "doc": "" },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.tooltip",
+    "args": [{ "name": "label", "type": "string" }],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.tooltip_multi_start",
+    "args": [],
+    "returns": ["int"],
+    "doc": "(use im.tooltip_multi instead)"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.tooltip_multi_end",
+    "args": [],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.checkbox",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "bool", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.input_text",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "str", "type": "string" }
+    ],
+    "returns": ["string"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.input_text_multi_line",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "str", "type": "string" },
+      { "name": "num_lines", "type": "int" }
+    ],
+    "returns": ["string"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.input_int",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "val", "type": "int" },
+      { "name": "min", "type": "int" },
+      { "name": "max", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.input_int",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "val", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.input_float",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "val", "type": "float" }
+    ],
+    "returns": ["float"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.radio",
+    "args": [
+      { "name": "labels", "type": "[string]" },
+      { "name": "active", "type": "int" },
+      { "name": "horiz", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "active to select which one is activated, -2 for last frame's selection or 0"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.progress_bar",
+    "args": [
+      { "name": "fraction", "type": "float" },
+      { "name": "size", "type": "float2" },
+      { "name": "overlay", "type": "string" }
+    ],
+    "doc": "display progress bar filled up to the given fraction. size.x < 0 to use all available space,  size.x > 0 for a specific pixel width"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.combo",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "labels", "type": "[string]" },
+      { "name": "active", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "active to select which one is activated, -2 for last frame's selection or 0"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.listbox",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "labels", "type": "[string]" },
+      { "name": "active", "type": "int" },
+      { "name": "height", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "active to select which one is activated, -1 for no initial selection, -2 for last frame's selection or none"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.sliderint",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "i", "type": "int" },
+      { "name": "min", "type": "int" },
+      { "name": "max", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.sliderfloat",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "f", "type": "float" },
+      { "name": "min", "type": "float" },
+      { "name": "max", "type": "float" }
+    ],
+    "returns": ["float"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.sliderint2",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "I2", "type": "int2" },
+      { "name": "min", "type": "int" },
+      { "name": "max", "type": "int" }
+    ],
+    "returns": ["int2"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.sliderint3",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "I3", "type": "int3" },
+      { "name": "min", "type": "int" },
+      { "name": "max", "type": "int" }
+    ],
+    "returns": ["int3"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.sliderint4",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "I4", "type": "int4" },
+      { "name": "min", "type": "int" },
+      { "name": "max", "type": "int" }
+    ],
+    "returns": ["int4"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.sliderfloat2",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "F2", "type": "float2" },
+      { "name": "min", "type": "float" },
+      { "name": "max", "type": "float" }
+    ],
+    "returns": ["float2"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.sliderfloat3",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "F3", "type": "float3" },
+      { "name": "min", "type": "float" },
+      { "name": "max", "type": "float" }
+    ],
+    "returns": ["float3"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.sliderfloat4",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "F4", "type": "float4" },
+      { "name": "min", "type": "float" },
+      { "name": "max", "type": "float" }
+    ],
+    "returns": ["float4"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.coloredit",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "color", "type": "vec_f" }
+    ],
+    "returns": ["any"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.image",
+    "args": [
+      { "name": "tex", "type": "resource<texture>" },
+      { "name": "size", "type": "float2" },
+      { "name": "flip", "type": "bool", "default": "false" }
+    ],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.image_button",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "tex", "type": "resource<texture>" },
+      { "name": "size", "type": "float2" },
+      { "name": "bgcol", "type": "float4", "default": "nil" },
+      { "name": "flip", "type": "bool", "default": "false" }
+    ],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.image_mouseclick",
+    "args": [
+      { "name": "tex", "type": "resource<texture>" },
+      { "name": "size", "type": "float2" }
+    ],
+    "returns": ["float2", "int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.treenode_start",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "flags", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "(use im.treenode instead)"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.treenode_end",
+    "args": [],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.tab_bar_start",
+    "args": [{ "name": "label", "type": "string" }],
+    "returns": ["int"],
+    "doc": "(use im.tab_bar instead)"
+  },
+  { "subsystem": "imgui", "funcname": "im.tab_bar_end", "args": [], "doc": "" },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.tab_start",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "flags", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "(use im.tab instead)"
+  },
+  { "subsystem": "imgui", "funcname": "im.tab_end", "args": [], "doc": "" },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.menu_bar_start",
+    "args": [{ "name": "main", "type": "bool" }],
+    "returns": ["int"],
+    "doc": "(use im.menu_bar instead)"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.menu_bar_end",
+    "args": [{ "name": "main", "type": "bool" }],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.menu_start",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "disabled", "type": "bool", "default": "false" }
+    ],
+    "returns": ["int"],
+    "doc": "(use im.menu instead)"
+  },
+  { "subsystem": "imgui", "funcname": "im.menu_end", "args": [], "doc": "" },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.menu_item",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "shortcut", "type": "string", "default": "nil" },
+      { "name": "disabled", "type": "bool", "default": "false" }
+    ],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.menu_item_toggle",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "selected", "type": "bool", "default": "false" },
+      { "name": "disabled", "type": "bool", "default": "false" }
+    ],
+    "returns": ["int"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.id_start",
+    "args": [{ "name": "label", "type": "string" }],
+    "doc": "an invisble group around some widgets, useful to ensure these widgets are unique (if they have the same label as widgets in another group that has a different group label). Use im.id instead"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.id_start",
+    "args": [{ "name": "label", "type": "int" }],
+    "doc": "(integer version)"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.id_start",
+    "args": [{ "name": "label", "type": "any" }],
+    "doc": "(reference version)"
+  },
+  { "subsystem": "imgui", "funcname": "im.id_end", "args": [], "doc": "" },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.child_start",
+    "args": [
+      { "name": "title", "type": "string" },
+      { "name": "size", "type": "float2" },
+      { "name": "flags", "type": "int" }
+    ],
+    "doc": "create a self-contained scrolling/clipping region with a window. use im.child instead"
+  },
+  { "subsystem": "imgui", "funcname": "im.child_end", "args": [], "doc": "" },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.group_start",
+    "args": [],
+    "doc": "lock the horizontal starting position, and capture all contained widgets into one item. Use im.group instead"
+  },
+  { "subsystem": "imgui", "funcname": "im.group_end", "args": [], "doc": "" },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.popup_start",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "winflags", "type": "int" },
+      { "name": "rmbprevitem", "type": "bool", "default": "false" }
+    ],
+    "returns": ["int"],
+    "doc": "(use im.popup instead)"
+  },
+  { "subsystem": "imgui", "funcname": "im.popup_end", "args": [], "doc": "" },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.popup_open",
+    "args": [{ "name": "label", "type": "string" }],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.close_current_popup",
+    "args": [],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.disabled_start",
+    "args": [{ "name": "disabled", "type": "bool" }],
+    "doc": "(use im.disabled instead)"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.disabled_end",
+    "args": [],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.button_repeat_start",
+    "args": [{ "name": "repeat", "type": "bool" }],
+    "doc": "(use im.button_repeat instead)"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.button_repeat_end",
+    "args": [],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.drag_drop_source_start",
+    "args": [{ "name": "flags", "type": "int" }],
+    "returns": ["int"],
+    "doc": "(use im.drag_drop_source instead)"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.drag_drop_source_end",
+    "args": [],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.set_drag_drop_payload",
+    "args": [
+      { "name": "type", "type": "string" },
+      { "name": "data", "type": "string" }
+    ],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.drag_drop_target_start",
+    "args": [],
+    "returns": ["int"],
+    "doc": "(use im.drag_drop_target instead)"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.drag_drop_target_end",
+    "args": [],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.accept_drag_drop_payload",
+    "args": [
+      { "name": "type", "type": "string" },
+      { "name": "flags", "type": "int" }
+    ],
+    "returns": ["string?"],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.width_start",
+    "args": [{ "name": "width", "type": "float" }],
+    "doc": "Sets the width of an item: 0 = default, -1 = use full width without label, any other value is custom width. Use im.width instead"
+  },
+  { "subsystem": "imgui", "funcname": "im.width_end", "args": [], "doc": "" },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.text_table",
+    "args": [
+      { "name": "id", "type": "string" },
+      { "name": "num_colums", "type": "int" },
+      { "name": "labels", "type": "[string]" }
+    ],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.table_start",
+    "args": [
+      { "name": "id", "type": "string" },
+      { "name": "num_colums", "type": "int" },
+      { "name": "flags", "type": "int" }
+    ],
+    "returns": ["int"],
+    "doc": "(use im.table instead)"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.table_setup_column",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "flags", "type": "int" },
+      { "name": "init_width_or_weight", "type": "float" }
+    ],
+    "doc": "(use im.table instead)"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.table_headers_row",
+    "args": [],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.table_next_row",
+    "args": [],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.table_next_column",
+    "args": [],
+    "doc": ""
+  },
+  { "subsystem": "imgui", "funcname": "im.table_end", "args": [], "doc": "" },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.edit_anything",
+    "args": [
+      { "name": "value", "type": "any" },
+      { "name": "label", "type": "string", "default": "nil" }
+    ],
+    "returns": ["any"],
+    "doc": "creates a UI for any lobster reference value, and returns the edited version"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.graph",
+    "args": [
+      { "name": "label", "type": "string" },
+      { "name": "values", "type": "[float]" },
+      { "name": "ishistogram", "type": "int" }
+    ],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.show_flexbuffer",
+    "args": [{ "name": "value", "type": "string" }],
+    "doc": ""
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.show_vars",
+    "args": [],
+    "doc": "shows an automatic editing UI for each global variable in your program"
+  },
+  {
+    "subsystem": "imgui",
+    "funcname": "im.show_engine_stats",
+    "args": [],
+    "doc": ""
+  },
+  {
+    "subsystem": "imguidebug",
+    "funcname": "breakpoint",
+    "args": [{ "name": "condition", "type": "int" }],
+    "doc": "stops the program in the debugger if passed true. debugger needs --runtime-stack-trace on, and im.init() to have run."
+  },
+  {
+    "subsystem": "imguidebug",
+    "funcname": "breakpoint",
+    "args": [],
+    "doc": "stops the program in the debugger always. debugger needs --runtime-stack-trace on, and im.init() to have run."
+  }
+]

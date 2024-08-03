@@ -39,7 +39,8 @@ class Game:
     def search_deck(amount:int, card_filter)->[Card]: //):
         return []
 
-    def ask_to_activate()->bool:
+    def ask_to_activate(card_name)->bool:
+        print(card_name)
         return false
     
     def choice_selection(choices:[string])->int:
@@ -114,8 +115,8 @@ class Cli: Game
 
     // when something has the choice to be activated or not 
     //EX: When this card enters your Stable, you may DESTROY a Unicorn. If you do, SACRIFICE this card.
-    def ask_to_activate()->bool:
-        let option = get_line("activate this card? [y] [n]: ")//TODO: yes if just pressed enter
+    def ask_to_activate(card_name)->bool:
+        let option = get_line("activate this card [{card_name}]? [y] [n]: ")//TODO: yes if just pressed enter
         return option == "y" or option == "Y"
 
     def choice_selection(choices:[string])->int:

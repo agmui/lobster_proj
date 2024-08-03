@@ -1,0 +1,370 @@
+{
+    "map(xs, fun)": {
+        "scope": "lobster",
+        "prefix": "map",
+        "body": [
+            "map(${1:xs}, ${2: fun})"
+        ],
+        "description": "(from std) \n map(xs, fun): \n  \n "
+    },
+    "map2(xs, ys, fun)": {
+        "scope": "lobster",
+        "prefix": "map2",
+        "body": [
+            "map2(${1:xs}, ${2: ys}, ${3: fun})"
+        ],
+        "description": "(from std) \n map2(xs, ys, fun): \n  \n "
+    },
+    "filter(xs, fun)": {
+        "scope": "lobster",
+        "prefix": "filter",
+        "body": [
+            "filter(${1:xs}, ${2: fun})"
+        ],
+        "description": "(from std) \n filter(xs, fun): \n  \n "
+    },
+    "filter_indices(xs, fun)": {
+        "scope": "lobster",
+        "prefix": "filter_indices",
+        "body": [
+            "filter_indices(${1:xs}, ${2: fun})"
+        ],
+        "description": "(from std) \n filter_indices(xs, fun): \n  \n "
+    },
+    "partition(xs, fun)": {
+        "scope": "lobster",
+        "prefix": "partition",
+        "body": [
+            "partition(${1:xs}, ${2: fun})"
+        ],
+        "description": "(from std) \n partition(xs, fun): \n  \n "
+    },
+    "partition_indices(xs, fun)": {
+        "scope": "lobster",
+        "prefix": "partition_indices",
+        "body": [
+            "partition_indices(${1:xs}, ${2: fun})"
+        ],
+        "description": "(from std) \n partition_indices(xs, fun): \n  \n "
+    },
+    "exists(xs, fun)": {
+        "scope": "lobster",
+        "prefix": "exists",
+        "body": [
+            "exists(${1:xs}, ${2: fun})"
+        ],
+        "description": "(from std) \n exists(xs, fun): \n  \n "
+    },
+    "forever(fun)": {
+        "scope": "lobster",
+        "prefix": "forever",
+        "body": [
+            "forever(${1:fun})"
+        ],
+        "description": "(from std) \n forever(fun): \n  \n "
+    },
+    "fold(xs, acc, fun)": {
+        "scope": "lobster",
+        "prefix": "fold",
+        "body": [
+            "fold(${1:xs}, ${2: acc}, ${3: fun})"
+        ],
+        "description": "(from std) \n fold(xs, acc, fun): \n  \n "
+    },
+    "fold2(xs, acc1, acc2, fun)": {
+        "scope": "lobster",
+        "prefix": "fold2",
+        "body": [
+            "fold2(${1:xs}, ${2: acc1}, ${3: acc2}, ${4: fun})"
+        ],
+        "description": "(from std) \n fold2(xs, acc1, acc2, fun): \n  \n "
+    },
+    "reduce(xs, fun)": {
+        "scope": "lobster",
+        "prefix": "reduce",
+        "body": [
+            "reduce(${1:xs}, ${2: fun})"
+        ],
+        "description": "(from std) \n reduce(xs, fun): \n  \n "
+    },
+    "connect(xs, fun)": {
+        "scope": "lobster",
+        "prefix": "connect",
+        "body": [
+            "connect(${1:xs}, ${2: fun})"
+        ],
+        "description": "(from std) \n connect(xs, fun): \n  \n "
+    },
+    "reduce_reverse(xs, fun)": {
+        "scope": "lobster",
+        "prefix": "reduce_reverse",
+        "body": [
+            "reduce_reverse(${1:xs}, ${2: fun})"
+        ],
+        "description": "(from std) \n reduce_reverse(xs, fun): \n  \n "
+    },
+    "find(xs, fun)": {
+        "scope": "lobster",
+        "prefix": "find",
+        "body": [
+            "find(${1:xs}, ${2: fun})"
+        ],
+        "description": "(from std) \n find(xs, fun): \n  Returns index of element or -1 if not found. \n "
+    },
+    "find_or(xs, defval, fun)": {
+        "scope": "lobster",
+        "prefix": "find_or",
+        "body": [
+            "find_or(${1:xs}, ${2: defval}, ${3: fun})"
+        ],
+        "description": "(from std) \n find_or(xs, defval, fun): \n  Returns element and index or defval and -1 if not found. \n "
+    },
+    "find_or_push(xs, newval, fun)": {
+        "scope": "lobster",
+        "prefix": "find_or_push",
+        "body": [
+            "find_or_push(${1:xs}, ${2: newval}, ${3: fun})"
+        ],
+        "description": "(from std) \n find_or_push(xs, newval, fun): \n  Returns element and index, and pushes newval if not found. \n "
+    },
+    "find_best<R>(xs, fun)": {
+        "scope": "lobster",
+        "prefix": "find_best<R>",
+        "body": [
+            "find_best<R>(${1:xs}, ${2: fun})"
+        ],
+        "description": "(from std) \n find_best<R>(xs, fun): \n  return element index for which fun returns biggest value of type R (float or int). \n "
+    },
+    "weighted_pick<R, T>(list:[T], wf)": {
+        "scope": "lobster",
+        "prefix": "weighted_pick<R, T>",
+        "body": [
+            "weighted_pick<R, T>(${1:list:[T]}, ${2: wf})"
+        ],
+        "description": "(from std) \n weighted_pick<R, T>(list:[T], wf): \n  return a random pick that takes that weight into account. \n "
+    },
+    "sum<T>(xs:[T])": {
+        "scope": "lobster",
+        "prefix": "sum<T>",
+        "body": [
+            "sum<T>(${1:xs:[T]})"
+        ],
+        "description": "(from std) \n sum<T>(xs:[T]): \n  These work on int or float vectors. \n "
+    },
+    "product<T>(xs:[T])": {
+        "scope": "lobster",
+        "prefix": "product<T>",
+        "body": [
+            "product<T>(${1:xs:[T]})"
+        ],
+        "description": "(from std) \n product<T>(xs:[T]): \n  \n "
+    },
+    "zip(xs, ys)": {
+        "scope": "lobster",
+        "prefix": "zip",
+        "body": [
+            "zip(${1:xs}, ${2: ys})"
+        ],
+        "description": "(from std) \n zip(xs, ys): \n  \n "
+    },
+    "reverse(xs, fun)": {
+        "scope": "lobster",
+        "prefix": "reverse",
+        "body": [
+            "reverse(${1:xs}, ${2: fun})"
+        ],
+        "description": "(from std) \n reverse(xs, fun): \n  \n "
+    },
+    "reverse_map(xs, fun)": {
+        "scope": "lobster",
+        "prefix": "reverse_map",
+        "body": [
+            "reverse_map(${1:xs}, ${2: fun})"
+        ],
+        "description": "(from std) \n reverse_map(xs, fun): \n  \n "
+    },
+    "reverse_fold(xs, acc, fun)": {
+        "scope": "lobster",
+        "prefix": "reverse_fold",
+        "body": [
+            "reverse_fold(${1:xs}, ${2: acc}, ${3: fun})"
+        ],
+        "description": "(from std) \n reverse_fold(xs, acc, fun): \n  \n "
+    },
+    "reverse_find(xs, fun)": {
+        "scope": "lobster",
+        "prefix": "reverse_find",
+        "body": [
+            "reverse_find(${1:xs}, ${2: fun})"
+        ],
+        "description": "(from std) \n reverse_find(xs, fun): \n  \n "
+    },
+    "reverse_list(xs)": {
+        "scope": "lobster",
+        "prefix": "reverse_list",
+        "body": [
+            "reverse_list(${1:xs})"
+        ],
+        "description": "(from std) \n reverse_list(xs): \n  \n "
+    },
+    "flatten(xs)": {
+        "scope": "lobster",
+        "prefix": "flatten",
+        "body": [
+            "flatten(${1:xs})"
+        ],
+        "description": "(from std) \n flatten(xs): \n  \n "
+    },
+    "split(l, f)": {
+        "scope": "lobster",
+        "prefix": "split",
+        "body": [
+            "split(${1:l}, ${2: f})"
+        ],
+        "description": "(from std) \n split(l, f): \n  \n "
+    },
+    "rnd_pick(xs)": {
+        "scope": "lobster",
+        "prefix": "rnd_pick",
+        "body": [
+            "rnd_pick(${1:xs})"
+        ],
+        "description": "(from std) \n rnd_pick(xs): \n  \n "
+    },
+    "rnd_pick2(xs)": {
+        "scope": "lobster",
+        "prefix": "rnd_pick2",
+        "body": [
+            "rnd_pick2(${1:xs})"
+        ],
+        "description": "(from std) \n rnd_pick2(xs): \n  \n "
+    },
+    "qsort_in_place(xs, lt)": {
+        "scope": "lobster",
+        "prefix": "qsort_in_place",
+        "body": [
+            "qsort_in_place(${1:xs}, ${2: lt})"
+        ],
+        "description": "(from std) \n qsort_in_place(xs, lt): \n  \n "
+    },
+    "insertion_sort(xs, lt)": {
+        "scope": "lobster",
+        "prefix": "insertion_sort",
+        "body": [
+            "insertion_sort(${1:xs}, ${2: lt})"
+        ],
+        "description": "(from std) \n insertion_sort(xs, lt): \n  \n "
+    },
+    "insert_ordered(xs, x, lt)": {
+        "scope": "lobster",
+        "prefix": "insert_ordered",
+        "body": [
+            "insert_ordered(${1:xs}, ${2: x}, ${3: lt})"
+        ],
+        "description": "(from std) \n insert_ordered(xs, x, lt): \n  \n "
+    },
+    "shuffle(xs)": {
+        "scope": "lobster",
+        "prefix": "shuffle",
+        "body": [
+            "shuffle(${1:xs})"
+        ],
+        "description": "(from std) \n shuffle(xs): \n  \n "
+    },
+    "nest_if(c, nest, with)": {
+        "scope": "lobster",
+        "prefix": "nest_if",
+        "body": [
+            "nest_if(${1:c}, ${2: nest}, ${3: with})"
+        ],
+        "description": "(from std) \n nest_if(c, nest, with): \n  \n "
+    },
+    "return_after(v, f)": {
+        "scope": "lobster",
+        "prefix": "return_after",
+        "body": [
+            "return_after(${1:v}, ${2: f})"
+        ],
+        "description": "(from std) \n return_after(v, f): \n  \n "
+    },
+    "do(f)": {
+        "scope": "lobster",
+        "prefix": "do",
+        "body": [
+            "do(${1:f})"
+        ],
+        "description": "(from std) \n do(f): return f()  // Useful to create a scope where there is none. \n  Useful to create a scope where there is none. \n "
+    },
+    "for_bias (num, bias,  fun)": {
+        "scope": "lobster",
+        "prefix": "for_bias ",
+        "body": [
+            "for_bias (${1:num}, ${2: bias}, ${3:  fun})"
+        ],
+        "description": "(from std) \n for_bias (num, bias,  fun): \n  \n "
+    },
+    "for_scale(num, scale, fun)": {
+        "scope": "lobster",
+        "prefix": "for_scale",
+        "body": [
+            "for_scale(${1:num}, ${2: scale}, ${3: fun})"
+        ],
+        "description": "(from std) \n for_scale(num, scale, fun): \n  \n "
+    },
+    "for_range(a, b, fun)": {
+        "scope": "lobster",
+        "prefix": "for_range",
+        "body": [
+            "for_range(${1:a}, ${2: b}, ${3: fun})"
+        ],
+        "description": "(from std) \n for_range(a, b, fun): \n  \n "
+    },
+    "for_range_incl(a, b, fun)": {
+        "scope": "lobster",
+        "prefix": "for_range_incl",
+        "body": [
+            "for_range_incl(${1:a}, ${2: b}, ${3: fun})"
+        ],
+        "description": "(from std) \n for_range_incl(a, b, fun): \n  \n "
+    },
+    "collect(hof)": {
+        "scope": "lobster",
+        "prefix": "collect",
+        "body": [
+            "collect(${1:hof})"
+        ],
+        "description": "(from std) \n collect(hof): \n  HOFs that work on other HOFs: \n "
+    },
+    "fatal_exit(msg)": {
+        "scope": "lobster",
+        "prefix": "fatal_exit",
+        "body": [
+            "fatal_exit(${1:msg})"
+        ],
+        "description": "(from std) \n fatal_exit(msg): \n  error checking \n "
+    },
+    "fatal(msg)": {
+        "scope": "lobster",
+        "prefix": "fatal",
+        "body": [
+            "fatal(${1:msg})"
+        ],
+        "description": "(from std) \n fatal(msg): \n  \n "
+    },
+    "check(val, msg)": {
+        "scope": "lobster",
+        "prefix": "check",
+        "body": [
+            "check(${1:val}, ${2: msg})"
+        ],
+        "description": "(from std) \n check(val, msg): \n  \n "
+    },
+    "print(a, b)": {
+        "scope": "lobster",
+        "prefix": "print",
+        "body": [
+            "print(${1:a}, ${2: b})"
+        ],
+        "description": "(from std) \n print(a, b): \n  print helpers \n "
+    }
+}

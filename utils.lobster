@@ -5,9 +5,18 @@ import terminal_colors
 let cdr = fn arr: slice(arr,1,-1)
 let cons = fn x, arr: insert(arr, 0, x)
 
+def do2(f,a): return f(a)  
+def do3(f,a,b): return f(a,b)  
+
 // def print<T>(x:T,str_name:string):
 //     print(str_name+":", x)
 
+
+def str_builder(xs, fun):
+    return map(xs,fun).concat_string("")
+
+def str_builder(xs, sep, fun):
+    return map(xs,fun).concat_string(sep)
 
 def print(a, b, c):
     print "{a} {b} {c}"

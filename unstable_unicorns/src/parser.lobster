@@ -16,6 +16,17 @@ abstract class parser:
     def parse_file(g: Game) -> [Card],[Card]: //):
         return [],[]
 
+/*
+useful links:
+https://flatbuffers.dev/flatbuffers_guide_tutorial.html
+https://github.com/google/flatbuffers/blob/master/samples/monster_generated.lobster
+https://github.com/google/flatbuffers/blob/master/tests/lobstertest.lobster
+https://github.com/google/flatbuffers/blob/master/lobster/flatbuffers.lobster
+https://github.com/google/flatbuffers/blob/master/samples/sample_binary.lobster
+https://flatbuffers.dev/flatbuffers_guide_use_lobster.html
+https://github.com/google/flatbuffers/blob/master/samples/sample_text.lobster
+https://github.com/google/flatbuffers/blob/master/samples/monsterdata.json
+*/
 class json_parser: parser
     file_name: string = "../data/data_copy.json"
 
@@ -227,22 +238,23 @@ class mock_parser: parser
 
         return [
             //== DEBUG ==
-            ctc.copy(),
             //===========
             bb.copy(), bb.copy(), bb.copy(), bb2.copy(),
         ],[
+            ExtraLife(cardAction),
+            poison.copy(),
             csu.copy(),
             pup.copy(),
-            swh.copy(),
-            gtb.copy(),
             //-------
+            poison.copy(),
+            gtb.copy(),
             stu.copy(),
-            poison.copy(),
             tfo.copy(),
-            bku.copy(),
             //-------
+            bku.copy(),
+            swh.copy(),
+            ctc.copy(),
             gtb.copy(),
-            poison.copy(),
             ucm.copy(),
             csu.copy(),
             ucl.copy(), 

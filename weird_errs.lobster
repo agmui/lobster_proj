@@ -1,6 +1,61 @@
 import std
 
 
+
+//------------------------------------------------------------
+// cant do generic classes with 2 constrictor
+//------------------------------------------------------------
+class A<T>:
+    x:[T]
+
+constructor A<T>(x:T):
+    return A{[x]}
+
+constructor A<T>(x:[T]):
+    return A{x}
+
+// A([1])
+A<int>([1])
+//------------------------------------------------------------
+// cant run function?
+//------------------------------------------------------------
+def fun_format(x:int)->void //):
+
+class B:
+    fun: fun_format
+    def run(x):
+        fun(x)// use do2(fun,x) for fix
+let fun = fn x: pass()
+B{fun}.run(1)
+
+//------------------------------------------------------------
+// weird parsing error
+//------------------------------------------------------------
+
+def notify_format(msg:int)-> void //):
+
+class Subscriber:
+    notify_func: notify_format = fn msg: pass()
+
+let sub1 = Subscriber{}
+let sub2 = Subscriber{}
+
+
+//------------------------------------------------------------
+// cant use multiline in lambda in constructor?
+//------------------------------------------------------------
+def lambda_format(x:int)->void //):
+
+class A:
+    lambda: lambda_format
+
+A{fn x:
+    // assert x is int
+    print("")
+    print("")
+}
+
+
 //------------------------------------------------------------
 // weird nilable type guard check
 //------------------------------------------------------------

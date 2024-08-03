@@ -40,6 +40,9 @@ class Player:
 
     def discard(card:Card):
         hand.remove_obj(card)
+    def discard(card:[Card]):
+        for(card)c:
+            discard(c)
 
     def id():
         return id

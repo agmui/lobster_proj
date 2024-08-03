@@ -3,6 +3,7 @@ import terminal_colors
 
 import const
 import CardAction
+import Publisher
 
 
 enum CardType:
@@ -16,6 +17,10 @@ enum CardType:
     ultimate_unicorn
 
 let up_downgrade_filter = fn cards: filter(cards)c: c.type == upgrade or c.type == downgrade
+
+def is_unicorn(card):
+    return exists([baby_unicorn, basic_unicorn, magical_unicorn, ultimate_unicorn])t:
+        card.type == t
 
 class GameState//:
 
@@ -54,7 +59,7 @@ class Card:
     def enter_stable(caller):
         pass()
 
-    def on_deletion(caller):
+    def leave_stable(caller):
         pass()
 
     def activate(caller):
@@ -104,7 +109,7 @@ class UnicornPoison: Card
     // text: string = "DESTROY a Unicorn."
 
     def activate(caller):
-        cardAction.destroy(caller)
+        cardAction.destroy_menu(caller)
 
 class BlackKnightUnicorn: Card
 //   text: string = "If one of your Unicorns would be destroyed, you may SACRIFICE this card instead."
@@ -115,15 +120,15 @@ class SharkWithAHorn: Card
 // If you do, SACRIFICE this card."
 
     def enter_stable(caller):
-        if cardAction.ask_to_activate():
-            cardAction.destroy(caller)
+        if cardAction.ask_to_activate(this.fmt()):
+            cardAction.destroy_menu(caller)
             caller.remove_stable(this)
 
 class TwoForOne: Card
 //	SACRIFICE a card, then DESTROY two cards.
     def activate(caller):
-        cardAction.sacrifice(caller)
-        cardAction.destroy(caller, 2)//FIXME: remove the caller.stable() arg
+        cardAction.sacrifice_menu(caller)
+        cardAction.destroy_menu(caller, 2)//FIXME: remove the caller.stable() arg
 
 class GlitterBomb: Card
 //upgrade
@@ -136,8 +141,8 @@ class GlitterBomb: Card
             error("Not start of turn, can\'t activate {name} at this time")
         let cards = caller.stable().copy() //TODO: should not need to copy? the getter should already return a copy?
         cards.remove_obj(this)
-        cardAction.sacrifice(caller, cards)
-        cardAction.destroy(caller)
+        cardAction.sacrifice_menu(caller, cards)
+        cardAction.destroy_menu(caller)
 
 class UnicornLasso: Resolver
 //upgrade
@@ -220,7 +225,7 @@ class UnicornMafia: Card
 // you may DISCARD 2 cards.
 // If you do, SACRIFICE or DESTROY a card.
     def activate(caller):
-        cardAction.discard(caller,caller.hand(),2)
+        cardAction.discard_menu(caller,caller.hand(),2)
         cardAction.sacrifice_or_destroy(caller)
 
 class StabbyTheUnicorn:Card
@@ -228,10 +233,10 @@ class StabbyTheUnicorn:Card
 
 // If this card is sacrificed or destroyed,
 // you may DESTROY a Unicorn
-    def on_deletion(caller):
+    def leave_stable(caller):
         print("{BRED}-- {name}: on deletion activation --{reset}")
-        if cardAction.ask_to_activate():
-            cardAction.destroy(caller)
+        if cardAction.ask_to_activate(this.fmt()):
+            cardAction.destroy_menu(caller)
 
 class ChainsawUnicorn:Card
 // Magical Unicorn	
@@ -239,7 +244,7 @@ class ChainsawUnicorn:Card
 // When this card enters your Stable,
 // you may SACRIFICE or DESTROY an Upgrade or Downgrade card.
     def enter_stable(caller):
-        if cardAction.ask_to_activate():
+        if cardAction.ask_to_activate(this.fmt()):
             cardAction.sacrifice_or_destroy(caller,1,up_downgrade_filter)
 
 
@@ -265,25 +270,149 @@ class ControlledChaos: Card
 // DESTROY a Unicorn card OR search the deck for a Unicorn card and
 // add it to your hand. Shuffle the deck.	
     def activate(caller):
-        cardAction.discard(caller, caller.hand(), 2)
+        cardAction.discard_menu(caller, caller.hand(), 2)
         let choices = [
             "DESTROY a Unicorn card ",
             "search the deck for a Unicorn card and add it to your hand. Shuffle the deck."
         ]
         if cardAction.choice_selection(choices) == 0:
-            cardAction.destroy(caller)
+            cardAction.destroy_menu(caller)
         else:
             let card_filter = fn cards:
                 filter(cards)c:
                     c.type == basic_unicorn or c.type == magical_unicorn or c.type == ultimate_unicorn
             let chosen_card = cardAction.search_deck(1,card_filter)[0]
             cardAction.move(game_state().get_deck(), caller.hand(), chosen_card)
+            game_state().shuffle_deck()
 
-class ExtraLife:Card
+class ExtraLife: Card
+    sacrifice_destroy = Subscriber<card_event,ExtraLife>()
+    c: Player? = nil
+
+    def enter_stable(caller):
+        this.c = caller
+        let pub = game_state().sacrifice_pub
+        let pub2 = game_state().destroy_pub
+        sacrifice_destroy.subscribe(pub)
+        sacrifice_destroy.subscribe(pub2)
+
+    //on leaving the stable unsubscribe
+    def leave_stable(caller):
+        let pub = game_state().sacrifice_pub
+        let pub2 = game_state().destroy_pub
+        sacrifice_destroy.unsubscribe(pub)
+        sacrifice_destroy.unsubscribe(pub2)
+
+constructor ExtraLife(ca):
+    let etl = ExtraLife{
+        "Extra Life", "Extra_Life.png",
+        """
+        If a Unicorn card in your Stable is sacrificed or destroyed,
+        you may SACRIFICE this card. If you do,
+        bring that card from the discard pile directly into your Stable.	
+        """,
+        upgrade, RED, ca
+    }
+
+    etl.sacrifice_destroy = Subscriber<card_event>(etl)msg:
+        let data, this = msg.get_data<card_event,ExtraLife>()
+        let player, cards = data.player, data.cards
+
+        guard this.c != nil and player != this.c
+        if (exists(cards): _!=this):
+            if this.cardAction.ask_to_activate(this.fmt()):
+                let card = this.cardAction.choose_card(cards)
+                this.cardAction.sacrifice(this.c, [this]::Card)
+                this.cardAction.move(this.game_state().get_discard(),this.c.stable(),card)
+                card.enter_stable(this.c)
+    return etl
+
+// ---
+
+// Hex
+// Downgrade
+// If this card is in your Stable at the beginning of your turn,
+// skip your Draw phase. If at any time you have no cards in your hand,
+// move this card to any player's Stable.	
+
+// Unicorn Abduction
+// Downgrade
+// If this card is in your Stable at the beginning of your turn,
+// shuffle a Unicorn card from your Stable into the deck, then DRAW a card.
+// If at anytime you have no Unicorn cards in your Stable,
+// SACRIFICE this card.
+
+// Brain Freeze
+// Downgrade
+// You cannot play Instant cards.	
+
+// Yay
 // Upgrade
-// If a Unicorn card in your Stable is sacrificed or destroyed,
-// you may SACRIFICE this card. If you do,
-// bring that card from the discard pile directly into your Stable.	
+// As long as this card is in your Stable, cards you play cannot be Neigh’d.
 
+// Divine Peace
+// Downgrade
+// Your card effects cannot DESTROY cards.
 
+// Rainbow Aura
+// Upgrade
+// As long as this card is in your Stable, your Unicorns cannot be destroyed.
+
+// Slowdown
+// Downgrade
+// As long as this card is in your Stable, you cannot play Instant cards.
+
+// Broken Stable
+// Downgrade
+// As long as this card is in your Stable, you cannot play Upgrade cards.
+
+// Blinding Light
+//Downgrade
+// As long as this card is in your Stable, your Unicorn card effects cannot be activated.
+
+// Wall Of Horns
+// Upgrade
+// If any player destroys a Unicorn card in your Stable,
+// you may pull a card from that player's hand and add it to your hand.	
+
+// Unicorn Bribe
+// Upgrade
+// If one of your Unicorn cards would be sacrificed or destroyed,
+// you may SACRIFICE an Upgrade or Downgrade card instead
+
+// Objection
+//Upgrade
+// When any other player tries to play a Neigh card, you may DISCARD a card.
+// If you do, stop that card from being played and 
+// return the Neigh card back to that player's hand.
+// That player cannot play a Neigh this turn.	
+
+// Critical Hit
+//Upgrade
+// When you play a Magic card, you may SACRIFICE this card. If you do,
+// return the Magic card to your hand, then immediately play it again.	
+
+// Glass Half Full
+//Upgrade
+// Each time a Downgrade card enters your Stable,
+// you may search the deck for an Upgrade card and 
+// bring it directly into your Stable. Shuffle the deck.	
+
+// Retribution
+// Upgrade
+// Each time any other player destroys a Unicorn card in your Stable,
+// you may DESTROY a Unicorn card in that player's Stable.
+
+// Toll Booth
+// Downgrade
+// Each time you play a Unicorn card from your hand, DISCARD a card.
+
+// Barbed Wire
+// downgrade
+// As long as this card is in your Stable,
+// you must DISCARD a card each time a Unicorn enters or leaves your Stable.
+
+// Queen Bee Unicorn
+// Ultimate Unicorn
+// As long as this card is in your Stable, no other player can play Basic Unicorns.
 
