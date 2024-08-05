@@ -10,6 +10,7 @@ import Game
 import parser
 
 set_print_depth(3)
+rnd_seed(69)
 
 def init_mock_players():
     let p0 = Player{"player 0"}

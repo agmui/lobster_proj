@@ -36,7 +36,7 @@ useful functions:
 // * return to hand?(stable -> hand) (Temporal Paradox)
 // * choose cards from discard (Nightmare's Conjuring, Kittencorn Burglar)
 * player to the left func? (mery-go-round)
-* choose from other players hand
+// * choose from other players hand
 * would be destroyed (unicorn bribe, BlackKnightUnicorn)
 */
 class CardAction:
@@ -149,13 +149,12 @@ class CardAction:
         steal(caller, chosen_player, chosen_cards)
         return chosen_cards, chosen_player
 
-    def choose_from_hand(caller:Player, amount:int=1):
+    def choose_from_hand(caller:Player, can_peek:bool=true, amount:int=1):
         let players = game.get_game_state().get_players().copy()
         players.remove_obj(caller)
 
-        let chosen_card, chosen_player = game.take_from_hand_submenu(players, amount)
+        let chosen_card, chosen_player = game.take_from_hand_submenu(players, can_peek, amount)
         chosen_player.taken_from_hand(chosen_card)
-        // caller.add_to_hand(chosen_card)
         return chosen_card
 
     def ask_to_activate(card_name)->bool:

@@ -39,7 +39,7 @@ class Game:
     def steal_submenu(players:[Player], amount:int, card_filter):
         return [Card{"","","",baby_unicorn,GRN,CardAction{this}}], g.get_players()[0]
 
-    def take_from_hand_submenu(players:[Player], amount:int):
+    def take_from_hand_submenu(players:[Player], can_peek:bool, amount:int):
         return [Card{"","","",baby_unicorn,GRN,CardAction{this}}], g.get_players()[0]
 
     def peek_top_deck(amount:int)->[Card]: //):
@@ -134,10 +134,15 @@ class Cli: Game
         let chosen_player: Player = choose_player(players)
         return choose_cards(card_filter(chosen_player.stable()), amount), chosen_player
     
-    def take_from_hand_submenu(players:[Player], amount:int):
+    def take_from_hand_submenu(players:[Player], can_peek:bool, amount:int):
         print("{GRNHB}-- chose from hand: --{reset}")
         let chosen_player = choose_player(players)
-        return choose_cards(chosen_player.hand(), amount), chosen_player
+        if can_peek:
+            return choose_cards(chosen_player.hand(), amount), chosen_player
+        else://TODO: maybe make a func called pull (Wall of horns)
+            let chosen_cards = rnd_sep(chosen_player.hand(), amount)
+            print("rng taken:", str_builder(chosen_cards): _.fmt()+" | ", "\n")
+            return chosen_cards, chosen_player
 
     // when something has the choice to be activated or not 
     //EX: When this card enters your Stable, you may DESTROY a Unicorn. If you do, SACRIFICE this card.
