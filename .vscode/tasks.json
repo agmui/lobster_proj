@@ -28,6 +28,7 @@
                 
                 // "--import","utils.lobster",
                 // "--runtime-stack-traces",
+                // "--runtime-no-asserts",
                 
                 // "${file}"/*
                 "unstable_unicorns/src/main.lobster",//*/
@@ -38,10 +39,10 @@
 
              ],
             "presentation": {
-                "reveal": "silent",
+                // "reveal": "silent",
                 "echo": true,
                 "panel": "shared",
-                "focus": false
+                "focus": true
             },
             "group": {
                 "kind": "build",

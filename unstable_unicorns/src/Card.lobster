@@ -18,6 +18,7 @@ enum CardType:
 
 let up_downgrade_filter = fn cards: filter(cards)c: c.type == upgrade or c.type == downgrade
 
+//TODO: maybe move into Card class
 def is_unicorn(card):
     return exists([baby_unicorn, basic_unicorn, magical_unicorn, ultimate_unicorn])t:
         card.type == t
@@ -59,51 +60,46 @@ class Card:
     def enter_stable(caller):
         pass()
 
-    def leave_stable(caller):
+    //NOTE:
+    // should only be used when sacrificing or destroying (Stabby the unicorn)
+    def sac_or_destroy(caller):
         pass()
 
     def activate(caller):
         error("can not activate {name}\n")
     
+    def forced_activate(caller):
+        pass()
     
     def unicorn_type_fmt()->string:
         return switch type:
-            case instant:
-                "{RED}!{reset}"
-            case magic:
-                "{GRN}*{reset}"
-            case upgrade:
-                "{YEL}^{reset}"
-            case downgrade:
-                "{YEL}v{reset}"
-            case baby_unicorn:
-                "{BLK} {reset}"
-            case basic_unicorn:
-                "{BLU}*{reset}"
-            case magical_unicorn:
-                "{BBLU}x{reset}"
-            case ultimate_unicorn:
-                "{BLUHB}X{reset}"
-            default:
-                " "
+            case instant: "{RED}!{reset}"
+            case magic: "{GRN}*{reset}"
+            case upgrade: "{YEL}^{reset}"
+            case downgrade: "{YEL}v{reset}"
+            case baby_unicorn: "{BLK} {reset}"
+            case basic_unicorn: "{BLU}*{reset}"
+            case magical_unicorn: "{BBLU}x{reset}"
+            case ultimate_unicorn: "{BLUHB}X{reset}"
+            default: " "
     def fmt():
         return "{unicorn_type_fmt()} {cli_color}{name}{reset}"
 
-abstract class Resolver: Card //TODO: better name
-    def end_phase_code():
-// point of this func is to always call remove_from_end after it
-        error("has no end phase code")
-        return false
-
-    def end_phase_resolver():
-        let res = end_phase_code()
-        game_state().remove_from_end_phase(this)
-        return res
 
 class BabyUnicorn_Pink: Card
 class BabyUnicorn_Red: Card
 // If this card would be sacrificed, destroyed, or returned to your hand,
 // TODO: return it to the Nursery instead.
+
+class BasicUnicornRed: Card
+constructor BasicUnicornRed(ca):
+    return BasicUnicornRed{
+        "Basic Unicorn (Red)", 
+        "Basic_Unicorn_(Red).png",
+        "Beards are like, so hot.",
+        basic_unicorn, RED, ca
+    }
+    
 
 class UnicornPoison: Card
     // text: string = "DESTROY a Unicorn."
@@ -111,18 +107,30 @@ class UnicornPoison: Card
     def activate(caller):
         cardAction.destroy_menu(caller)
 
-class BlackKnightUnicorn: Card
-//   text: string = "If one of your Unicorns would be destroyed, you may SACRIFICE this card instead."
-
 
 class SharkWithAHorn: Card
-// "When this card enters your Stable, you may DESTROY a Unicorn. 
-// If you do, SACRIFICE this card."
-
     def enter_stable(caller):
         if cardAction.ask_to_activate(this.fmt()):
+            cardAction.sacrifice(caller, this)
             cardAction.destroy_menu(caller)
-            caller.remove_stable(this)
+    
+constructor SharkWithAHorn(ca):
+    return SharkWithAHorn{
+            "Shark With A Horn",
+            "Shark_With_A_Horn.png",
+            """
+            When this card enters your Stable, you may SACRIFICE this card.
+            If you do, DESTROY a Unicorn card.
+            """,
+            magical_unicorn, BLU, ca
+        }
+
+
+
+// Second Print
+// When this card enters your Stable, you may SACRIFICE this card.
+// If you do, DESTROY a Unicorn card.
+    
 
 class TwoForOne: Card
 //	SACRIFICE a card, then DESTROY two cards.
@@ -144,79 +152,90 @@ class GlitterBomb: Card
         cardAction.sacrifice_menu(caller, cards)
         cardAction.destroy_menu(caller)
 
-class UnicornLasso: Resolver
-//upgrade
-
-// if this card is in your Stable at the beginning of your turn,
-// you may move a Unicorn from any player's Stable to your Stable.
-// At the end of your turn, move the Unicorn to its First Stable.
+class UnicornLasso: Card 
+    end_phase_sub = Subscriber<Empty,UnicornLasso>()
     card_moved:Card?=nil
     original_player:Player? = nil
-    caller_:Player?=nil
+    c:Player?=nil
+
+    def enter_stable(caller):
+        this.c = caller
+        let pub = game_state().end_phase_pub
+        end_phase_sub.subscribe(pub)
+
+    def sac_or_destroy(caller):
+        card_moved = nil
+        original_player = nil
+        c = nil
+        let pub = game_state().end_phase_pub
+        end_phase_sub.unsubscribe(pub)
 
     def activate(caller):
-        this.caller_ = caller
-        //FIXME: should not be calling choose functions
-        let players = game_state().get_players.copy()
-        players.remove_obj(caller)
-        original_player = cardAction.get_game().choose_player(players)
-        card_moved = cardAction.get_game().choose_card(original_player.stable())
-        cardAction.move(original_player.stable(), caller.stable(), card_moved)
-        guard card_moved != nil:
-            error("in Unicorn Lasso card_moved is nil")
-        guard original_player != nil:
-            error("in Unicorn Lasso original_player is nil")
-        guard caller_ != nil:
-            error("in Unicorn Lasso caller_ is nil")
-        game_state().add_to_end_phase(this)
-        
+        let chosen_cards, chosen_player = cardAction.steal_menu(caller)
+        card_moved, original_player = chosen_cards[0], chosen_player
 
-        // game_state().add_to_end_phase(UnicornLasso_help{this})
-    def end_phase_code():
+constructor UnicornLasso(ca):
+    let ucl = UnicornLasso{
+        "Unicorn Lasso", "Unicorn_Lasso.png",
+        """
+        second
+        If this card was in your Stable at the beginning of your turn,
+        you may STEAL a Unicorn card. At the end of your turn,
+        return that Unicorn card to the Stable from which you stole it.
+        """,
+        upgrade, YEL, ca
+    }
+    ucl.end_phase_sub = Subscriber<Empty>(ucl)msg:
+        let this = msg.get_data<Empty,UnicornLasso>()
+        let card_moved,original_player,c = this.card_moved,this.original_player,this.c
         print("Unicorn Lasso resolver")
-        guard game_state().is_end_phase():
+        guard this.game_state().is_end_phase():
             error("in {this.name} is not end phase")
-            return false
         guard card_moved != nil:
             error("in {this.name} card_moved is nil")
-            return false
         guard original_player != nil:
             error("in Unicorn Lasso original_player is nil")
-            return false
-        guard caller_ != nil:
+        guard c != nil:
             error("in Unicorn Lasso caller_ is nil")
-            return false
         print("- cleaning up Unicorn Lasso, moving unicorn [{card_moved.name}] back to original stable")
-        cardAction.move(caller_.stable(), original_player.stable(), card_moved)
-        // game_state().remove_from_end_phase(this)
+        this.cardAction.move(c.stable(), original_player.stable(), card_moved)
+    return ucl
 
-        return true
 
-class Puppicorn: Resolver
-//magical unicorn
 
-// At the end of your turn, move Puppicorn to the Stable of the player on your left.
 // TODO: This card cannot be sacrificed or destroyed.
-    caller_:Player?=nil
-    def enter_stable(caller):
-        print("enter")
-        this.caller_ = caller
-        game_state().add_to_end_phase(this)
+class Puppicorn: Card
+    start_of_turn = Subscriber<Empty,Puppicorn>()
+    c:Player?=nil
 
-    def end_phase_resolver()://this is a hack
-        print("Puppicorn resolver")
-        guard game_state().is_end_phase():
-            error("in {this.name} is not end phase")//TODO: maybe generalize?
-            return false
-        guard caller_ != nil:
+    def enter_stable(caller):
+        this.c = caller
+        let pub = game_state().beginning_phase_pub
+        start_of_turn.subscribe(pub)
+
+    def sac_or_destroy(caller):
+        error("TODO: puppicorn cant be sacrificed or destroyed")
+        assert false
+
+constructor Puppicorn(ca):
+    let pup = Puppicorn{
+        "Puppicorn", "Puppicorn.png",
+        """
+        Each time any player begins their turn, move this card to that player's Stable.
+        This card cannot be sacrificed or destroyed.
+        """,
+        magical_unicorn, MAG, ca
+    }
+    pup.start_of_turn = Subscriber<Empty>(pup)msg:
+        let this = msg.get_data<Empty,Puppicorn>()
+        guard this.c != nil:
             error("in {this.name} caller_ is nil")
-            return false
-        let players = game_state().get_players
-        let i = find(players)p:p==caller_
-        let next_player_index = (i+1)%players.len()
-        cardAction.move(caller_.stable(),players[next_player_index].stable(),this)
-        caller_ = players[next_player_index]
-        return true
+            assert false
+        let next_player = this.game_state().current_players_turn()
+        this.cardAction.move(this.c.stable(), next_player.stable(), this)
+        this.c = next_player
+    return pup
+
 
 class UnicornMafia: Card
 //upgrade
@@ -233,7 +252,7 @@ class StabbyTheUnicorn:Card
 
 // If this card is sacrificed or destroyed,
 // you may DESTROY a Unicorn
-    def leave_stable(caller):
+    def sac_or_destroy(caller):
         print("{BRED}-- {name}: on deletion activation --{reset}")
         if cardAction.ask_to_activate(this.fmt()):
             cardAction.destroy_menu(caller)
@@ -297,7 +316,8 @@ class ExtraLife: Card
         sacrifice_destroy.subscribe(pub2)
 
     //on leaving the stable unsubscribe
-    def leave_stable(caller):
+    def sac_or_destroy(caller):
+        c = nil
         let pub = game_state().sacrifice_pub
         let pub2 = game_state().destroy_pub
         sacrifice_destroy.unsubscribe(pub)
@@ -315,7 +335,7 @@ constructor ExtraLife(ca):
     }
 
     etl.sacrifice_destroy = Subscriber<card_event>(etl)msg:
-        let data, this = msg.get_data<card_event,ExtraLife>()
+        let this, data = msg.get_data<card_event,ExtraLife>()
         let player, cards = data.player, data.cards
 
         guard this.c != nil and player != this.c
@@ -330,89 +350,93 @@ constructor ExtraLife(ca):
 // ---
 
 // Hex
-// Downgrade
-// If this card is in your Stable at the beginning of your turn,
-// skip your Draw phase. If at any time you have no cards in your hand,
-// move this card to any player's Stable.	
+class Hex: Card
+    empty_hand = Subscriber<Player,Hex>()
+    c:Player? = nil // maybe a bit redundant
 
-// Unicorn Abduction
-// Downgrade
-// If this card is in your Stable at the beginning of your turn,
-// shuffle a Unicorn card from your Stable into the deck, then DRAW a card.
-// If at anytime you have no Unicorn cards in your Stable,
-// SACRIFICE this card.
+    def enter_stable(caller):
+        this.c = caller
+        let pub = caller.empty_hand_pub
+        empty_hand.subscribe(pub)
 
-// Brain Freeze
-// Downgrade
-// You cannot play Instant cards.	
+    def sac_or_destroy(caller):
+        c = nil
+        let pub = caller.empty_hand_pub
+        empty_hand.unsubscribe(pub)
 
-// Yay
-// Upgrade
-// As long as this card is in your Stable, cards you play cannot be Neigh’d.
+    def forced_activate(caller):
+        print("Card: Hex, skipped draw phase")
+        game_state().skip_draw()
 
-// Divine Peace
-// Downgrade
-// Your card effects cannot DESTROY cards.
+constructor Hex(ca):
+    let hex = Hex{
+        "Hex", "Hex.png",
+        """
+        If this card is in your Stable at the beginning of your turn,
+        skip your Draw phase. If at any time you have no cards in your hand,
+        move this card to any player's Stable.	
+        """,
+        downgrade, MAGHB, ca
+    }
+    hex.empty_hand = Subscriber<Player>(hex)msg:
+        let this, data = msg.get_data<Player,Hex>()
+        guard this.c != nil and this.c == data: 
+            error("this.c is nil in Hex")
+            assert false
+        let g = this.game_state()
+        let chosen_player = this.cardAction.get_game().choose_player(g.get_players())
+        this.cardAction.move(this.c.stable(),chosen_player.stable(), this)
 
-// Rainbow Aura
-// Upgrade
-// As long as this card is in your Stable, your Unicorns cannot be destroyed.
+    return hex
 
-// Slowdown
-// Downgrade
-// As long as this card is in your Stable, you cannot play Instant cards.
 
-// Broken Stable
-// Downgrade
-// As long as this card is in your Stable, you cannot play Upgrade cards.
+class UnicornAbduction: Card
+    no_unicorns = Subscriber<Player,UnicornAbduction>()
+    c:Player? = nil // maybe a bit redundant
 
-// Blinding Light
-//Downgrade
-// As long as this card is in your Stable, your Unicorn card effects cannot be activated.
+    def enter_stable(caller):
+        this.c = caller
+        let pub = caller.no_unicorns_pub
+        no_unicorns.subscribe(pub)
 
-// Wall Of Horns
-// Upgrade
-// If any player destroys a Unicorn card in your Stable,
-// you may pull a card from that player's hand and add it to your hand.	
+    def forced_activate(caller):
+        print("forced")
+        let chosen_card = cardAction.choose_card( filter(caller.stable()): _.is_unicorn )
+        caller.remove_stable(chosen_card)
+        cardAction.shuffle_into_deck(chosen_card)
 
-// Unicorn Bribe
-// Upgrade
-// If one of your Unicorn cards would be sacrificed or destroyed,
-// you may SACRIFICE an Upgrade or Downgrade card instead
+constructor UnicornAbduction(ca):
+    let uca = UnicornAbduction{
+        "Unicorn Abduction", "Unicorn_Abduction.png",
+        """
+        If this card is in your Stable at the beginning of your turn,
+        shuffle a Unicorn card from your Stable into the deck, then DRAW a card.
+        If at anytime you have no Unicorn cards in your Stable,
+        SACRIFICE this card.
+        """,
+        downgrade, GRN, ca
+    }
+    uca.no_unicorns = Subscriber<Player>(uca)msg:
+        let this, data = msg.get_data<Player,UnicornAbduction>()
+        guard this.c != nil and this.c == data: 
+            error("this.c is nil in UnicornAbduction")
+            assert false
+        // unsubscribing must be done before sacrificing bc
+        // it will go into a recursion loop if you dont unsub
+        // before sacrificing
+        let pub = this.c.no_unicorns_pub 
+        this.no_unicorns.unsubscribe(pub)
+        this.cardAction.sacrifice(this.c, this)
+        this.c = nil
+    return uca
+    
 
-// Objection
-//Upgrade
-// When any other player tries to play a Neigh card, you may DISCARD a card.
-// If you do, stop that card from being played and 
-// return the Neigh card back to that player's hand.
-// That player cannot play a Neigh this turn.	
-
-// Critical Hit
-//Upgrade
-// When you play a Magic card, you may SACRIFICE this card. If you do,
-// return the Magic card to your hand, then immediately play it again.	
-
-// Glass Half Full
-//Upgrade
-// Each time a Downgrade card enters your Stable,
-// you may search the deck for an Upgrade card and 
-// bring it directly into your Stable. Shuffle the deck.	
-
-// Retribution
-// Upgrade
-// Each time any other player destroys a Unicorn card in your Stable,
-// you may DESTROY a Unicorn card in that player's Stable.
-
-// Toll Booth
-// Downgrade
-// Each time you play a Unicorn card from your hand, DISCARD a card.
-
-// Barbed Wire
-// downgrade
-// As long as this card is in your Stable,
-// you must DISCARD a card each time a Unicorn enters or leaves your Stable.
-
-// Queen Bee Unicorn
-// Ultimate Unicorn
-// As long as this card is in your Stable, no other player can play Basic Unicorns.
-
+class TemporalParadox: Card
+    def activate(caller):
+        cardAction.return_card_menu(caller)
+constructor TemporalParadox(ca):
+    return TemporalParadox{
+        "Temporal Paradox", "Temporal_Paradox.png",
+        "Return a card in any player\'s Stable to that player\'s hand and DRAW a card.",
+        magic, BLU, ca
+    }

@@ -65,7 +65,7 @@
     "print": {
         "scope": "lobster",
         "prefix": "print",
-        "body": ["print(${1:x})"],
+        "body": ["print($1)"],
         "description": "print(x:string) \n output any value to the console (with linefeed)."
     },
     

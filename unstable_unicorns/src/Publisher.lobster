@@ -1,9 +1,11 @@
 import std
 import from "../../"
 import utils
+import terminal_colors
 
 set_print_depth(3)
 
+class Empty:
 
 class Wrap
 
@@ -18,27 +20,44 @@ class CMsg<T,U>: Msg<T>
 
 class Wrap:
     def get_data<T,U>():
-        assert this is CMsg<T,U>
-        return this.data, this.caller
+        let error_print = fn(): 
+            // error("TODO: types T,U are wrong for get_data()")
+            true
+        assert this is CMsg<T,U> and error_print()
+        return this.caller, this.data
 
 def notify_format(msg:Wrap) -> void //):
 
-abstract class Sub
+// this is a hack
+class SubInterface:
+    def notify(msg):
+        pass()
+
 class Publisher<T>:
     name: string
-    subs: [Sub] = []
+    subs: [SubInterface] = []
 
-    def add_sub(sub:Sub):
+    def add_sub(sub:SubInterface):
         subs.push(sub)
 
-    def remove_sub(sub:Sub):
+    def remove_sub(sub:SubInterface):
         subs.remove_obj(sub)
 
+    //TODO: test
+    // def publish():
+    //     if T{} is Empty:
+    //         print("[{name}] publishing")
+    //         for(subs)s:
+    //             s.notify(Msg<Empty>{Empty{}})
+
     def publish(msg:T):
-        print("[{name}] publishing")
+        print("{BLK}[{name}] publishing{reset}")
         for(subs)s:
+        // assert subs is Subscriber<T> // can turn Sub back into interface
             s.notify(Msg<T>{msg})
-class Subscriber<T,U>:Sub
+            
+
+class Subscriber<T,U>:SubInterface
     notify_func:notify_format = fn(msg:Wrap):
                     error("subscriber object has uninitialized callback")
     caller: U? = nil
@@ -106,11 +125,12 @@ constructor Subscriber<T,U>(fun):
 constructor Subscriber<T,U>():
     return Subscriber<T,U>{}
 
+
 // -- examples--
 /*
 
 let pub = Publisher<int>{"test"}
-// let pub2 = Publisher<int>{"test2"}
+let pub2 = Publisher<string>{"test2"}
 
 class B: 
     // sub = Subscriber<int,B>(pub,this)msg:
@@ -129,8 +149,24 @@ constructor B():
 
 let b = B()
 
+class C: 
+
+    sub = Subscriber<string,C>()
+    only_in_C: string = "only in C"
+
+constructor C():
+    let c = C{}
+    c.sub = Subscriber<string>(pub2, c)msg:
+        let data, this = msg.get_data<string,C>()
+        print(data,this.only_in_C)
+    return c
+
+let c = C()
+
 pub.publish(69) // broadcast a message
+pub2.publish("hi")
 
 b.sub.delete() // frees the subscriber object 
+c.sub.delete()
 //prevents not create a circular reface
 // */

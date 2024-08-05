@@ -21,10 +21,11 @@ class GameState:
     private cur_player_turn: Player = Player{""}
     private num_rounds: int = 0
     private cur_phase:phase = beginning_phase
-    private end_phase_queue:[Resolver] = []
 
     sacrifice_pub = Publisher<card_event>{"sacrifice_pub"}
     destroy_pub  = Publisher<card_event>{"destroy_pub"}
+    beginning_phase_pub = Publisher<Empty>{"beginning_phase_pub"}
+    end_phase_pub = Publisher<Empty>{"end_phase_pub"}
 
     def init_cards(parsed_nursery, parsed_deck):
         this.nursery, this.deck = parsed_nursery, parsed_deck
@@ -68,6 +69,10 @@ class GameState:
 
     def discard(card: Card):
         discard.push(card)
+    
+    def shuffle_into_deck(card:Card):
+        deck.push(card)
+        shuffle_deck()
 
     def add_player(p: Player):
         pass()
@@ -81,23 +86,30 @@ class GameState:
     def update_phase(phase: phase):
         cur_phase = phase
     
-    def add_to_end_phase(c:Resolver):
-        print("add to end")
-        end_phase_queue = end_phase_queue.push(c)
+    def skip_draw():
+        print("\n{REDB}============================= draw phase skipped ================================={reset}")
+        update_phase(action_phase)
+    
 
-    def remove_from_end_phase(c:Resolver)://TODO: this is extremely jank, make better system
-        print("remove from to end")
-        end_phase_queue.remove_obj(c)
+    def beginning_phase_cleanup():
+        beginning_phase_pub.publish(Empty{})
+        //forced activations
+        for(current_players_turn().stable())card:
+            card.forced_activate(current_players_turn())
 
     def end_phase_cleanup():
-        for(end_phase_queue)c:// TODO: maybe just store arr of the cards and have the cards have their own methods to "solve" end_turn
-            if c.end_phase_resolver() == false:
-                error("end of phase error")//TODO: make better
-                assert false
+        end_phase_pub.publish(Empty{})
     
     def current_players_turn():
         return cur_player_turn
     
+    def get_next_player(player_index:int):
+        let next_player_index = (player_index+1)%players.len()
+        return players[next_player_index]
+
+    def get_next_player(player:Player):
+        return get_next_player(find(players): _==player )
+
     def num_rounds():
         return num_rounds
 

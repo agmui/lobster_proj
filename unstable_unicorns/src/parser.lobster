@@ -103,7 +103,7 @@ class mock_parser: parser
                 "Baby_Unicorn_(Red).png",
                 "If this card would be sacrificed, destroyed, or returned to your hand, return it to the Nursery instead.",
                 baby_unicorn,
-                BGRN,
+                RED,
                 cardAction
             }
 
@@ -115,23 +115,6 @@ class mock_parser: parser
                 BGRN,
                 cardAction
             }
-        let bku = BlackKnightUnicorn{
-                "Black Knight Unicorn",
-                "Black_Knight_Unicorn.png",
-                "If one of your Unicorns would be destroyed, you may SACRIFICE this card instead.",
-                magical_unicorn,
-                BLKHB,
-                cardAction
-            }
-        let swh = SharkWithAHorn{
-                "Shark With A Horn",
-                "Shark_With_A_Horn.png",
-                "When this card enters your Stable, you may DESTROY a Unicorn. If you do, SACRIFICE this card.",
-                magical_unicorn,
-                BLU,
-                cardAction
-            }
-
         let tfo = TwoForOne{
             "Two-For-One",
             "Two-For-One.png",
@@ -147,31 +130,6 @@ class mock_parser: parser
             "If this card is in your Stable at the beginning of your turn, you may SACRIFICE a card, then DESTROY a card.",
             upgrade,
             GRN,
-            cardAction
-        }
-
-        let ucl = UnicornLasso{
-            "Unicorn Lasso",
-            "Unicorn_Lasso.png",
-            """
-            if this card is in your Stable at the beginning of your turn,
-            you may move a Unicorn from any player's Stable to your Stable.
-            At the end of your turn, move the Unicorn to its First Stable.
-            """,
-            upgrade,
-            YEL,
-            cardAction
-        }
-
-        let pup = Puppicorn{
-            "Puppicorn",
-            "Puppicorn.png",
-            """
-            At the end of your turn, move Puppicorn to the Stable of the player on your left.
-            This card cannot be sacrificed or destroyed.
-            """,
-            magical_unicorn,
-            MAG,
             cardAction
         }
 
@@ -239,26 +197,31 @@ class mock_parser: parser
         return [
             //== DEBUG ==
             //===========
-            bb.copy(), bb.copy(), bb.copy(), bb2.copy(),
+            bb.copy(), bb2.copy(), bb.copy(), bb2.copy(),
         ],[
-            ExtraLife(cardAction),
+            // -- p0 hand --
+            TemporalParadox(cardAction),
+            UnicornLasso(cardAction),
+            Puppicorn(cardAction),
             poison.copy(),
-            csu.copy(),
-            pup.copy(),
-            //-------
+            //-- p1 hand --
             poison.copy(),
             gtb.copy(),
             stu.copy(),
             tfo.copy(),
-            //-------
-            bku.copy(),
-            swh.copy(),
+
+            // == adds to p0 stable ==
+            BasicUnicornRed(cardAction),
+            // =======================
+            UnicornAbduction(cardAction),
+            Hex(cardAction),
+            ExtraLife(cardAction),
+            csu.copy(),
+            SharkWithAHorn(cardAction),
             ctc.copy(),
             gtb.copy(),
             ucm.copy(),
             csu.copy(),
-            ucl.copy(), 
             fst.copy(),
             stu.copy(), 
-            swh.copy(),
         ]

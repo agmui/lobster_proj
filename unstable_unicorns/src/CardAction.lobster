@@ -28,38 +28,71 @@ class Card
 def filter_format(cards:[Card])->[Card] //):
 let do_noting:filter_format = fn(cards:[Card])->[Card]:cards 
 
+/*
+maybe useful functions:
+* shuffle discard back into deck 
+* some "every other player" or every player must do x
+* look at other players hand and choose
+// * return to hand?(stable -> hand) (Temporal Paradox)
+* choose cards from discard
+* player to the left func? (mery-go-round)
+* would be destroyed (unicorn bribe, BlackKnightUnicorn)
+*/
 class CardAction:
     game: Game
 
     def get_game():
         return game
 
-    def return_to_hand():
-        pass()
+    def return_card(chosen_player, chosen_cards):
+        chosen_player.return_to_hand(chosen_cards)
     
     def trade():
         pass()
     
+    //TODO: decide if folowing functions should go into GameState class
     def move(move_from:[Card],move_to:[Card], card:Card):
+        //TODO: card arrs are private so this func cant exist
+        //FIXME: for card Hex player hand must only be mutated though discard function
+        // note: then move should only be used 
+        // when not using the conventional actions(sacrifice, destroy)
+        // bc it has noting to setoff/trip?
         move_from.remove_obj(card)
         move_to.push(card)
+    
+    def shuffle_into_deck(card:Card):
+        game.get_game_state().shuffle_into_deck(card)
+    
+    def steal(caller:Player, chosen_player:Player, chosen_card:Card):
+        steal(caller,chosen_player,chosen_card)
 
-    // all sacrifice calls must go though here bc of the broadcast
+    // take from any players stable into your stable
+    def steal(caller:Player, chosen_player:Player, chosen_cards:[Card]):
+        chosen_player.remove_stable(chosen_cards)
+        for(chosen_cards)card:
+            caller.add_stable(card)
+            card.enter_stable(caller)
+        
+
+    def sacrifice(caller:Player,chosen_card:Card):
+        sacrifice(caller, [chosen_card])
+
+    // send a card in your Sable to the discard pile
     def sacrifice(caller:Player,chosen_cards:[Card]):
-        print("sac", chosen_cards[0].fmt())
-        caller.remove_stable(chosen_cards)//TODO: maybe replace bot 2 calls with move
+        // Note:all sacrifice calls must go though here bc of the broadcast
+        caller.remove_stable(chosen_cards)
         game.get_game_state().discard(chosen_cards)// use move for destroy() also
         for(chosen_cards)c:
-            c.leave_stable(caller)
+            c.sac_or_destroy(caller)
 
         game.get_game_state().sacrifice_pub.publish(card_event{caller, chosen_cards})
-        print(game.get_game_state().fmt())
 
-    def destroy(caller:Player, chosen_cards:[Card], chosen_player:Player):
+    // send a card from another player's Stable to the discard pile
+    def destroy(caller:Player, chosen_player:Player, chosen_cards:[Card]):
         chosen_player.remove_stable(chosen_cards)
         game.get_game_state().discard(chosen_cards)
         for(chosen_cards)c:
-            c.leave_stable(chosen_player)
+            c.sac_or_destroy(chosen_player)
 
         game.get_game_state().destroy_pub.publish(card_event{caller, chosen_cards})
 
@@ -68,23 +101,27 @@ class CardAction:
         game.get_game_state().discard(chosen_cards)
 
 
+    def return_card_menu(caller:Player, amount:int=1,card_filter:filter_format=do_noting):
+        let players = game.get_game_state().get_players().copy()
+        players.remove_obj(caller)
+        let chosen_cards, chosen_player = game.return_submenu(players, amount, card_filter)
+        return_card(chosen_player, chosen_cards)
+    
     def sacrifice_menu(caller:Player, amount:int=1)://util function
         sacrifice_menu(caller, caller.stable(), amount)
 
-    // send a card in your Sable to the discard pile
     def sacrifice_menu(caller:Player, cards:[Card], amount:int=1):
         let chosen_cards = game.sacrifice_submenu(cards, amount)
         //TODO: on empty stable condition
 
         sacrifice(caller, chosen_cards)
 
-    // send a card from another player's Stable to the discard pile
     def destroy_menu(caller:Player, amount:int=1, card_filter:filter_format=do_noting)->void:
         let players = game.get_game_state().get_players().copy()
         players.remove_obj(caller)
         let chosen_cards, chosen_player = game.destroy_submenu(players, amount, card_filter)
 
-        destroy(caller, chosen_cards, chosen_player)
+        destroy(caller, chosen_player, chosen_cards)
 
     
     // send card from your hand to the discard pile
@@ -99,7 +136,17 @@ class CardAction:
         if(chosen_player == caller):
             sacrifice(caller,chosen_cards)
         else:
-            destroy(caller, chosen_cards, chosen_player)
+            destroy(caller, chosen_player, chosen_cards)
+    
+    def steal_menu(caller:Player, amount:int=1,card_filter:filter_format=do_noting):
+        let players = game.get_game_state().get_players.copy()
+        players.remove_obj(caller)
+
+        // let chosen_player = get_game().choose_player(players)
+        // let chosen_card = get_game().choose_card(chosen_player.stable())
+        let chosen_cards, chosen_player = game.steal_submenu(players,amount,card_filter) 
+        steal(caller, chosen_player, chosen_cards)
+        return chosen_cards, chosen_player
 
     def ask_to_activate(card_name)->bool:
         return game.ask_to_activate(card_name)

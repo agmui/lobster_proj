@@ -21,6 +21,9 @@ class Game:
     def choose_player(players:[Player])->Player:
         return choose_players(players, 1)[0]
 
+    def return_submenu(players:[Player], amount:int, card_filter):
+        return [Card{"","","",baby_unicorn,GRN,CardAction{this}}], g.get_players()[0]
+
     // send a card in your Stable to the discard pile
     def sacrifice_submenu(cards:[Card], amount:int):
         return [Card{"","","",baby_unicorn,GRN,CardAction{this}}]
@@ -32,6 +35,9 @@ class Game:
     // send card from your hand to the discard pile
     def discard_submenu(cards:[Card],amount:int):
         return [Card{"","","",baby_unicorn,GRN,CardAction{this}}]
+
+    def steal_submenu(players:[Player], amount:int, card_filter):
+        return [Card{"","","",baby_unicorn,GRN,CardAction{this}}], g.get_players()[0]
 
     def peek_top_deck(amount:int)->[Card]: //):
         return []
@@ -97,6 +103,10 @@ class Cli: Game
     def choose_player(players:[Player])->Player:
         return choose_players(players, 1)[0]
 
+    def return_submenu(players:[Player], amount:int, card_filter):
+        let chosen_player: Player = choose_player(players)
+        return choose_cards(card_filter(chosen_player.stable()), amount), chosen_player
+
     // send a card in your Stable to the discard pile
     def sacrifice_submenu(cards:[Card], amount:int):
         print("{MAGHB}-- sacrifice: --{reset}")
@@ -112,6 +122,11 @@ class Cli: Game
     def discard_submenu(cards:[Card], amount:int):
         print("{BLUB}-- discard: --{reset}")
         return choose_cards(cards, amount)
+    
+    def steal_submenu(players:[Player], amount:int, card_filter):
+        print("{BLKHB}-- steal: --{reset}")
+        let chosen_player: Player = choose_player(players)
+        return choose_cards(card_filter(chosen_player.stable()), amount), chosen_player
 
     // when something has the choice to be activated or not 
     //EX: When this card enters your Stable, you may DESTROY a Unicorn. If you do, SACRIFICE this card.
@@ -139,6 +154,7 @@ class Cli: Game
         return choose_cards(filtered_deck, amount)
     
     private def beginning_phase():
+        g.beginning_phase_cleanup()
         let option = get_line("activate a card? [y] [N]: ")
         if option == "y" or option == "Y":
             let card = choose_card(g.current_players_turn.stable())//TODO: filter out cards cant cant be activated?
