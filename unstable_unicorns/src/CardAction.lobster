@@ -26,16 +26,17 @@ class Card
 // F: forced action
 
 def filter_format(cards:[Card])->[Card] //):
-let do_noting:filter_format = fn(cards:[Card])->[Card]:cards 
+let do_nothing:filter_format = fn(cards:[Card])->[Card]:cards 
 
 /*
-maybe useful functions:
+useful functions:
 * shuffle discard back into deck 
 * some "every other player" or every player must do x
 * look at other players hand and choose
 // * return to hand?(stable -> hand) (Temporal Paradox)
-* choose cards from discard
+// * choose cards from discard (Nightmare's Conjuring, Kittencorn Burglar)
 * player to the left func? (mery-go-round)
+* choose from other players hand
 * would be destroyed (unicorn bribe, BlackKnightUnicorn)
 */
 class CardAction:
@@ -101,7 +102,7 @@ class CardAction:
         game.get_game_state().discard(chosen_cards)
 
 
-    def return_card_menu(caller:Player, amount:int=1,card_filter:filter_format=do_noting):
+    def return_card_menu(caller:Player, amount:int=1,card_filter:filter_format=do_nothing):
         let players = game.get_game_state().get_players().copy()
         players.remove_obj(caller)
         let chosen_cards, chosen_player = game.return_submenu(players, amount, card_filter)
@@ -116,7 +117,7 @@ class CardAction:
 
         sacrifice(caller, chosen_cards)
 
-    def destroy_menu(caller:Player, amount:int=1, card_filter:filter_format=do_noting)->void:
+    def destroy_menu(caller:Player, amount:int=1, card_filter:filter_format=do_nothing)->void:
         let players = game.get_game_state().get_players().copy()
         players.remove_obj(caller)
         let chosen_cards, chosen_player = game.destroy_submenu(players, amount, card_filter)
@@ -130,7 +131,7 @@ class CardAction:
 
         discard(caller, chosen_cards)
     
-    def sacrifice_or_destroy(caller:Player, amount:int=1, card_filter:filter_format=do_noting):
+    def sacrifice_or_destroy(caller:Player, amount:int=1, card_filter:filter_format=do_nothing):
         let players = game.get_game_state().get_players().copy()
         let chosen_cards, chosen_player = game.destroy_submenu(players, amount, card_filter)
         if(chosen_player == caller):
@@ -138,7 +139,7 @@ class CardAction:
         else:
             destroy(caller, chosen_player, chosen_cards)
     
-    def steal_menu(caller:Player, amount:int=1,card_filter:filter_format=do_noting):
+    def steal_menu(caller:Player, amount:int=1,card_filter:filter_format=do_nothing):
         let players = game.get_game_state().get_players.copy()
         players.remove_obj(caller)
 
@@ -147,6 +148,15 @@ class CardAction:
         let chosen_cards, chosen_player = game.steal_submenu(players,amount,card_filter) 
         steal(caller, chosen_player, chosen_cards)
         return chosen_cards, chosen_player
+
+    def choose_from_hand(caller:Player, amount:int=1):
+        let players = game.get_game_state().get_players().copy()
+        players.remove_obj(caller)
+
+        let chosen_card, chosen_player = game.take_from_hand_submenu(players, amount)
+        chosen_player.taken_from_hand(chosen_card)
+        // caller.add_to_hand(chosen_card)
+        return chosen_card
 
     def ask_to_activate(card_name)->bool:
         return game.ask_to_activate(card_name)
@@ -162,4 +172,9 @@ class CardAction:
     
     def search_deck(amount:int, card_filter:filter_format)->[Card]: //):
         return game.search_deck(amount, card_filter)
+    
+    def search_discard(amount:int, card_filter:filter_format=do_nothing)->[Card]: //):
+        let chosen_card = game.discard_choose(amount, card_filter)
+        game.get_game_state().remove_from_discard(chosen_card)
+        return chosen_card
 

@@ -200,9 +200,9 @@ class mock_parser: parser
             bb.copy(), bb2.copy(), bb.copy(), bb2.copy(),
         ],[
             // -- p0 hand --
+            BlatantThievery(cardAction),
             TemporalParadox(cardAction),
             UnicornLasso(cardAction),
-            Puppicorn(cardAction),
             poison.copy(),
             //-- p1 hand --
             poison.copy(),
@@ -212,15 +212,20 @@ class mock_parser: parser
 
             // == adds to p0 stable ==
             BasicUnicornRed(cardAction),
-            // =======================
+            // ===== adds to discard ==
+            BasicUnicornRed(cardAction),
+            // ========================
             UnicornAbduction(cardAction),
+            NightmaresConjuring(cardAction),
             Hex(cardAction),
             ExtraLife(cardAction),
             csu.copy(),
+            KittencornBurglar(cardAction),
             SharkWithAHorn(cardAction),
             ctc.copy(),
             gtb.copy(),
             ucm.copy(),
+            Puppicorn(cardAction),
             csu.copy(),
             fst.copy(),
             stu.copy(), 

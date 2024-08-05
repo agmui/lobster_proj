@@ -440,3 +440,51 @@ constructor TemporalParadox(ca):
         "Return a card in any player\'s Stable to that player\'s hand and DRAW a card.",
         magic, BLU, ca
     }
+
+class NightmaresConjuring: Card
+    def activate(caller):
+        cardAction.discard_menu(caller, caller.hand())
+        let chosen_card = cardAction.search_discard(1)[0]
+        caller.use(chosen_card).play(caller)
+constructor NightmaresConjuring(ca):
+    return NightmaresConjuring{
+        "Nightmare\'s Conjuring",
+        "Nightmare\'s_Conjuring.png",
+        """
+        DISCARD a card, then choose a card from the
+        discard pile and bring it directly into your Stable.
+        """,
+        magic, BLKHB, ca
+    }
+
+class KittencornBurglar: Card
+    def activate(caller):
+        cardAction.discard_menu(caller, caller.hand())
+        let chosen_cards = cardAction.search_discard(2)
+        caller.add_to_hand(chosen_cards)
+constructor KittencornBurglar(ca):
+    return KittencornBurglar{
+        "Kittencorn Burglar",
+        "Kittencorn_Burglar.png",
+        """
+	    DISCARD a card, then choose 2 cards from the
+        discard pile and add them to your hand. 
+        """,
+        magic, MAG, ca
+    }
+
+class BlatantThievery: Card
+    def activate(caller):
+        let chosen_card = cardAction.choose_from_hand(caller)
+        caller.add_to_hand(chosen_card)
+
+constructor BlatantThievery(ca):
+    return BlatantThievery{
+        "Blatant Thievery",
+        "Blatant_Thievery.png",
+        """
+        Choose any player and look at that player's hand.
+        Choose a card from that player's hand and add it to your hand.
+        """,
+        magic, BLKB, ca
+    }

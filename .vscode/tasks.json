@@ -39,10 +39,10 @@
 
              ],
             "presentation": {
-                // "reveal": "silent",
+                "reveal": "silent",
                 "echo": true,
                 "panel": "shared",
-                "focus": true
+                "focus": false
             },
             "group": {
                 "kind": "build",

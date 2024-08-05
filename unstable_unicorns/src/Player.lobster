@@ -10,25 +10,29 @@ class Player:
     empty_hand_pub = Publisher<Player>{"hand_empty_pub"}
     no_unicorns_pub = Publisher<Player>{"no_unicorns_pub"}
 
-    def draw(card: Card)://TODO: rename
-        hand.push(card)
+    def add_to_hand(cards:[Card]):
+        return map(cards):add_to_hand(_)
+
+    def add_to_hand(card: Card):
+        return hand.push(card)
 
     def add_stable(card: Card):
-        stable.push(card)
+        if card.type != instant and card.type != magic:
+            stable.push(card)
+        return card
     
     def use(card_index: int)->Card:
         let c = discard(card_index) //hand.remove(card_index)
-        if c.type != instant and c.type != magic:
             // stable.push(c)
-            add_stable(c)
-        return c
+        return add_stable(c)
+        // return c
 
     def use(card: Card)->Card:
         let c = discard(card) //hand.remove_obj(card)
-        if c.type != instant and c.type != magic:
+        // if c.type != instant and c.type != magic:
             // stable.push(c)
-            add_stable(c)
-        return c
+        return add_stable(c)
+        // return c
     
     def return_to_hand(cards:[Card]):
         remove_stable(cards)
@@ -60,6 +64,11 @@ class Player:
     def discard(card:[Card]):
         return map(card)c:
             discard(c)
+    
+    def taken_from_hand(cards:[Card]):
+        return map(cards):taken_from_hand(_)
+    def taken_from_hand(card:Card):
+        return hand.remove_obj(card)
 
     def id():
         return id

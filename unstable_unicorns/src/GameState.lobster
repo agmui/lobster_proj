@@ -47,9 +47,10 @@ class GameState:
         // everyone draws 4 cards
         for(players)p:
             for(4):
-                p.draw(deck.remove(0))
+                p.add_to_hand(deck.remove(0))
         // == debug ==
         players[0].add_stable(deck.remove(0))
+        discard.push(deck.remove(0))
         // ===========
 
     def init():
@@ -58,17 +59,23 @@ class GameState:
         deal_hands()
 
     def draw(player: Player)->Card:
-        player.draw(deck.remove(0))
+        player.add_to_hand(deck.remove(0))
 
     def draw(player, num:int)->[Card]: //):
-        player.draw(map(num): deck.remove(0))
+        player.add_to_hand(map(num): deck.remove(0))
     
     def discard(cards: [Card]):
         for(cards)c:
             discard(c)
 
+    // TODO:IDK something something return card to chain/bind things cuz functional programming
     def discard(card: Card):
         discard.push(card)
+    
+    def remove_from_discard(cards:[Card]):
+        return map(cards):remove_from_discard(_)
+    def remove_from_discard(card:Card):
+        return discard.remove_obj(card)
     
     def shuffle_into_deck(card:Card):
         deck.push(card)

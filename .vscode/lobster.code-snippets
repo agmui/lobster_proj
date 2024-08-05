@@ -15,6 +15,14 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
+    "abstract":{
+        "scope": "lobster",
+        "prefix": "abstract",
+        "body": [
+            "abstract class $1"
+        ],
+        "description": ""
+    },
     "import":{
         "scope": "lobster",
         "prefix": "import",
@@ -23,7 +31,6 @@
         ],
         "description": ""
     },
-    //TODO: add std snipets
 	"constructor": {
 		"scope": "lobster",
 		"prefix": "constructor",
