@@ -60,7 +60,7 @@ class sub<T>:
     //     pass()
 
     def delete():
-        // TODO: unsubnc:T
+        // TODO: unsub nc :T
         pass()
 
 
@@ -159,7 +159,7 @@ def notify_format(msg:Wrap) -> void //):
 def send_rev_format(msg:Wrap) -> Wrap //):
 
 
-abstract class SubInterface: //):
+abstract class SubInterface<T>: //):
 // abstract class PubInterface //):
 
 abstract class pub<T>:// PubInterface
@@ -171,8 +171,8 @@ abstract class pub<T>:// PubInterface
 
     def remove_sub(sub):
         subs.remove_obj(sub)
-abstract class sub<T>: SubInterface
-    notify_func: T
+abstract class sub<T,F>: SubInterface<T>
+    notify_func: F
 
     def set_func(f):
         notify_func = f
@@ -185,11 +185,11 @@ abstract class sub<T>: SubInterface
         pub.remove_sub(this)
 
     def delete():
-        // TODO: unsubnc:T
+        // TODO: unsub nc:T
         pass()
 
     
-class Publisher<T>: pub<SubInterface>
+class Publisher<T>: pub<SubInterface<T>>
     def publish(msg:T):
         print("{BLK}[{name}] publishing{reset}")
         for(subs)s:
@@ -202,7 +202,7 @@ class Server<T,reT>: pub<sub<send_rev_format>>
         return map(subs)s: s.notify(Msg<T>{msg})
 
 
-class Subscriber2<T>: sub<notify_format>
+class Subscriber2<T>: sub<T,notify_format>
     def notify(msg:Msg<T>):
         def do2(f,a): return f(a)
         do2(notify_func,msg)
@@ -215,7 +215,7 @@ constructor Subscriber2<T>(fun):
     
 
 
-class Subscriber<T,obj_type>: sub<notify_format>
+class Subscriber<T,obj_type>: sub<T,notify_format>
     caller: obj_type?
 
     def set_caller(c:obj_type):
@@ -250,9 +250,9 @@ constructor Subscriber<T,obj_type>(fun):
     return Subscriber<T,obj_type>{func_wrapper,nil}
 
 constructor Subscriber<T,obj_type>():
-    return Subscriber<T,obj_type>{fn(msg):pass(),nil}
+    return Subscriber<T,obj_type>{fn(msg:Wrap):pass(),nil}
 
-class Client2<T,reT>: sub<send_rev_format>
+class Client2<T,reT>: sub<T,send_rev_format>
     def notify(msg:Msg<T>)->Msg<reT>: //):
         def do2(f,a): return f(a)
         let res = do2(notify_func,msg)
@@ -267,7 +267,7 @@ constructor Client2<T,reT>(fun):
         
 
 
-class Client<T,obj_type,reT>: sub<send_rev_format>
+class Client<T,obj_type,reT>: sub<T,send_rev_format>
     caller: obj_type?
 
     def set_caller(c:obj_type):
@@ -282,17 +282,38 @@ class Client<T,obj_type,reT>: sub<send_rev_format>
         return res
     def delete():
         caller = nil
+
 constructor Client<T,obj_type,reT>(caller, fun):
     let func_wrapper = fn(msg):
         assert msg is CMsg<T,obj_type>
         Msg<reT,obj_type>{fun(msg.caller,msg.data)}
 
     return Client<T,obj_type,reT>{func_wrapper,caller}
+
 constructor Client<T,obj_type,reT>():
     return Client<T,obj_type,reT>{fn(msg):Wrap{},nil}
         
 
 // --examples--
+
+/*
+class UA2:
+    no_uni = Subscriber<float,UA2>()
+
+class UA:
+    no_uni = Subscriber<int,UA>()
+constructor UA():
+    let ua = UA{}
+    ua.no_uni = Subscriber<int>(ua)this:
+        print("hi") 
+    return ua
+
+let pub = Publisher<int>{"test"}
+let ua_obj = UA()
+ua_obj.no_uni.subscribe(pub)
+pub.publish(1)
+ua_obj.no_uni.delete()
+
 
 let pub = Publisher<int>{"pub"}
 let ser = Server<int,string>{"ser"}
@@ -310,7 +331,7 @@ class A:
     only_in_a = "a"
 constructor A():
     let a = A{}
-    a.sub = Subscriber<int,A>(a)this,data:
+    a.sub = Subscriber<int>(a)this,data:
                                     print("in sub: {this.only_in_a}, {data}")
     return a
 
@@ -342,3 +363,4 @@ ser.publish(69).print
 
 a.sub.delete()
 b.cli.delete()
+// */

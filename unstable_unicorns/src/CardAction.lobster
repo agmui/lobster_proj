@@ -113,7 +113,7 @@ class CardAction:
 
     def sacrifice_menu(caller:Player, cards:[Card], amount:int=1):
         let chosen_cards = game.sacrifice_submenu(cards, amount)
-        //TODO: on empty stable condition
+        //TODO: on empty/imposable stable condition
 
         sacrifice(caller, chosen_cards)
 

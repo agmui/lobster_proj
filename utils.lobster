@@ -5,6 +5,15 @@ import terminal_colors
 let cdr = fn arr: slice(arr,1,-1)
 let cons = fn x, arr: insert(arr, 0, x)
 
+//TODO: optimize
+def rnd_sep(xs, n=1):
+    let cp = xs.copy()
+    let res = map(n):
+        let pic = rnd_pick(cp)
+        cp.remove_obj(pic)
+        pic
+    return res
+
 def do2(f,a): return f(a)  
 def do3(f,a,b): return f(a,b)  
 

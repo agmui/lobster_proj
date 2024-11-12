@@ -194,7 +194,9 @@ class Cli: Game
             if action=="d":
                 g.draw(g.current_players_turn) //TODO: rename player.draw()
             else:
+                // TODO: ban playing filter
                 let card = choose_card(g.current_players_turn.hand())
+                // TODO: neigh broadcast
                 g.current_players_turn
                     .use(card)
                     .play(g.current_players_turn)

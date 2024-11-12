@@ -3,5 +3,34 @@
         "lobster"
     ],
     "editor.tabSize": 4,
-    "editor.detectIndentation": false
+    "editor.detectIndentation": false,
+    "cSpell.words": [
+        "CYNB",
+        "BBLK",
+        "BBLU",
+        "BGRN",
+        "BLKB",
+        "BLKHB",
+        "BLUHB",
+        "BYEL",
+        "choosen",
+        "destoryed",
+        "funcs",
+        "GRNHB",
+        "insta",
+        "Kittencorn",
+        "MAGHB",
+        "Oceloticorn",
+        "Puppicorn",
+        "REDHB",
+        "Stabby",
+        "struct",
+        "typeof",
+        "unsub",
+        "cmsg",
+        "concat",
+        "imgui",
+        "nilable",
+        "myfunc"
+    ]
 }

@@ -28,7 +28,7 @@ class GameState//:
 // let a:end_of_turn_cleanup = fn(g:GameState)->int: 1
 
 // maybe have a interface called CardInterface
-// then have 5 interfaces implmenting CardInterface called Magic, 
+// then have 5 interfaces implementing CardInterface called Magic, 
 // upgrade, downgrade, resolver, Unicorn...
 // then have each of those classes contain a concrete class called Card data
 // Card data will have the name, img, text...
@@ -100,7 +100,6 @@ constructor BasicUnicornRed(ca):
         basic_unicorn, RED, ca
     }
     
-
 class UnicornPoison: Card
     // text: string = "DESTROY a Unicorn."
 
@@ -185,8 +184,7 @@ constructor UnicornLasso(ca):
         """,
         upgrade, YEL, ca
     }
-    ucl.end_phase_sub = Subscriber<Empty>(ucl)msg:
-        let this = msg.get_data<Empty,UnicornLasso>()
+    ucl.end_phase_sub = Subscriber<Empty>(ucl)this:
         let card_moved,original_player,c = this.card_moved,this.original_player,this.c
         print("Unicorn Lasso resolver")
         guard this.game_state().is_end_phase():
@@ -226,8 +224,7 @@ constructor Puppicorn(ca):
         """,
         magical_unicorn, MAG, ca
     }
-    pup.start_of_turn = Subscriber<Empty>(pup)msg:
-        let this = msg.get_data<Empty,Puppicorn>()
+    pup.start_of_turn = Subscriber<Empty>(pup)this:
         guard this.c != nil:
             error("in {this.name} caller_ is nil")
             assert false
@@ -235,7 +232,6 @@ constructor Puppicorn(ca):
         this.cardAction.move(this.c.stable(), next_player.stable(), this)
         this.c = next_player
     return pup
-
 
 class UnicornMafia: Card
 //upgrade
@@ -334,8 +330,7 @@ constructor ExtraLife(ca):
         upgrade, RED, ca
     }
 
-    etl.sacrifice_destroy = Subscriber<card_event>(etl)msg:
-        let this, data = msg.get_data<card_event,ExtraLife>()
+    etl.sacrifice_destroy = Subscriber<card_event>(etl)this, data:
         let player, cards = data.player, data.cards
 
         guard this.c != nil and player != this.c
@@ -378,8 +373,7 @@ constructor Hex(ca):
         """,
         downgrade, MAGHB, ca
     }
-    hex.empty_hand = Subscriber<Player>(hex)msg:
-        let this, data = msg.get_data<Player,Hex>()
+    hex.empty_hand = Subscriber<Player>(hex)this, data:
         guard this.c != nil and this.c == data: 
             error("this.c is nil in Hex")
             assert false
@@ -416,13 +410,12 @@ constructor UnicornAbduction(ca):
         """,
         downgrade, GRN, ca
     }
-    uca.no_unicorns = Subscriber<Player>(uca)msg:
-        let this, data = msg.get_data<Player,UnicornAbduction>()
+    uca.no_unicorns = Subscriber<Player>(uca)this, data:
         guard this.c != nil and this.c == data: 
             error("this.c is nil in UnicornAbduction")
             assert false
         // unsubscribing must be done before sacrificing bc
-        // it will go into a recursion loop if you dont unsub
+        // it will go into a recursion loop if you don't unsub
         // before sacrificing
         let pub = this.c.no_unicorns_pub 
         this.no_unicorns.unsubscribe(pub)
@@ -477,7 +470,6 @@ class BlatantThievery: Card
     def activate(caller):
         let chosen_card = cardAction.choose_from_hand(caller)
         caller.add_to_hand(chosen_card)
-
 constructor BlatantThievery(ca):
     return BlatantThievery{
         "Blatant Thievery",
@@ -488,3 +480,25 @@ constructor BlatantThievery(ca):
         """,
         magic, BLKB, ca
     }
+// # Bans:
+// Rainbow Aura | Your Unicorns cannot be destroyed.
+
+// Extra Tail | This card can only enter a Stable if there is a Basic Unicorn card in that Stable.
+
+// Divine Peace | Your card effects cannot DESTROY cards.
+// Blinding Light |	Triggered effects of your Unicorn cards do not activate.
+// Paladin Unicorn | banned steal
+
+// ## baned play
+// Anti-Magic Bubble   |	banned play Magic cards
+// Restricted Area	    | banned play Magical Unicorn cards
+// Slowdown            | banned play Instant cards.
+// Broken Stable	      | banned play Upgrade cards.
+// Ginormous Unicorn   | banned play insta
+// Queen Bee Unicorn   | others banned from play Basic Unicorns.
+// Elusive Oceloticorn | others banned from play Neigh cards. This card cannot be Neigh'd.
+
+// ## baned choosen from some event
+// Magical Kittencorn | cant be destoryed or otherwise affected by magic cards
+// Puppicorn | cant be sac or dest
+// Wrecking Ball Unicorn | cant be Neigh'd.

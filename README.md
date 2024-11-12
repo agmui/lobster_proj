@@ -13,11 +13,11 @@ in `lobster/dev`
 
 in: `lobster/dev/lsp`
 
-### build
+### install deps
 
 npm install
 
-### install
+### build
 
 npm run webpack
 

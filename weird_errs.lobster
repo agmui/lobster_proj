@@ -1,5 +1,46 @@
 import std
 
+//------------------------------------------------------------
+// can't infer the type for lambda f. 
+//------------------------------------------------------------
+def bar(msg:int) -> void //):
+
+class A<T>: 
+    foo: bar
+
+constructor A<T>():
+    let f = fn(msg): pass()
+    // needs a msg:int to work. it is not smart enough
+    // let f = fn(msg:int): pass()
+    return A<T>{f}
+
+let a1 = A<int>()
+let a2 = A<float>()
+
+//------------------------------------------------------------
+// forward class decoration needed
+//------------------------------------------------------------
+abstract class Interface
+
+class A2<T>: Interface
+
+    def foo():
+        pass()
+
+class B: 
+    a: Interface
+
+    def bar():
+        a.foo()
+            
+    
+// class c = A<int> //:
+
+let a = A2<string>{}
+let b = B{a}
+b.bar()
+
+let a2 = A2<int>{}
 
 
 //------------------------------------------------------------
@@ -169,7 +210,7 @@ class B:
 
 
 //------------------------------------------------------------
-// circular refrance
+// circular reference
 // let a:Vertex = Vertex{"a", []}
 // let b:Vertex = Vertex{"b", [a]}
 // a.adj = [b]
@@ -186,7 +227,7 @@ def fun2():
 let f = fun2()//(v)
 // let a = fun2()() //does not work
 
-// weird thing when only the first one is uncommendted vs when both or just the second line
+// weird thing when only the first one is uncommented vs when both or just the second line
 print("outside:",f(1))
 // print(f(1))
 
